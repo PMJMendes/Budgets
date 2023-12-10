@@ -1,4 +1,4 @@
-﻿@using FluentValidation
+@using FluentValidation
 @using Krypton.Budgets.Shared
 @using ValueType = Krypton.Budgets.Shared.ValueType
 
@@ -55,6 +55,7 @@
                                 <MudTextField @bind-Value="@context.Item.DescEnglish" />
                             </EditTemplate>
                         </TemplateColumn>
+@*
                         <TemplateColumn T="ItemModel" Field="ExcludeFromBase" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:EXCLUDEFROMBASE"]">
                             <EditTemplate>
                                 <MudSwitch @bind-Checked="@context.Item.ExcludeFromBase" />
@@ -65,7 +66,7 @@
                                 <MudSwitch @bind-Checked="@context.Item.CanBePercent" />
                             </EditTemplate>
                         </TemplateColumn>
-
+*@
                         @foreach (var def in selectedCat.Defs)
                         {
                             <TemplateColumn T="ItemModel" Title="@( def.Description + (def.Type == ValueType.TEXT ? "/" + L["BUDGET:EDIT:TABS:VALUES:FIELDS:ENGLISH"] : ""))">
