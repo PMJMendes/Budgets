@@ -19,6 +19,7 @@ internal readonly struct ProductionDetailsItem : IProductionDetailsItem
         Producer = source.Producer;
         TVAgency = source.TVAgency;
         Rights = source.Rights;
+        Formats = source.Formats;
         StudioDays = source.StudioDays;
         LocationDays = source.LocationDays;
         OutsideDays = source.OutsideDays;
@@ -47,6 +48,7 @@ internal readonly struct ProductionDetailsItem : IProductionDetailsItem
     public string? Producer { get; private init; }
     public string? TVAgency { get; private init; }
     public string? Rights { get; private init; }
+    public string? Formats { get; private init; }
     public string? StudioDays { get; private init; }
     public string? LocationDays { get; private init; }
     public string? OutsideDays { get; private init; }

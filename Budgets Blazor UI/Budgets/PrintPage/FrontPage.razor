@@ -132,10 +132,10 @@
 <MudItem xs="3" Class="border-l border-t border-r">
     <MudText Typo="Typo.body1">@Model.FrontData.PostProdDuration</MudText>
 </MudItem>
-<MudItem xs="4" Class="border-l border-t border-b">
+<MudItem xs="4" Class="border-l border-t">
     <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":RIGHTS"]</MudText>
 </MudItem>
-<MudItem xs="2" Class="border-l border-t border-r border-b">
+<MudItem xs="2" Class="border-l border-t border-r">
     <MudText Typo="Typo.body1">@Model.FrontData.Rights</MudText>
 </MudItem>
 <MudItem xs="1" />
@@ -145,7 +145,13 @@
 <MudItem xs="3" Class="border-l border-t border-r">
     <MudText Typo="Typo.body1">@Model.FrontData.PostProdVersions</MudText>
 </MudItem>
-<MudItem xs="7" />
+<MudItem xs="4" Class="border-l border-t border-b">
+    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":FORMATS"]</MudText>
+</MudItem>
+<MudItem xs="2" Class="border-l border-t border-r border-b">
+    <MudText Typo="Typo.body1">@Model.FrontData.Formats</MudText>
+</MudItem>
+<MudItem xs="1" />
 <MudItem xs="2" Class="border-l border-t">
     <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST_SOUND"]</MudText>
 </MudItem>

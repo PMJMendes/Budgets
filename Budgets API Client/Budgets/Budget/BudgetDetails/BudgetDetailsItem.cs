@@ -18,6 +18,7 @@ public class BudgetDetailsItem
     public string? Producer { get; set; }
     public string? TVAgency { get; set; }
     public string? Rights { get; set; }
+    public string? Formats { get; set; }
     public string? StudioDays { get; set; }
     public string? LocationDays { get; set; }
     public string? OutsideDays { get; set; }

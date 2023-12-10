@@ -20,6 +20,7 @@ public interface IBudgetDetailsItem : IQueryResultItem
     string? Producer { get; }
     string? TVAgency { get; }
     string? Rights { get; }
+    string? Formats { get; }
 
     string? StudioDays { get; }
     string? LocationDays { get; }

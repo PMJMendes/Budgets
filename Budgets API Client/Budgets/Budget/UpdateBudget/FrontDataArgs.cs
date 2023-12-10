@@ -4,7 +4,7 @@ public class FrontDataArgs
 {
     public FrontDataArgs(DateOnly budgetDate, string title,
         string? filmDate, string? finalClient, string? product, string? agency,
-        string? director, string? producer, string? tVAgency, string? rights,
+        string? director, string? producer, string? tVAgency, string? rights, string? formats,
         string? studioDays, string? locationDays, string? outsideDays, string? weekendHolidays,
         string? postProdDuration, string? postProdVersions, string? postProdSound, string? postProdNVoices,
         string? comments, string? commentsEnglish)
@@ -22,6 +22,7 @@ public class FrontDataArgs
         Producer = producer;
         TVAgency = tVAgency;
         Rights = rights;
+        Formats = formats;
 
         StudioDays = studioDays;
         LocationDays = locationDays;
@@ -47,6 +48,7 @@ public class FrontDataArgs
     public string? Producer { get; private init; }
     public string? TVAgency { get; private init; }
     public string? Rights { get; private init; }
+    public string? Formats { get; private init; }
     public string? StudioDays { get; private init; }
     public string? LocationDays { get; private init; }
     public string? OutsideDays { get; private init; }

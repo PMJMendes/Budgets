@@ -35,6 +35,7 @@ internal class SearchBudgets : BaseQuery<SearchBudgets, ISearchBudgetsArgs, ISea
                 (b.Producer != null && b.Producer.ToLower().Contains(text)) ||
                 (b.TVAgency != null && b.TVAgency.ToLower().Contains(text)) ||
                 (b.Rights != null && b.Rights.ToLower().Contains(text)) ||
+                (b.Formats != null && b.Formats.ToLower().Contains(text)) ||
                 (b.Comments != null && b.Comments.ToLower().Contains(text)) ||
                 (b.CommentsEnglish != null && b.CommentsEnglish.ToLower().Contains(text))
             );

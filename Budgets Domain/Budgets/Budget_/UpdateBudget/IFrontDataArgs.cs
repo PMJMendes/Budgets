@@ -18,6 +18,7 @@ public interface IFrontDataArgs
     string? Producer { get; }
     string? TVAgency { get; }
     string? Rights { get; }
+    string? Formats { get; }
 
     string? StudioDays { get; }
     string? LocationDays { get; }
@@ -35,7 +36,7 @@ public interface IFrontDataArgs
     internal sealed BudgetFrontData ToFrontData(Exception ex) => new(
         BudgetDate ?? throw ex, Title ?? throw ex,
         FilmDate, FinalClient, Product, Agency,
-        Director, Producer, TVAgency, Rights,
+        Director, Producer, TVAgency, Rights, Formats,
         StudioDays, LocationDays, OutsideDays, WeekendHolidays,
         PostProdDuration, PostProdVersions, PostProdSound, PostProdNVoices,
         Comments, CommentsEnglish

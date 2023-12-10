@@ -11,7 +11,7 @@ public class BudgetFrontModel
 
     private BudgetFrontModel(IBudget owner, DateOnly budgetDate, string title,
         string? filmDate, string? finalClient, string? product, string? agency,
-        string? director, string? producer, string? tVAgency, string? rights,
+        string? director, string? producer, string? tVAgency, string? rights, string? formats,
         string? studioDays, string? locationDays, string? outsideDays, string? weekendHolidays,
         string? postProdDuration, string? postProdVersions, string? postProdSound, string? postProdNVoices,
         string? comments, string? commentsEnglish)
@@ -28,6 +28,7 @@ public class BudgetFrontModel
         Producer = producer;
         TVAgency = tVAgency;
         Rights = rights;
+        Formats = formats;
         StudioDays = studioDays;
         LocationDays = locationDays;
         OutsideDays = outsideDays;
@@ -50,6 +51,7 @@ public class BudgetFrontModel
     public string? Producer { get; set; }
     public string? TVAgency { get; set; }
     public string? Rights { get; set; }
+    public string? Formats { get; set; }
     public string? StudioDays { get; set; }
     public string? LocationDays { get; set; }
     public string? OutsideDays { get; set; }
@@ -76,6 +78,7 @@ public class BudgetFrontModel
         Producer,
         TVAgency,
         Rights,
+        Formats,
         StudioDays,
         LocationDays,
         OutsideDays,
@@ -91,7 +94,7 @@ public class BudgetFrontModel
     public BudgetFrontModel WithOwner(BudgetModel owner) => new(
         owner, BudgetDate, Title,
         FilmDate, FinalClient, Product, Agency,
-        Director, Producer, TVAgency, Rights,
+        Director, Producer, TVAgency, Rights, Formats,
         StudioDays, LocationDays, OutsideDays, WeekendHolidays,
         PostProdDuration, PostProdVersions, PostProdSound, PostProdNVoices,
         Comments, CommentsEnglish
@@ -100,7 +103,7 @@ public class BudgetFrontModel
     public BudgetFrontModel Clone() => new(
         _owner, BudgetDate, Title,
         FilmDate, FinalClient, Product, Agency,
-        Director, Producer, TVAgency, Rights,
+        Director, Producer, TVAgency, Rights, Formats,
         StudioDays, LocationDays, OutsideDays, WeekendHolidays,
         PostProdDuration, PostProdVersions, PostProdSound, PostProdNVoices,
         Comments, CommentsEnglish
@@ -109,7 +112,7 @@ public class BudgetFrontModel
     public static BudgetFrontModel Empty() => new(null!,
         DateOnly.FromDateTime(DateTime.UtcNow), string.Empty,
         null, null, null, null,
-        null, null, null, null,
+        null, null, null, null, null,
         null, null, null, null,
         null, null, null, null,
         null, null
@@ -119,7 +122,7 @@ public class BudgetFrontModel
         DateOnly.FromDateTime(DateTime.TryParse(item?.BudgetDate, out DateTime date) ? date : DateTime.UtcNow),
         item?.Title ?? string.Empty,
         item?.FilmDate, item?.FinalClient, item?.Product, item?.Agency,
-        item?.Director, item?.Producer, item?.TVAgency, item?.Rights,
+        item?.Director, item?.Producer, item?.TVAgency, item?.Rights, item?.Formats,
         item?.StudioDays, item?.LocationDays, item?.OutsideDays, item?.WeekendHolidays,
         item?.PostProdDuration, item?.PostProdVersions, item?.PostProdSound, item?.PostProdNVoices,
         item?.Comments, item?.CommentsEnglish
@@ -129,7 +132,7 @@ public class BudgetFrontModel
         DateOnly.FromDateTime(DateTime.TryParse(item?.BudgetDate, out DateTime date) ? date : DateTime.UtcNow),
         item?.Title ?? string.Empty,
         item?.FilmDate, item?.FinalClient, item?.Product, item?.Agency,
-        item?.Director, item?.Producer, item?.TVAgency, item?.Rights,
+        item?.Director, item?.Producer, item?.TVAgency, item?.Rights, item?.Formats,
         item?.StudioDays, item?.LocationDays, item?.OutsideDays, item?.WeekendHolidays,
         item?.PostProdDuration, item?.PostProdVersions, item?.PostProdSound, item?.PostProdNVoices,
         item?.Comments, item?.CommentsEnglish

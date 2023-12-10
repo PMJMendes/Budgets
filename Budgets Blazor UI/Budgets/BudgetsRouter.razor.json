@@ -165,6 +165,7 @@
             "DIRECTOR": "Realizador",
             "PRODUCER": "Produtor",
             "RIGHTS": "Direitos",
+            "FORMATS": "Formatos",
 
             "STUDIO_DAYS": "Dias em Estúdio",
             "LOCATION_DAYS": "Dias em Locais",
@@ -375,6 +376,7 @@
         "PRODUCER": "PRODUTOR",
         "TV_AGENCY": "TV AGÊNCIA",
         "RIGHTS": "DIREITOS",
+        "FORMATS": "FORMATOS",
         "POST": "PÓS-PRODUÇÃO",
         "POST_DURATION": "DURAÇÃO",
         "POST_VERSIONS": "VERSÕES",
@@ -409,6 +411,7 @@
         "PRODUCER": "PRODUCER",
         "TV_AGENCY": "TV AGENCY",
         "RIGHTS": "RIGHTS",
+        "FORMATS": "FORMATS",
         "POST": "POST-PRODUCTION",
         "POST_DURATION": "DURATION",
         "POST_VERSIONS": "VERSIONS",

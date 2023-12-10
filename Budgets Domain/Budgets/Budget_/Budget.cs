@@ -62,6 +62,7 @@ internal class Budget : BaseEntity, IBudget
     public virtual string? Producer { get; protected set; }
     public virtual string? TVAgency { get; protected set; }
     public virtual string? Rights { get; protected set; }
+    public virtual string? Formats { get; protected set; }
 
     public virtual string? StudioDays { get; protected set; }
     public virtual string? LocationDays { get; protected set; }
@@ -112,6 +113,7 @@ internal class Budget : BaseEntity, IBudget
             Producer = Producer,
             TVAgency = TVAgency,
             Rights = Rights,
+            Formats = Formats,
 
             StudioDays = StudioDays,
             LocationDays = LocationDays,
@@ -161,6 +163,7 @@ internal class Budget : BaseEntity, IBudget
         Producer = data.Producer;
         TVAgency = data.TVAgency;
         Rights = data.Rights;
+        Formats = data.Formats;
 
         StudioDays = data.StudioDays;
         LocationDays = data.LocationDays;

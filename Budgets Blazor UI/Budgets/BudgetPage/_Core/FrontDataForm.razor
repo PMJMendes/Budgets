@@ -161,6 +161,14 @@
                           For="@(() => Model.PostProdNVoices)" />
         </MudItem>
 <!---->
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:FORMATS"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Formats"
+                          For="@(() => Model.Formats)" />
+        </MudItem>
+<!---->
         <MudItem xs="12" Class="pa-2"><MudDivider /></MudItem>
 <!---->
         <MudItem xs="12">
