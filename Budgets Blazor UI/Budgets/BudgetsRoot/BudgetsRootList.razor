@@ -1,0 +1,64 @@
+﻿@using Krypton.Budgets.Blazor.UI.Users._Common
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+<ItemList TRow="BudgetsRootListItemModel" Columns="@Columns" DataSource="@Model" Clickable="@true"
+		  OnRowClick="@OnRowClick" />
+
+@code {
+	private ItemList<BudgetsRootListItemModel>.Colspec[] Columns = default!;
+
+	[CascadingParameter]
+	public SecurityLevel Level { get; set; }
+
+	[Parameter]
+	public IEnumerable<BudgetsRootListItemModel>? Model { get; set; }
+
+	[Parameter]
+	public EventCallback<Guid> BudgetSelected { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		Columns = new[]
+		{
+			new ItemList<BudgetsRootListItemModel>.Colspec
+			{
+				Header = L["ROOT:LIST:CODE"],
+				Selector = item => __builder => { @item.Code }
+			},
+			new ItemList<BudgetsRootListItemModel>.Colspec
+			{
+				Header = L["ROOT:LIST:BUDGETDATE"],
+				Selector = item => __builder => { @item.BudgetDate.ToString("yyyy-MM-dd") }
+			},
+			new ItemList<BudgetsRootListItemModel>.Colspec
+			{
+				Header = L["ROOT:LIST:TITLE"],
+				Selector = item => __builder => { @item.Title }
+			},
+			new ItemList<BudgetsRootListItemModel>.Colspec
+			{
+				Visible = Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER,
+				Header = L["ROOT:LIST:STATE"],
+				Selector = item => __builder => { @L["ENUMS:BUDGET_STATE:" + item.State.ToString()] }
+			},
+			new ItemList<BudgetsRootListItemModel>.Colspec
+			{
+				Header = L["ROOT:LIST:FINAL_CLIENT"],
+				Selector = item => __builder => { @item.FinalClient }
+			},
+			new ItemList<BudgetsRootListItemModel>.Colspec
+			{
+				Header = L["ROOT:LIST:PRODUCT"],
+				Selector = item => __builder => { @item.Product }
+			}
+		};
+	}
+
+	private async Task OnRowClick(BudgetsRootListItemModel item)
+	{
+		await BudgetSelected.InvokeAsync(item.Id);
+	}
+}

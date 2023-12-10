@@ -1,0 +1,460 @@
+{
+  "ENUMS": {
+    "BUDGET_STATE": {
+      "_UNKNOWN": "",
+      "OPEN": "Aberto",
+      "LOCKED": "Adjudicado",
+      "CLOSED": "Fechado"
+    },
+    "VALUE_TYPE": {
+      "_UNKNOWN": "",
+      "NUMBER": "Numérico",
+      "TEXT": "Texto"
+    }
+  },
+  "BREADCRUMBS": {
+    "BUDGETS": "Orçamentos",
+    "NEW": "Novo",
+    "EDIT": "Editar"
+  },
+  "SEARCHFORM": {
+    "FREE_TEXT": "Pesquisa",
+    "STATE": "Estado",
+    "BUDGETDATE_FROM": "Data desde",
+    "BUDGETDATE_TO": "Data até",
+    "SEARCH": "Procurar",
+    "RESET": "Limpar"
+  },
+  "ROOT": {
+    "TITLE": "Procurar Orçamentos",
+    "CREATE": "Novo Orçamento",
+    "LIST": {
+      "CODE": "Nº de Série",
+      "BUDGETDATE": "Data do Orçamento",
+      "TITLE": "Título",
+      "STATE": "Estado",
+      "FINAL_CLIENT": "Cliente Final",
+      "PRODUCT": "Produto"
+    },
+    "EMPTY": {
+      "TITLE": "Não foram encontrados resultados para os filtros indicados",
+      "CHANGE": "Tente outra vez com outros filtros ou",
+      "RESET": "limpe os filtros"
+    }
+  },
+  "BUDGET": {
+    "FIELDS": {
+      "CODE": "Nº de Série",
+      "TEMPLATE": "Template",
+      "BUDGETDATE": "Data do Orçamento",
+      "TITLE": "Título",
+      "OWNER": "Criador",
+      "MANAGER": "Chefe de Produção"
+    },
+    "ACTIONS": {
+      "CANCEL": "Cancelar",
+      "LOCK": {
+        "TITLE": "Marcar Adjudicação",
+        "PROMPT": "Marcar o orçamento como adjudicado impede alterações às suas rubricas. Continuar?",
+        "CONFIRM": "Marcar",
+        "SUCCESS": "O orçamento foi marcado com adjudicado."
+      },
+      "UNLOCK": {
+        "TITLE": "Retirar Adjudicação",
+        "PROMPT": "Retirar a adjudicação impede o chefe de produção de o consultar. Continuar?",
+        "CONFIRM": "Marcar",
+        "SUCCESS": "A adjudicação do orçamento foi retirada."
+      },
+      "CLOSE": {
+        "TITLE": "Fechar Orçamento",
+        "PROMPT": "Fechar o orçamento impede a imputação de custos adicionais. Continuar?",
+        "CONFIRM": "Fechar",
+        "SUCCESS": "O orçamento foi fechado."
+      },
+      "REOPEN": {
+        "TITLE": "Reabrir Orçamento",
+        "PROMPT": "Reabrir o orçamento torna-o visível para o chefe de produção. Continuar?",
+        "CONFIRM": "Reabrir",
+        "SUCCESS": "O orçamento foi reaberto."
+      },
+      "DELETE": {
+        "TITLE": "Apagar Orçamento",
+        "PROMPT": "Tem a certeza que quer apagar este orçamento?",
+        "CONFIRM": "Apagar",
+        "SUCCESS": "O orçamento foi apagado."
+      }
+    },
+    "NAVIGATOR": {
+      "TITLE": "Orçamentos",
+      "LIST": {
+        "CODE": "Nº",
+        "TITLE": "Título",
+        "STATE": "Estado"
+      }
+    },
+    "CREATE": {
+      "TITLE": "Criar Orçamento",
+      "NO_TEMPLATE": "(vazio)",
+      "SOURCE": "Duplicado de",
+      "ERRORS": {
+        "TITLE_OR_TEMPLATE": "Ou título ou o template devem estar preenchidos"
+      },
+      "OK": "Criar",
+      "SUCCESS": "Orçamento inicializado com sucesso"
+    },
+    "VIEW": {
+      "NO_OWNER": "(root)",
+      "NO_MANAGER": "Não atribuido",
+      "ACTIONS": {
+        "LOCK": "Marcar Adjudicação",
+        "UNLOCK": "Retirar Adjudicação",
+        "CLOSE": "Fechar Orçamento",
+        "REOPEN": "Reabrir Orçamento",
+        "ASSIGN": "Atriubir Chefe de Produção",
+        "EDIT": "Editar Orçamento",
+        "MANAGE": "Gerir Projecto",
+        "DELETE": "Apagar Orçamento",
+        "CLONE": "Duplicar Orçamento",
+        "PRINT": "Imprimir Orçamento",
+        "PRINTENG": "Imprimir Orçamento (inglês)",
+        "REPORT": "Imprimir Relatório"
+      },
+      "FIELDS": {
+        "GROUP": "Grupo",
+        "CATEGORY": "Categoria",
+        "DESCRIPTION": "Descrição",
+        "ENGLISH": "Inglês",
+        "BASE": "Base de Cálculo",
+        "INTERNAL": "Interno",
+        "CLIENT": "Ao Cliente",
+        "TOTAL": "Total"
+      },
+      "TOTALS": {
+        "TOTALS": "Totais",
+        "BASE": "Base de Cálculo",
+        "INTERNAL": "Interno",
+        "CLIENT": "Ao Cliente",
+        "CATEGORY": "Categoria",
+        "GROUP": "Grupo",
+        "TOTAL": "Total"
+      }
+    },
+    "EDIT": {
+      "OK": "Guardar alterações",
+      "CANCEL": "Cancelar alterações",
+      "TABS": {
+        "STRUCTURE": {
+          "HEADER": "Estrutura",
+          "NEW_GROUP": "Adicionar grupo",
+          "UNDEFINED_GROUP": "(novo)",
+          "NEW_CATEGORY": "Adicionar categoria",
+          "UNDEFINED_CATEGORY": "(nova)",
+          "NEW_VALUEDEF": "Adicionar parâmetro",
+          "UNDEFINED_VALUEDEF": "(novo)"
+        },
+        "FRONT_DATA": {
+          "HEADER": "Dados Base",
+          "FIELDS": {
+            "CLIENT": "Cliente",
+            "PRODUCT": "Produto",
+            "AGENCY": "Agência",
+            "VALUE": "Total Interno",
+            "CLIENT_VALUE": "Total ao Cliente",
+
+            "FILMDATE": "Data de Filmagem",
+            "DIRECTOR": "Realizador",
+            "PRODUCER": "Produtor",
+            "RIGHTS": "Direitos",
+
+            "STUDIO_DAYS": "Dias em Estúdio",
+            "LOCATION_DAYS": "Dias em Locais",
+            "OUTSIDE_DAYS": "Dias em Exterior",
+            "WEEKEND_HOLIDAYS": "Fim-de-Semana / Feriados",
+            "TOTAL_DAYS": "Total Dias de Filmagem",
+
+            "TVAGENCY": "TV Agência",
+            "POST_DURATION": "Duração",
+            "POST_VERSIONS": "Versões",
+            "POST_SOUND": "Som",
+            "POST_NVOICES": "Nº Locutores",
+
+            "COMMENTS": "Condições Gerais"
+          },
+          "PORTUGUESE": "Português",
+          "ENGLISH": "Inglês"
+        },
+        "VALUES": {
+          "HEADER": "Parâmetros de Custo",
+          "NEW_ITEM": "Adicionar item",
+          "UNDEFINED_ITEM": "(novo)",
+          "FIELDS": {
+            "GROUP": "Grupo",
+            "CATEGORY": "Categoria",
+            "DESCRIPTION": "Descrição",
+            "DESCENGLISH": "Descrição Inglês",
+            "EXCLUDEFROMBASE": "Excluir da Base",
+            "CANBEPERCENT": "Pode ser %",
+            "ENGLISH": "Inglês",
+            "TOTAL": "Total"
+          },
+          "TOTALS": {
+            "TOTALS": "Totais",
+            "BASE": "Base de Cálculo",
+            "INTERNAL": "Interno",
+            "CLIENT": "Ao Cliente",
+            "CATEGORY": "Da Categoria",
+            "GROUP": "Do Grupo",
+            "TOTAL": "Total"
+          }
+        },
+        "PERCENTS": {
+          "HEADER": "Parâmetros Finais",
+          "BASE": "Base de Cálculo",
+          "PRODUCER_PERCENT": "Honorários Prod. (%)",
+          "INTERNAL": "Total Interno",
+          "CLIENT": "Total Ao Cliente",
+          "BCA_PERCENT": "BCA (%)",
+          "USED_BCA": "BCA Diluído (% do BCA Total)",
+          "PERCENT_TABLE": {
+            "ITEM": "Item",
+            "PERCENT": "Percentagem",
+            "TOTAL": "Total"
+          },
+          "BCA_TABLE": {
+            "ITEM": "Item",
+            "VALUE": "Total",
+            "BCA": "BCA %",
+            "TOTAL": "Final",
+            "NA": "N/A"
+          },
+          "WEATHERDAY": "Weather Day",
+          "WEATHER_PERCENT": "Em Percentagem",
+          "WEATHER_BCA": "Com BCA"
+        },
+        "PRODUCTION": {
+          "HEADER": "Parâmetros de Produção",
+          "FIELDS": {
+            "GROUP": "Grupo",
+            "CATEGORY": "Categoria",
+            "DESCRIPTION": "Descrição",
+            "PRODCOL": "Prod.",
+            "TOTAL": "Total",
+            "DELTA": "Diferença",
+            "PRODUCTION": "Total Prod."
+          },
+          "TOTALS": {
+            "TOTALS": "Totais",
+            "BASE": "Base de Cálculo",
+            "PRODUCTION": "Produção",
+            "DELTA": "Diferença",
+            "CATEGORY": "Categoria",
+            "GROUP": "Grupo",
+            "TOTAL": "Total"
+          }
+        }
+      },
+      "SUCCESS": "Orçamento alterado com sucesso"
+    },
+    "ASSIGN": {
+      "TITLE": "Atribuir Chefe de Produção",
+      "NO_MANAGER": "Não atribuido",
+      "OK": "Atribuir",
+      "CANCEL": "Cancelar"
+    },
+    "MANAGE": {
+      "OK": "Guardar alterações",
+      "CANCEL": "Cancelar alterações",
+      "TABS": {
+        "BUDGET": {
+          "HEADER": "Orçamento",
+          "FIELDS": {
+            "GROUP": "Grupo",
+            "CATEGORY": "Categoria",
+            "DESCRIPTION": "Descrição",
+            "TOTAL": "Total",
+            "INTERNAL": "Interno",
+            "PROVISIONAL": "Margem Prov."
+          },
+          "TOTALS": {
+            "TOTALS": "Totais",
+            "TOTAL": "Total",
+            "INTERNAL": "Interno",
+            "PROVISIONAL": "Margem Prov.",
+            "COSTS": "Custos",
+            "MARGIN": "Margem",
+            "CATEGORY": "Da Categoria",
+            "GROUP": "Do Grupo",
+            "HPROD": "Honorários"
+          }
+        },
+        "COSTS": {
+          "HEADER": "Custos",
+          "NEW_COST": "Adicionar custo",
+          "COSTS_TABLE": {
+            "ITEM": "Item",
+            "BUDGET": "Orçamento",
+            "COSTS": "Custos",
+            "AVAILABLE": "Disponível",
+            "TEXT": "Notas"
+          },
+          "TOTALS": {
+            "TOTALS": "Totais",
+            "BUDGET": "Orçamento",
+            "COSTS": "Custos",
+            "AVAILABLE": "Disponível",
+            "TOTAL": "Total"
+          }
+        },
+        "INVOICING": {
+          "HEADER": "Facturas",
+          "CREATE_INVOICE": "Criar factura",
+          "NEW_INVOICE": "Adicionar factura",
+          "FIELDS": {
+            "SUPPLIER": "Fornecedor",
+            "ITEM": "Item",
+            "COST_VALUE": "Acordo",
+            "COST_TEXT": "Notas",
+            "NUMBER": "Num. Factura",
+            "VALUE": "Valor",
+            "GROUP": "Grupo",
+            "CATEGORY": "Categoria",
+            "TEXT": "Descrição"
+          },
+          "TOTALS": {
+            "TOTALS": "Totais",
+            "BUDGET": "Orçamento",
+            "COSTS": "Custos",
+            "INVOICED": "Facturados",
+            "NOT_INVOICED": "Não Facturados",
+            "ITEM": "Do Item",
+            "CATEGORY": "Da Categoria",
+            "GROUP": "Do Grupo",
+            "TOTAL": "Total",
+            "WEATHER_DAYS": "Weather Days",
+            "VALUE": "Valor",
+            "NUM_WDAYS": "Num."
+          }
+        },
+        "SOURCE": {
+          "HEADER": "Original",
+          "FIELDS": {
+            "GROUP": "Grupo",
+            "CATEGORY": "Categoria",
+            "DESCRIPTION": "Descrição",
+            "TOTAL": "Total"
+          },
+          "TOTALS": {
+            "TOTALS": "Totais",
+            "BASE": "Base de Cálculo",
+            "INTERNAL": "Interno",
+            "CLIENT": "Ao Cliente",
+            "CATEGORY": "Categoria",
+            "GROUP": "Grupo",
+            "TOTAL": "Total"
+          }
+        }
+      },
+      "SUCCESS": "Projecto alterado com sucesso"
+    },
+    "PRINT": {
+      "PT": {
+        "HEADER": "ORÇAMENTO DE PRODUÇÃO",
+        "TITLE": "TÍTULO",
+        "PRODUCT": "PRODUTO",
+        "CLIENT": "CLIENTE",
+        "AGENCY": "AGÊNCIA",
+        "CODE": "Nº DE ORÇAMENTO",
+        "BUDGET_DATE": "DATA ORÇAMENTO",
+        "SHOOTING_DATE": "DATA FILMAGEM",
+        "STUDIO_DAYS": "DIAS EM ESTÚDIO",
+        "LOCATION_DAYS": "DIAS EM LOCAIS",
+        "EXTERIOR_DAYS": "DIAS EM EXTERIOR",
+        "WEEKEND_DAYS": "FIM-DE-SEMANA / FERIADOS",
+        "TOTAL_DAYS": "TOTAL DE DIAS DE FILMAGEM",
+        "DIRECTOR": "REALIZADOR",
+        "PRODUCER": "PRODUTOR",
+        "TV_AGENCY": "TV AGÊNCIA",
+        "RIGHTS": "DIREITOS",
+        "POST": "PÓS-PRODUÇÃO",
+        "POST_DURATION": "DURAÇÃO",
+        "POST_VERSIONS": "VERSÕES",
+        "POST_SOUND": "MÚSICA",
+        "POST_NVOICES": "Nº LOCUTORES",
+        "SUMMARY": "RESUMO DE ORÇAMENTO",
+        "SUBTOTAL_FP": "SUB-TOTAL",
+        "HOUSE_FEES": "H. PRODUTORA",
+        "TOTAL_FP": "TOTAL (IVA não incluído)",
+        "WEATHER_DAY": "WEATHER DAY (IVA não incluído)",
+        "TERMS": "CONDIÇÕES DE ORÇAMENTO",
+        "SIGNATURE": "Assinatura",
+        "SUBTOTAL": "Sub-Total",
+        "TOTAL": "Total",
+        "ESTIMATED": "Previsto"
+      },
+      "ENG": {
+        "HEADER": "PRODUCTION BUDGET",
+        "TITLE": "TITLE",
+        "PRODUCT": "PRODUCT",
+        "CLIENT": "CLIENT",
+        "AGENCY": "AGENCY",
+        "CODE": "BUDGET N.",
+        "BUDGET_DATE": "BUDGET DATE",
+        "SHOOTING_DATE": "SHOOT DATE",
+        "STUDIO_DAYS": "STUDIO DAYS",
+        "LOCATION_DAYS": "LOCATION DAYS",
+        "EXTERIOR_DAYS": "EXTERIOR DAYS",
+        "WEEKEND_DAYS": "WEEKEND AND HOLIDAYS",
+        "TOTAL_DAYS": "TOTAL SHOOT DAYS",
+        "DIRECTOR": "DIRECTOR",
+        "PRODUCER": "PRODUCER",
+        "TV_AGENCY": "TV AGENCY",
+        "RIGHTS": "RIGHTS",
+        "POST": "POST-PRODUCTION",
+        "POST_DURATION": "DURATION",
+        "POST_VERSIONS": "VERSIONS",
+        "POST_SOUND": "MUSIC",
+        "POST_NVOICES": "V. OFF",
+        "SUMMARY": "BUDGET SUMMARY",
+        "SUBTOTAL_FP": "SUB-TOTAL",
+        "HOUSE_FEES": "PRODUCTION FEE",
+        "TOTAL_FP": "TOTAL (VAT not included)",
+        "WEATHER_DAY": "WEATHER DAY (VAT not included)",
+        "TERMS": "BUDGET CONDITIONS",
+        "SIGNATURE": "Signature",
+        "SUBTOTAL": "Sub-Total",
+        "TOTAL": "Total",
+        "ESTIMATED": "Estimated"
+      }
+    }
+  },
+  "GROUP": {
+    "FIELDS": {
+      "DESCRIPTION": "Descrição",
+      "DESCENGLISH": "Descrição Inglês"
+    },
+    "EDIT": {
+      "TITLE": "Grupo"
+    }
+  },
+  "CATEGORY": {
+    "FIELDS": {
+      "FORMULA": "Formula",
+      "DESCRIPTION": "Descrição",
+      "DESCENGLISH": "Descrição Inglês"
+    },
+    "EDIT": {
+      "TITLE": "Categoria"
+    }
+  },
+  "VALUEDEF": {
+    "FIELDS": {
+      "TYPE": "Tipo",
+      "DESCRIPTION": "Descrição",
+      "DESCENGLISH": "Descrição Inglês",
+      "BCAFORMULA": "Fórmula para BCA"
+    },
+    "EDIT": {
+      "TITLE": "Parâmetro"
+    }
+  }
+}

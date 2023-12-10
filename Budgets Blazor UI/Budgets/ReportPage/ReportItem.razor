@@ -1,0 +1,56 @@
+﻿@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using Krypton.Budgets.Blazor.UI.Users._Common;
+@using Krypton.Budgets.Shared
+
+<MudItem xs="5">
+    <MudText Typo="Typo.body2">&nbsp; &nbsp; @Model.Description</MudText>
+</MudItem>
+<MudItem xs="1" Class="justify-end">
+    <MudText Typo="Typo.body2">@(((IItem)Model).Value.AsAnyValue())</MudText>
+</MudItem>
+@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+{
+    <MudItem xs="1" Class="justify-end">
+        <MudText Typo="Typo.body2">@(((IItem)Model).UsedBCA.AsAnyValue())%</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="justify-end">
+        <MudText Typo="Typo.body2">@(((IItem)Model).BCAValue.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="justify-end">
+        <MudText Typo="Typo.body2">@(((IItem)Model).ClientValue.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="justify-end">
+        <MudText Typo="Typo.body2">@(((IItem)Model).BaseValue.AsAnyValue())</MudText>
+    </MudItem>
+}
+<MudItem xs="1" Class="justify-end">
+    <MudText Typo="Typo.body2">@(((IItem)Model).InvoicedValue.AsAnyValue())</MudText>
+</MudItem>
+<MudItem xs="1" Class="justify-end">
+    <MudText Typo="Typo.body2">@(((IItem)Model).ActualMargin.AsAnyValue())</MudText>
+</MudItem>
+@if (Level != SecurityLevel.ADMIN & Level != SecurityLevel.PRODUCER)
+{
+    <MudItem xs="4" />
+}
+
+@foreach (var cost in Model.Costs)
+{
+    <ReportCost Model="cost" />
+}
+
+@if (Level != SecurityLevel.ACCOUNTING)
+{
+    @foreach (var invoice in Model.Invoices)
+    {
+        <ReportInvoice Model="invoice" />
+    }
+}
+
+@code {
+    [Parameter]
+    public ItemModel Model { get; set; } = default!;
+
+    [CascadingParameter]
+    public SecurityLevel Level { get; set; }
+}

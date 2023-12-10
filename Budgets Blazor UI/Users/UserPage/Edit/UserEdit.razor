@@ -1,0 +1,77 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Users.User.UpdateUser
+@using Krypton.Budgets.Blazor.UI.Users.UserPage._Core
+
+@inherits LocalizedComponent<UsersRouter>
+
+@inject UpdateUserService Service
+@inject ISnackbar Snackbar
+
+@if (Model is null)
+{
+	<MudContainer Class="full-viewport justify-center align-center">
+		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
+	</MudContainer>
+}
+else
+{
+	<MudContainer Class="full-viewport">
+		@if (_loading)
+		{
+			<MudProgressLinear Indeterminate="true" />
+		}
+
+		<MudGrid Spacing="0" Class="page-layout">
+			<MudItem xs="12" Class="full-viewport pl-2">
+				<MudGrid Spacing="0">
+					<MudItem xs="12" Class="pa-2">
+						<MudText Typo="Typo.h6">@L["USER:EDIT:TITLE"]</MudText>
+					</MudItem>
+					<MudItem xs="12">
+						<UserForm @ref="UserForm" Model="@Model.UserData" />
+					</MudItem>
+					<MudItem xs="12" Class="justify-end pa-2">
+						<MudButton OnClick="@CancelEdit">@L["USER:EDIT:CANCEL"]</MudButton>
+						<MudButton Class="pl-2" OnClick="@SaveChanges">@L["USER:EDIT:OK"]</MudButton>
+					</MudItem>
+				</MudGrid>
+			</MudItem>
+		</MudGrid>
+	</MudContainer>
+}
+
+@code {
+	private bool _loading = false;
+	private bool shouldRender = true;
+
+	private UserForm? UserForm = default!;
+
+	[Parameter]
+	public UserEditModel Model { get; set; } = UserEditModel.Empty();
+
+	[CascadingParameter]
+	public IUserPageController Page { get; set; } = default!;
+
+	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
+
+	private void CancelEdit() => Page.OnCancelEdit();
+
+	private async Task SaveChanges()
+	{
+		if (UserForm is UserForm form && await form.PreValidate())
+		{
+			_loading = true;
+			var results = await Service.UpdateUserAsync(Model.AsArgs());
+
+			if (UserForm is IErrorHandler handler)
+			{
+				await handler.CheckErrorsAsync(results, async r =>
+				{
+					shouldRender = false;
+					await Page.AfterEditAsync(r);
+					Snackbar.Add(L["USER:EDIT:SUCCESS"], Severity.Success);
+				});
+			}
+			_loading = false;
+		}
+	}
+}

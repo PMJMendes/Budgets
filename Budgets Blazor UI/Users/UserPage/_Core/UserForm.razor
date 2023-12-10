@@ -1,0 +1,49 @@
+﻿@using FluentValidation
+@using Krypton.Budgets.Blazor.UI.Users._Common
+
+@inherits ErrorHandlingForm<UsersRouter, UserModel>
+
+<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="full-viewport">
+	<MudGrid>
+		<MudItem xs="6" Class="flex-column">
+			<MudText>@L["USER:FIELDS:EMAIL"]</MudText>
+			<MudTextField Variant="Variant.Text" @bind-Value="Model.Email"
+                          For="@(() => Model.Email)" />
+		</MudItem>
+		<MudItem xs="6" Class="flex-column">
+			<MudText>@L["USER:FIELDS:LEVEL"]</MudText>
+			<MudSelect @bind-Value="@Model.Level" ToStringFunc="@(v => L["ENUMS:SECURITY_LEVEL:" + v])"
+					   AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                @foreach(var state in Enum.GetValues<SecurityLevel>())
+                {
+					<MudSelectItem Value="state">@L["ENUMS:SECURITY_LEVEL:" + state.ToString()]</MudSelectItem>
+                }
+            </MudSelect>
+		</MudItem>
+		<MudItem xs="12" Class="flex-column">
+			<MudText>@L["USER:FIELDS:FULLNAME"]</MudText>
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.FullName"
+                          For="@(() => Model.FullName)" />
+		</MudItem>
+	</MudGrid>
+</MudForm>
+
+@code {
+	[Parameter]
+	public UserModel Model { get; set; } = UserModel.Empty();
+
+	protected override void ConfigureValidator(AbstractValidator<UserModel> validator)
+	{
+		validator.RuleFor(m => m.Email).
+			NotEmpty().
+			WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+
+		validator.RuleFor(m => m.Level).
+			Must(level => level != SecurityLevel._UNKNOWN).
+			WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+
+		validator.RuleFor(m => m.FullName).
+			NotEmpty().
+			WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+	}
+}

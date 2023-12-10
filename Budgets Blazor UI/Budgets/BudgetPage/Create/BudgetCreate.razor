@@ -1,0 +1,89 @@
+﻿@using Krypton.Budgets.Blazor.APIClient._Common
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.CloneBudget
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
+@using Krypton.Budgets.Blazor.APIClient.Global.CreateBudget
+@using Krypton.Budgets.Blazor.UI.Budgets._Common
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+@inject CreateBudgetService CreateService
+@inject CloneBudgetService CloneService
+@inject ISnackbar Snackbar
+
+@if (Model is null)
+{
+	<MudContainer Class="full-viewport justify-center align-center">
+		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
+	</MudContainer>
+}
+else
+{
+	<MudContainer Class="full-viewport">
+		@if (_loading)
+		{
+			<MudProgressLinear Indeterminate="true" />
+		}
+
+		<MudGrid Spacing="0" Class="page-layout">
+			<MudItem xs="12" Class="full-viewport pl-2">
+				<MudGrid Spacing="0">
+					<MudItem xs="12" Class="pa-2">
+						<MudText Typo="Typo.h6">@L["BUDGET:CREATE:TITLE"]</MudText>
+					</MudItem>
+					<MudItem xs="12">
+						<BudgetCreateForm @ref="BudgetForm" Model="@Model.FormData" Templates="@Model.Templates" />
+					</MudItem>
+					<MudItem xs="12" Class="justify-end pa-2">
+						<MudButton OnClick="@SaveChanges">@L["BUDGET:CREATE:OK"]</MudButton>
+					</MudItem>
+				</MudGrid>
+			</MudItem>
+		</MudGrid>
+	</MudContainer>
+}
+
+@code {
+	private bool _loading = false;
+	private bool shouldRender = true;
+
+	private BudgetCreateForm? BudgetForm = default!;
+
+	[Parameter]
+	public BudgetCreateModel Model { get; set; } = BudgetCreateModel.Empty();
+
+	[CascadingParameter]
+	public IBudgetPageController Page { get; set; } = default!;
+
+	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
+
+	private async Task SaveChanges()
+	{
+		if (BudgetForm is BudgetCreateForm form && await form.PreValidate())
+		{
+			_loading = true;
+			var results = await (Model.FormData.Template.Id == Guid.Empty ? CreateBudget() : CloneBudget());
+
+			if (BudgetForm is IErrorHandler handler)
+			{
+				await handler.CheckErrorsAsync(results, async r =>
+				{
+					shouldRender = false;
+					await Page.AfterCreateAsync(r);
+					Snackbar.Add(L["TEMPLATE:CREATE:SUCCESS"], Severity.Success);
+				});
+			}
+			_loading = false;
+		}
+	}
+
+	private async Task<SafeResult<BudgetDetailsItem>> CreateBudget()
+	{
+		return await CreateService.CreateBudgetAsync(Model.FormData.AsCreateArgs());
+	}
+
+	private async Task<SafeResult<BudgetDetailsItem>> CloneBudget()
+	{
+		return await CloneService.CloneBudgetAsync(Model.FormData.AsCloneArgs());
+	}
+}

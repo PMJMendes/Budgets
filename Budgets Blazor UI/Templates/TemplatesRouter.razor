@@ -1,0 +1,27 @@
+﻿@using BlazorRouter
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatePage
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatesRoot
+
+@inherits LocalizedComponent<TemplatesRouter>
+
+<Switch OnMatch="@OnRouteMatch">
+	<Route Template="templates">
+		<TemplatesRoot />
+	</Route>
+	<Route Template="templates/new">
+		<TemplatePageResolver />
+	</Route>
+	<Route Template="templates/{id:guid}/*">
+		<TemplatePageResolver />
+	</Route>
+</Switch>
+
+@code {
+	[CascadingParameter]
+	public INavigator Navigator { get; set; } = default!;
+
+	private void OnRouteMatch(RouteMatchedEventArgs args)
+	{
+		Navigator.SetBreadCrumbs(args.Segments.Take(1).ToArray(), L);
+	}
+}

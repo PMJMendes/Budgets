@@ -1,0 +1,50 @@
+﻿@using BlazorRouter
+@using Krypton.Budgets.Blazor.UI._Impl.Session
+@using Krypton.Budgets.Blazor.UI._Main
+@using Krypton.Budgets.Blazor.UI.Budgets.PrintPage
+@using Krypton.Budgets.Blazor.UI.Budgets.ReportPage
+
+@inject NavigationManager NavManager
+
+<CascadingAuthenticationState>
+    <Switch>
+        <Route Template="/authentication/{action}">
+            <Authentication />
+        </Route>
+        <Route Template="/">
+            @{ NavManager.NavigateTo("/budgets"); }
+        </Route>
+	    <Route Template="print/{id:guid}/{english:bool}/*">
+            <PrintPage />
+        </Route>
+        <Route Template="report/{id:guid}/*">
+            <ReportPage />
+        </Route>
+        <Route>
+            <AuthorizeView>
+                <Authorizing>
+                    <MudLayout>
+                        <MudMainContent Class="full-viewport">
+                            <MudContainer Class="full-viewport justify-center align-center">
+                                <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+                            </MudContainer>
+                        </MudMainContent>
+                    </MudLayout>
+                </Authorizing>
+                <NotAuthorized>
+                    @if (context.User.Identity?.IsAuthenticated != true)
+                    {
+                        <RedirectToLogin />
+                    }
+                    else
+                    {
+                        NavManager.NavigateTo("/budgets");
+                    }
+                </NotAuthorized>
+                <Authorized>
+                    <MainRouter />
+                </Authorized>
+            </AuthorizeView>
+        </Route>
+    </Switch>
+</CascadingAuthenticationState>

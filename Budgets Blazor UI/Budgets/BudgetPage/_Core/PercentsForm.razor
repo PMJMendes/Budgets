@@ -1,0 +1,242 @@
+﻿@using FluentValidation
+@using Krypton.Budgets.Shared
+@using ValueType = Krypton.Budgets.Shared.ValueType
+
+@inherits ErrorHandlingForm<BudgetsRouter, BudgetModel>
+
+<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="@Class">
+    <MudGrid Spacing="0">
+        <MudItem xs="5">
+            <MudGrid Spacing="0">
+                <MudItem xs="4" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:BASE"]</MudItem>
+                <MudItem xs="4">
+                    <MudText>@(((IBudget)Model).BaseValue.AsAnyValue())</MudText>
+                </MudItem>
+                <MudItem xs="4">
+                    (<MudText>@(((IBudget)Model).GroupsValue.AsAnyValue())</MudText>)
+                </MudItem>
+                <MudItem xs="4" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:PRODUCER_PERCENT"]</MudItem>
+                <MudItem xs="4">
+                    <MudNumericField Format="N2" @bind-Value="@Model.PercentsData.ProducerPercent" />
+                </MudItem>
+                <MudItem xs="4">
+                    <MudText>@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
+                </MudItem>
+                <MudItem xs="4" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:INTERNAL"]</MudItem>
+                <MudItem xs="4">
+                    <MudText>@(((IBudget)Model).Value.AsAnyValue())</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem xs="7" Class="justify-end">
+            <MudGrid Spacing="0">
+                <MudItem xs="2" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:BCA_PERCENT"]</MudItem>
+                <MudItem xs="2">
+                    <MudNumericField Format="N2" @bind-Value="@Model.PercentsData.BCAPercent" />
+                </MudItem>
+                <MudItem xs="2">
+                    <MudText>@(((IBudget)Model).BCAValue.AsAnyValue())</MudText>
+                </MudItem>
+                <MudItem xs="4" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:USED_BCA"]</MudItem>
+                <MudItem xs="2">
+                    <MudText>@(((IBudget)Model).UsedBCA.AsAnyValue())</MudText>
+                </MudItem>
+                <MudItem xs="12" />
+                <MudItem xs="4" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:CLIENT"]</MudItem>
+                <MudItem xs="4">
+                    <MudText>@(((IBudget)Model).ClientValue.AsAnyValue())</MudText>
+                </MudItem>
+                <MudItem xs="4">
+                    (<MudText>@(((IBudget)Model).TargetValue.AsAnyValue())</MudText>)
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+@*
+        <MudItem xs="7" Class="justify-end">
+            <MudDataGrid Items="@percentItems" Elevation="0" ReadOnly="false" EditMode="DataGridEditMode.Cell" Class="page-layout">
+                <Columns>
+                    <TemplateColumn T="ItemModel" Field="Description" IsEditable="false"
+                                Title="@L["BUDGET:EDIT:TABS:PERCENTS:PERCENT_TABLE:ITEM"]" />
+                    <TemplateColumn T="ItemModel" Field="Percent" Title="@L["BUDGET:EDIT:TABS:PERCENTS:PERCENT_TABLE:PERCENT"]">
+                        <CellTemplate>
+                            <MudText>@context.Item.Percent?.AsAnyValue()</MudText>
+                        </CellTemplate>
+                        <EditTemplate>
+                            <MudNumericField Format="N2" @bind-Value:get="@context.Item.Percent"
+                                            @bind-Value:set="@(value => OnSetPercent(context.Item, value))" />
+                        </EditTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn T="ItemModel" Field="Value" IsEditable="false"
+                                Title="@L["BUDGET:EDIT:TABS:PERCENTS:PERCENT_TABLE:TOTAL"]">
+                        <CellTemplate>
+                            <MudText>@context.Item.Value.AsAnyValue()</MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+        </MudItem>
+*@
+        <MudItem xs="12">
+            <MudTable Items="@bcaItems" Elevation="0" GroupBy="@grouping" Class="page-layout">
+                <HeaderContent>
+                    <MudTh>@L["BUDGET:EDIT:TABS:PERCENTS:BCA_TABLE:ITEM"]</MudTh>
+                    <MudTh>@L["BUDGET:EDIT:TABS:PERCENTS:BCA_TABLE:VALUE"]</MudTh>
+                    <MudTh>@L["BUDGET:EDIT:TABS:PERCENTS:BCA_TABLE:BCA"]</MudTh>
+                    <MudTh>@L["BUDGET:EDIT:TABS:PERCENTS:BCA_TABLE:TOTAL"]</MudTh>
+                </HeaderContent>
+                <GroupHeaderTemplate>
+                    <MudTd>
+                        <MudText>@context.Key</MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>@context.Items.Sum(r => r.Item.Value).AsAnyValue()</MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>@context.Items.Sum(r => ((IItem)r.Item).UsedBCA).AsAnyValue()</MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>@context.Items.Sum(r => r.Item.ClientValue).AsAnyValue()</MudText>
+                    </MudTd>
+                </GroupHeaderTemplate>
+                <RowTemplate>
+                    <MudTd>
+                        <MudText>@context.Item.Description</MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>@context.Item.Value.AsAnyValue()</MudText>
+                    </MudTd>
+                    <MudTd>
+                        @if (((IItem)context.Item).IsPercent)
+                        {
+                            <MudText>@L["BUDGET:EDIT:TABS:PERCENTS:BCA_TABLE:NA"]</MudText>
+                        }
+                        else
+                        {
+                            <MudNumericField Format="N2" @bind-Value:get="@(((IItem)context.Item).UsedBCA)"
+                                             @bind-Value:set="@(value => OnSetBCA(context, value))" />
+                        }
+                    </MudTd>
+                    <MudTd>
+                        <MudText>@context.Item.ClientValue.AsAnyValue()</MudText>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudItem>
+        <MudItem xs="12" Class="justify-center">
+            <MudContainer Class="flex-row">
+                @L["BUDGET:EDIT:TABS:PERCENTS:WEATHERDAY"]
+                <MudCheckBox @bind-Checked:get="@weatherAsPercent"
+                             @bind-Checked:set="@(value => OnToggleWeatherPercent(value))"
+                             Label="@L["BUDGET:EDIT:TABS:PERCENTS:WEATHER_PERCENT"]" />
+                @if (weatherAsPercent)
+                {
+                    <MudNumericField Format="N2" @bind-Value:get="@Model.PercentsData.WeatherPercent"
+                                     @bind-Value:set="@(value => OnSetWeatherPercent(value))" />
+                }
+                <MudNumericField Format="N2" @bind-Value="@Model.PercentsData.WeatherTotal" ReadOnly="@weatherAsPercent" />
+                (<MudContainer Class="flex-row">
+                    @L["BUDGET:EDIT:TABS:PERCENTS:WEATHER_BCA"]
+                    <MudText>@(((IBudget)Model).WeatherBCA?.AsAnyValue())</MudText>
+                </MudContainer>)
+            </MudContainer>
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+@code {
+    private bool weatherAsPercent = true;
+
+    private IEnumerable<ItemModel>? percentItems => Model.Groups.
+        SelectMany(g => g.Categories.SelectMany(c => c.Items)).
+        Where(i => i.CanBePercent);
+
+    private IEnumerable<Row>? bcaItems => Model.Groups.
+        SelectMany(g => g.Categories.
+            SelectMany(c => c.Items.Select(i => new Row(g, c, i)))
+        );
+
+    private TableGroupDefinition<Row> grouping = new()
+    {
+        Selector = r => r.Group.Description,
+        Indentation = true,
+        Expandable = true,
+        IsInitiallyExpanded = false,
+        InnerGroup = new()
+        {
+            Selector = r => r.Category.Description,
+            Expandable = true,
+            IsInitiallyExpanded = false
+        }
+    };
+
+    [Parameter]
+    public BudgetModel Model { get; set; } = BudgetModel.Empty();
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        weatherAsPercent = Model.PercentsData.WeatherPercent is not null;
+    }
+
+    //private void OnSetPercent(ItemModel item, decimal? value)
+    //{
+    //    item.Percent = value;
+
+    //    if (value is not null)
+    //    {
+    //        item.BCAPercent = null;
+    //    }
+
+    //    ((IItem)item).RecalculateBase();
+    //    ((IItem)item).Recalculate(((IBudget)Model).BaseValue);
+    //    ((IItem)item).RecalculateClientTotal(((IBudget)Model).BCAValue);
+    //    ((IItem)item).RecalculateProd();
+    //}
+
+    private void OnSetBCA(Row row, decimal? value)
+    {
+        if (((IItem)row.Item).IsPercent)
+        {
+            return;
+        }
+
+        row.Item.BCAPercent = value;
+        ((IItem)row.Item).RecalculateClientTotal(((IBudget)Model).BCAValue);
+    }
+
+    private void OnToggleWeatherPercent(bool value)
+    {
+        if (value == weatherAsPercent)
+        {
+            return;
+        }
+
+        weatherAsPercent = value;
+        Model.PercentsData.WeatherPercent = null;
+        if (value)
+        {
+            Model.PercentsData.WeatherTotal = null;
+        }
+    }
+
+    private void OnSetWeatherPercent(decimal? value)
+    {
+        if (value == Model.PercentsData.WeatherPercent)
+        {
+            return;
+        }
+
+        Model.PercentsData.WeatherPercent = value;
+        Model.PercentsData.WeatherTotal = ((IBudget)Model).Value * Model.PercentsData.WeatherPercent / 100m;
+    }
+
+    private record struct Row(
+        GroupModel Group,
+        CategoryModel Category,
+        ItemModel Item
+    );
+}

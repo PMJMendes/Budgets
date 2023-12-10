@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Krypton.Budgets.Security</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="[6.32.3]" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Budgets Domain\Budgets Domain.csproj" />
+    <ProjectReference Include="..\Keycloak.Net\Keycloak.Net.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,27 @@
+﻿@using BlazorRouter
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetsRoot
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+<Switch OnMatch="@OnRouteMatch">
+	<Route Template="budgets">
+		<BudgetsRoot />
+	</Route>
+	<Route Template="budgets/new">
+		<BudgetPageResolver />
+	</Route>
+	<Route Template="budgets/{id:guid}/*">
+		<BudgetPageResolver />
+	</Route>
+</Switch>
+
+@code {
+	[CascadingParameter]
+	public INavigator Navigator { get; set; } = default!;
+
+	private void OnRouteMatch(RouteMatchedEventArgs args)
+	{
+		Navigator.SetBreadCrumbs(args.Segments.Take(1).ToArray(), L);
+	}
+}

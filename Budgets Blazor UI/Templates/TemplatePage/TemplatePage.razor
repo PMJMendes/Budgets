@@ -1,0 +1,72 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatePage.Navigator
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatesRoot
+
+@inherits LocalizedLayout<TemplatesRouter>
+@implements ITemplatePageController
+
+<CascadingValue Value="@((ITemplatePageController)this)" IsFixed="true">
+	<MudGrid Spacing="0" Class="page-layout">
+		<MudItem xs="4">
+			<TemplateNavigator Model="@Model.NavData" />
+		</MudItem>
+		<MudItem xs="8">
+			@Body
+		</MudItem>
+	</MudGrid>
+</CascadingValue>
+
+@code {
+	[CascadingParameter]
+	public TemplatePageModel Model { get; set; } = TemplatePageModel.Empty();
+
+	[CascadingParameter]
+	public INavigator Navigator { get; set; } = default!;
+
+	void ITemplatePageController.OnCreate()
+	{
+		var model = Model.ForCreate();
+		Navigator.NavigateWithState("/templates/new", model);
+	}
+
+	void ITemplatePageController.OnClone()
+	{
+		var model = Model.ForClone();
+		Navigator.NavigateWithState("/templates/new", model);
+	}
+
+	async Task ITemplatePageController.AfterCreateAsync(BudgetDetailsItem? results)
+	{
+		var model = Model.WithCreateResults(results);
+		await Navigator.NavigateWithStateAsync("/templates/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	void ITemplatePageController.OnView(Guid id)
+	{
+		var model = Model.ForView(id);
+		Navigator.NavigateWithState("/templates/" + id.ToString(), model);
+	}
+
+	void ITemplatePageController.OnEdit()
+	{
+		var model = Model.ForEdit();
+		Navigator.NavigateWithState("/templates/" + model.ViewData!.Id.ToString() + "/edit", model);
+	}
+
+	async Task ITemplatePageController.AfterEditAsync(BudgetDetailsItem? results)
+	{
+		var model = Model.WithEditResults(results);
+		await Navigator.NavigateWithStateAsync("/templates/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	void ITemplatePageController.OnCancelEdit()
+	{
+		var model = Model.CancelEdit();
+		Navigator.NavigateWithState("/templates/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	async Task ITemplatePageController.OnDeleteAsync()
+	{
+		await Navigator.NavigateWithStateAsync("/templates", TemplatesRootModel.Empty());
+	}
+}

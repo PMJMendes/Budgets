@@ -1,0 +1,43 @@
+﻿@inherits LocalizedComponent<UsersRouter>
+
+<ItemList TRow="UsersRootListItemModel" Columns="@Columns" DataSource="@Model" Clickable="@true"
+		  OnRowClick="@OnRowClick" />
+
+@code {
+	private ItemList<UsersRootListItemModel>.Colspec[] Columns = default!;
+
+	[Parameter]
+	public IEnumerable<UsersRootListItemModel>? Model { get; set; }
+
+	[Parameter]
+	public EventCallback<Guid> UserSelected { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		Columns = new[]
+		{
+			new ItemList<UsersRootListItemModel>.Colspec
+			{
+				Header = L["ROOT:LIST:EMAIL"],
+				Selector = item => __builder => { @item.Email }
+			},
+			new ItemList<UsersRootListItemModel>.Colspec
+			{
+				Header = L["ROOT:LIST:LEVEL"],
+				Selector = item => __builder => { @L["ENUMS:SECURITY_LEVEL:" + item.Level.ToString()] }
+			},
+			new ItemList<UsersRootListItemModel>.Colspec
+			{
+				Header = L["ROOT:LIST:STATE"],
+				Selector = item => __builder => { @L["ENUMS:USER_STATE:" + @item.State.ToString()] }
+			}
+		};
+	}
+
+	private async Task OnRowClick(UsersRootListItemModel item)
+	{
+		await UserSelected.InvokeAsync(item.Id);
+	}
+}

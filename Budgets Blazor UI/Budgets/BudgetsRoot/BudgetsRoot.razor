@@ -1,0 +1,90 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Global.SearchBudgets
+@using Krypton.Budgets.Blazor.UI.Budgets._Common
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage
+@using Krypton.Budgets.Blazor.UI.Users._Common
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+@inject SearchBudgetsService Service
+
+<MudContainer Class="pa-2">
+    <MudText Typo="Typo.h5">@L["ROOT:TITLE"]</MudText>
+    @if (Level == SecurityLevel.PRODUCER || Level == SecurityLevel.ADMIN)
+    {
+
+        <MudSpacer />
+        <BudgetsSearchForm Model="@Model.SearchArgs" ModelChanged="@OnSearchModelChanged" OnSearch="@OnSearch" />
+        <MudButton Variant="Variant.Text" OnClick="@OnCreateNew" Class="pl-2">@L["ROOT:CREATE"]</MudButton>
+    }
+</MudContainer>
+
+@if (_loading)
+{
+    <MudContainer Class="full-viewport justify-center align-center">
+        <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+    </MudContainer>
+}
+else if (Model.Items.Any())
+{
+    <BudgetsRootList Model="@Model.Items" BudgetSelected="@OnBudgetSelected" />
+}
+else
+{
+    <MudContainer Class="full-viewport justify-center align-center">
+        <MudIcon Icon="@Icons.Material.Filled.Search" />
+        <MudText Typo="Typo.h6" Class="pl-3">@L["ROOT:EMPTY:TITLE"]</MudText>
+        <MudText>@L["ROOT:EMPTY:CHANGE"]</MudText>
+        <MudButton Variant="Variant.Text" OnClick="@ResetSearch">@L["ROOT:EMPTY:RESET"]</MudButton>
+    </MudContainer>
+}
+
+@code {
+    private bool _loading;
+    private BudgetsRootModel Model = BudgetsRootModel.Empty();
+
+    [CascadingParameter]
+    public SecurityLevel Level { get; set; }
+
+    [CascadingParameter]
+    public INavigator? Navigator { get; set; }
+
+    [CascadingParameter]
+    public IErrorHandler Handler { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await OnSearch();
+    }
+
+    private void OnSearchModelChanged(BudgetsSearchModel model)
+    {
+        Model = Model.WithSearchArgs(model);
+    }
+
+    private async Task OnSearch()
+    {
+        _loading = true;
+        var results = await Service.SearchBudgetsAsync(Model.SearchArgs.AsArgs());
+        await Handler.CheckErrorsAsync(results, r => Model = Model.WithSearchResults(r));
+        _loading = false;
+    }
+
+    private async Task ResetSearch()
+    {
+        Model = BudgetsRootModel.Empty();
+        await OnSearch();
+    }
+
+    private void OnCreateNew()
+    {
+        var model = BudgetPageModel.FromRoot(Model, true).ForCreate();
+        Navigator?.NavigateWithState("/budgets/new", model);
+    }
+
+    private void OnBudgetSelected(Guid id)
+    {
+        var model = BudgetPageModel.FromRoot(Model, false);
+        Navigator?.NavigateWithState("/budgets/" + id.ToString(), model);
+    }
+}

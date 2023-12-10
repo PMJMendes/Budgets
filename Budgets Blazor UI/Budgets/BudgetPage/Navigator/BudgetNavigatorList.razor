@@ -1,0 +1,55 @@
+﻿@using Krypton.Budgets.Blazor.UI.Users._Common
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+<ItemList TRow="BudgetNavigatorListItemModel" Columns="@Columns" DataSource="@Model" Clickable="@true"
+		  SelectedRowClassFunc="@SelectedRowClassFunc" OnRowClick="@OnRowClick" />
+
+@code {
+	private ItemList<BudgetNavigatorListItemModel>.Colspec[] Columns = default!;
+
+	[Parameter]
+	public IEnumerable<BudgetNavigatorListItemModel>? Model { get; set; }
+
+	[CascadingParameter]
+	public SecurityLevel Level { get; set; }
+
+	[Parameter]
+	public Guid SelectedID { get; set; }
+
+	[Parameter]
+	public EventCallback<Guid> BudgetSelected { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		Columns = new[]
+		{
+			new ItemList<BudgetNavigatorListItemModel>.Colspec
+			{
+				Header = L["BUDGET:NAVIGATOR:LIST:CODE"],
+				Selector = item => __builder => { @item.Code }
+			},
+			new ItemList<BudgetNavigatorListItemModel>.Colspec
+			{
+				Header = L["BUDGET:NAVIGATOR:LIST:TITLE"],
+				Selector = item => __builder => { @item.Title }
+			},
+			new ItemList<BudgetNavigatorListItemModel>.Colspec
+			{
+				Visible = Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER,
+				Header = L["BUDGET:NAVIGATOR:LIST:STATE"],
+				Selector = item => __builder => { @L["ENUMS:BUDGET_STATE:" + item.State.ToString()] }
+			}
+		};
+	}
+
+	private async Task OnRowClick(BudgetNavigatorListItemModel item)
+	{
+		await BudgetSelected.InvokeAsync(item.Id);
+	}
+
+	private string SelectedRowClassFunc(BudgetNavigatorListItemModel item, int rowNumber) =>
+		item.Id == SelectedID ? "mud-theme-primary mud-palette-primary-text" : "";
+}

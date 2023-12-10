@@ -1,0 +1,74 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Global.CreateUser
+@using Krypton.Budgets.Blazor.APIClient.Users.User.UpdateUser;
+@using Krypton.Budgets.Blazor.UI.Users._Common
+@using Krypton.Budgets.Blazor.UI.Users.UserPage.Navigator
+@using Krypton.Budgets.Blazor.UI.Users.UserPage.View
+@using Krypton.Budgets.Blazor.UI.Users.UsersRoot
+
+@inherits LocalizedLayout<UsersRouter>
+@implements IUserPageController
+
+<CascadingValue Value="@((IUserPageController)this)" IsFixed="true">
+	<MudGrid Spacing="0" Class="page-layout">
+		<MudItem xs="4">
+			<UserNavigator Model="@Model.NavData" />
+		</MudItem>
+		<MudItem xs="8">
+			@Body
+		</MudItem>
+	</MudGrid>
+</CascadingValue>
+
+@code {
+	[CascadingParameter]
+	public UserPageModel Model { get; set; } = UserPageModel.Empty();
+
+	[CascadingParameter]
+	public INavigator Navigator { get; set; } = default!;
+
+	void IUserPageController.OnCreate()
+	{
+		var model = Model.ForCreate();
+		Navigator.NavigateWithState("/users/new", model);
+	}
+
+	async Task IUserPageController.AfterCreateAsync(CreateUserResults? results)
+	{
+		var model = Model.WithCreateResults(results);
+		await Navigator.NavigateWithStateAsync("/users/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	void IUserPageController.OnView(Guid id)
+	{
+		var model = Model.ForView(id);
+		Navigator.NavigateWithState("/users/" + id.ToString(), model);
+	}
+
+	void IUserPageController.OnEdit()
+	{
+		var model = Model.ForEdit();
+		Navigator.NavigateWithState("/users/" + model.ViewData!.Id.ToString() + "/edit", model);
+	}
+
+	async Task IUserPageController.AfterEditAsync(UpdateUserResults? results)
+	{
+		var model = Model.WithEditResults(results);
+		await Navigator.NavigateWithStateAsync("/users/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	void IUserPageController.OnCancelEdit()
+	{
+		var model = Model.CancelEdit();
+		Navigator.NavigateWithState("/users/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	async Task IUserPageController.OnStateChangedAsync(UserState state)
+	{
+		await Navigator.RefreshWithStateAsync(Model.WithSelectedUserState(state));
+	}
+
+	async Task IUserPageController.OnDeleteAsync()
+	{
+		await Navigator.NavigateWithStateAsync("/users", UsersRootModel.Empty());
+	}
+}

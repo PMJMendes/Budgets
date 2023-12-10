@@ -1,0 +1,74 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Global.AllTemplates
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatePage
+
+@inherits LocalizedComponent<TemplatesRouter>
+
+@inject AllTemplatesService Service
+
+<MudContainer Class="pa-2">
+    <MudText Typo="Typo.h5">@L["ROOT:TITLE"]</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Text" OnClick="@OnCreateNew" Class="pl-2">@L["ROOT:CREATE"]</MudButton>
+</MudContainer>
+
+@if (_loading)
+{
+    <MudContainer Class="full-viewport justify-center align-center">
+        <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+    </MudContainer>
+}
+else if (Model.Items.Any())
+{
+    <TemplatesRootList Model="@Model.Items" TemplateSelected="@OnTemplateSelected" />
+}
+else
+{
+    <MudContainer Class="full-viewport justify-center align-center">
+        <MudIcon Icon="@Icons.Material.Filled.Search" />
+        <MudText Typo="Typo.h6" Class="pl-3">@L["ROOT:EMPTY:TITLE"]</MudText>
+        <MudButton Variant="Variant.Text" OnClick="@OnCreateNew">@L["ROOT:EMPTY:CREATE"]</MudButton>
+    </MudContainer>
+}
+
+@code {
+    private bool _loading;
+    private TemplatesRootModel Model = TemplatesRootModel.Empty();
+
+    [CascadingParameter]
+    public INavigator? Navigator { get; set; }
+
+    [CascadingParameter]
+    public IErrorHandler Handler { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await OnSearch();
+    }
+
+    private async Task OnSearch()
+    {
+        _loading = true;
+        var results = await Service.AllTemplatesAsync();
+        await Handler.CheckErrorsAsync(results, r => Model = TemplatesRootModel.WithResults(r));
+        _loading = false;
+    }
+
+    private async Task ResetSearch()
+    {
+        Model = TemplatesRootModel.Empty();
+        await OnSearch();
+    }
+
+    private void OnCreateNew()
+    {
+        var model = TemplatePageModel.FromRoot(Model, true).ForCreate();
+        Navigator?.NavigateWithState("/templates/new", model);
+    }
+
+    private void OnTemplateSelected(Guid id)
+    {
+        var model = TemplatePageModel.FromRoot(Model, false);
+        Navigator?.NavigateWithState("/templates/" + id.ToString(), model);
+    }
+}

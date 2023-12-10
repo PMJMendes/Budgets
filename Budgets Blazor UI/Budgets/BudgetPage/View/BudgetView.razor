@@ -1,0 +1,204 @@
+﻿@using Krypton.Budgets.Blazor.APIClient._Common
+@using Krypton.Budgets.Blazor.APIClient._Impl
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.CloseBudget
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.DeleteBudget
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.LockBudget
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.ReopenBudget
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.UnlockBudget
+@using Krypton.Budgets.Blazor.UI.Budgets._Common
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Assign
+@using Krypton.Budgets.Blazor.UI.Users._Common
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+@inject IDialogService DialogService
+@inject LockBudgetService LockService
+@inject UnlockBudgetService UnlockService
+@inject CloseBudgetService CloseService
+@inject ReopenBudgetService ReopenService
+@inject DeleteBudgetService DeleteService
+@inject ISnackbar Snackbar
+
+@if (Model is null)
+{
+	<MudContainer Class="full-viewport justify-center align-center">
+		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
+	</MudContainer>
+}
+else
+{
+	<MudContainer Class="full-viewport">
+		@if (_loading)
+		{
+			<MudProgressLinear Indeterminate="true" />
+			<MudOverlay />
+		}
+
+		<MudGrid Spacing="0">
+			<MudItem xs="12">
+				<MudGrid Spacing="0">
+					<MudItem xs="12" Class="pa-2">
+						<MudText Typo="Typo.h6">@(Model.Code) - @Model.BudgetData.FrontData.Title</MudText>
+					</MudItem>
+					<MudItem xs="12">
+						@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+						{
+							@switch (Model.State)
+							{
+								case BudgetState.OPEN:
+									<MudButton OnClick="EditBudget">@L["BUDGET:VIEW:ACTIONS:EDIT"]</MudButton>
+									<MudButton Class="pl-2" OnClick="Lock">@L["BUDGET:VIEW:ACTIONS:LOCK"]</MudButton>
+									<MudButton Class="pl-2" OnClick="Delete">@L["BUDGET:VIEW:ACTIONS:DELETE"]</MudButton>
+									break;
+
+								case BudgetState.LOCKED:
+									<MudButton OnClick="ManageBudget">@L["BUDGET:VIEW:ACTIONS:MANAGE"]</MudButton>
+									<MudButton Class="pl-2" OnClick="AssignManager">@L["BUDGET:VIEW:ACTIONS:ASSIGN"]</MudButton>
+									<MudButton Class="pl-2" OnClick="Unlock">@L["BUDGET:VIEW:ACTIONS:UNLOCK"]</MudButton>
+									<MudButton Class="pl-2" OnClick="Close">@L["BUDGET:VIEW:ACTIONS:CLOSE"]</MudButton>
+									break;
+
+								case BudgetState.CLOSED:
+									<MudButton OnClick="Reopen">@L["BUDGET:VIEW:ACTIONS:REOPEN"]</MudButton>
+									break;
+							}
+							<MudButton Class="pl-2" OnClick="CloneBudget">@L["BUDGET:VIEW:ACTIONS:CLONE"]</MudButton>
+							<MudButton Class="pl-2" OnClick="() => PrintBudget(false)">@L["BUDGET:VIEW:ACTIONS:PRINT"]</MudButton>
+							<MudButton Class="pl-2" OnClick="() => PrintBudget(true)">@L["BUDGET:VIEW:ACTIONS:PRINTENG"]</MudButton>
+							@if (Model.State == BudgetState.CLOSED)
+							{
+								<MudButton Class="pl-2" OnClick="PrintReport">@L["BUDGET:VIEW:ACTIONS:REPORT"]</MudButton>
+							}
+						}
+						else
+						{
+							<MudButton OnClick="ManageBudget">@L["BUDGET:VIEW:ACTIONS:MANAGE"]</MudButton>
+							<MudButton Class="pl-2" OnClick="PrintReport">@L["BUDGET:VIEW:ACTIONS:REPORT"]</MudButton>
+						}
+					</MudItem>
+					<MudItem xs="6" Class="flex-column">
+						<MudText>@L["BUDGET:FIELDS:CODE"]</MudText>
+						<MudText>@Model.Code</MudText>
+					</MudItem>
+					<MudItem xs="6" Class="flex-column">
+						<MudText>@L["BUDGET:FIELDS:TITLE"]</MudText>
+						<MudText>@Model.BudgetData.FrontData.Title</MudText>
+					</MudItem>
+					@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+					{
+						<MudItem xs="6" Class="flex-column">
+							<MudText>@L["BUDGET:FIELDS:OWNER"]</MudText>
+							<MudText>@(Model.Owner ?? @L["BUDGET:VIEW:NO_OWNER"])</MudText>
+						</MudItem>
+						<MudItem xs="6" Class="flex-column">
+							<MudText>@L["BUDGET:FIELDS:MANAGER"]</MudText>
+							<MudText>@(Model.Manager?.Description ?? @L["BUDGET:VIEW:NO_MANAGER"])</MudText>
+						</MudItem>
+					}
+				</MudGrid>
+			</MudItem>
+			<MudItem>
+				<MudDivider />
+			</MudItem>
+			<MudItem xs="12">
+				<BudgetViewer Model="@Model.BudgetData" />
+			</MudItem>
+			<MudItem xs="12">
+				<MudSpacer />
+			</MudItem>
+		</MudGrid>
+	</MudContainer>
+}
+
+@code {
+	private bool _loading = false;
+	private bool shouldRender = true;
+
+	[Parameter]
+	public BudgetViewModel Model { get; set; } = BudgetViewModel.Empty();
+
+	[CascadingParameter]
+	public SecurityLevel Level { get; set; }
+
+	[CascadingParameter]
+	public IErrorHandler Handler { get; set; } = default!;
+
+	[CascadingParameter]
+	public IBudgetPageController Page { get; set; } = default!;
+
+	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
+
+	protected override void OnParametersSet() => base.OnParametersSet();
+
+	private void EditBudget() => Page.OnEdit();
+
+	private void CloneBudget() => Page.OnClone();
+
+	private void ManageBudget() => Page.OnManage();
+
+	private void PrintBudget(bool isEnglish) => Page.OnPrint(Model.Id, isEnglish);
+
+	private void PrintReport() => Page.OnReport(Model.Id);
+
+	private async Task AssignManager()
+	{
+		var dialogParams = new DialogParameters { ["Model"] = AssignManagerModel.FromViewData(Model) };
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+		var dialog = await DialogService.ShowAsync<AssignManagerDialog>(L["BUDGET:ASSIGN:TITLE"], dialogParams, options);
+
+		var result = await dialog.Result;
+		if (!result.Canceled)
+		{
+			Model = Model.WithManager((RefModel?)result.Data);
+		}
+	}
+
+	private async Task Lock() => await LifeCycleAction("LOCK", args => LockService.LockBudgetAsync(args), r => r.State);
+	private async Task Unlock() => await LifeCycleAction("UNLOCK", args => UnlockService.UnlockBudgetAsync(args), r => r.State);
+	private async Task Close() => await LifeCycleAction("CLOSE", args => CloseService.CloseBudgetAsync(args), r => r.State);
+	private async Task Reopen() => await LifeCycleAction("REOPEN", args => ReopenService.ReopenBudgetAsync(args), r => r.State);
+
+	private async Task LifeCycleAction<T>(string action, Func<TargetPostArgs, Task<SafeResult<T>>> service, Func<T, string?> handler, bool skipDialog = false)
+	{
+		if (await Confirm(L["BUDGET:ACTIONS:" + action + ":TITLE"], L["BUDGET:ACTIONS:" + action + ":PROMPT"], L["BUDGET:ACTIONS:" + action + ":CONFIRM"]))
+		{
+			_loading = true;
+			var results = await service(TargetModel.ForId(Model.Id).AsPostArgs);
+			await Handler.CheckErrorsAsync(results, async r =>
+			{
+				var state = Enum.TryParse(handler(r), true, out BudgetState st) ? st : BudgetState._UNKNOWN;
+				await Page.OnStateChangedAsync(state);
+				Snackbar.Add(L["BUDGET:ACTIONS:" + action + ":SUCCESS"], Severity.Success);
+			});
+			_loading = false;
+		}
+	}
+
+	private async Task Delete()
+	{
+		if (await Confirm(L["BUDGET:ACTIONS:DELETE:TITLE"], L["BUDGET:ACTIONS:DELETE:PROMPT"], L["BUDGET:ACTIONS:DELETE:CONFIRM"]))
+		{
+			_loading = true;
+			var results = await DeleteService.DeleteBudgetAsync(TargetModel.ForId(Model.Id).AsPostArgs);
+			await Handler.CheckErrorsAsync(results, async r =>
+			{
+				shouldRender = false;
+				await Page.OnDeleteAsync();
+				Snackbar.Add(L["BUDGET:ACTIONS:DELETE:SUCCESS"], Severity.Success);
+			});
+			_loading = false;
+		}
+	}
+
+	private async Task<bool> Confirm(string title, string prompt, string confirm)
+	{
+		var result = await DialogService.ShowMessageBox(
+			title,
+			prompt,
+			yesText: confirm,
+			cancelText: @L["BUDGET:ACTIONS:CANCEL"]);
+
+		return result ?? false;
+	}
+}

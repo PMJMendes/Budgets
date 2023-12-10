@@ -1,0 +1,103 @@
+﻿@using Krypton.Budgets.Blazor.APIClient._Common
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.ProductionDetails;
+@using Krypton.Budgets.Blazor.UI._Main
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.View
+@using Krypton.Budgets.Blazor.UI.Users._Common;
+@using SoloX.BlazorJsonLocalization
+
+@inject BudgetDetailsService DetailsService
+@inject ProductionDetailsService ProdDetailsService
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<MainRouter> ErrorL
+
+<MudThemeProvider />
+
+<MudGrid Spacing="0" Class="align-baseline">
+    <ReportHeader Model="@model.BudgetData" Code="@model.Code" />
+
+    @foreach (var group in model.BudgetData.Groups)
+    {
+        <ReportGroup Model="@group" />
+    }
+
+    <ReportFooter Model="@model.BudgetData" />
+</MudGrid>
+
+@code {
+    private BudgetViewModel model = BudgetViewModel.Empty();
+
+    [CascadingParameter(Name = "RouteParameters")]
+    IDictionary<string, object> parameters { get; set; } = default!;
+
+    [CascadingParameter]
+    public SecurityLevel Level { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        if (parameters.TryGetValue("id", out object? maybeId) && maybeId is Guid id)
+        {
+            if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+            {
+                await LoadBudget(id);
+            }
+            else
+            {
+                await LoadProductionBudget(id);
+            }
+        }
+    }
+
+    private async Task LoadBudget(Guid id)
+    {
+        var result = await DetailsService.BudgetDetailsAsync(TargetModel.ForId(id).AsQueryArgs);
+
+        if (result.IsErrors)
+        {
+            await ErrorL.LoadAsync();
+            ShowSnackbar(result.Errors);
+        }
+        else
+        {
+            if (result.Result.FirstOrDefault() is BudgetDetailsItem item)
+            {
+                model = BudgetViewModel.FromService(item);
+            }
+        }
+    }
+
+    private async Task LoadProductionBudget(Guid id)
+    {
+        var result = await ProdDetailsService.ProductionDetailsAsync(TargetModel.ForId(id).AsQueryArgs);
+
+        if (result.IsErrors)
+        {
+            await ErrorL.LoadAsync();
+            ShowSnackbar(result.Errors);
+        }
+        else
+        {
+            if (result.Result.FirstOrDefault() is ProductionDetailsItem item)
+            {
+                model = BudgetViewModel.FromService(item);
+            }
+        }
+    }
+
+    private void ShowSnackbar(ErrorResults errors)
+    {
+        if (errors.InvalidParams is IEnumerable<ErrorResultsItem> items)
+        {
+            foreach (var error in items.Where(e => e is not null))
+            {
+                var message = ErrorL["ERRORS:SERVICE:" + error!.Reason];
+                Snackbar.Add(message, Severity.Error);
+                Console.WriteLine(message);
+            }
+        }
+    }
+}
+
+

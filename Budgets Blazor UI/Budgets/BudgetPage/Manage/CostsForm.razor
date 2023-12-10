@@ -1,0 +1,147 @@
+﻿@using FluentValidation
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using Krypton.Budgets.Shared
+@using ValueType = Krypton.Budgets.Shared.ValueType
+
+@inherits ErrorHandlingForm<BudgetsRouter, BudgetModel>
+
+<MudForm @ref="Form">
+    <MudGrid Spacing="0" Class="@Class">
+        <MudItem xs="12">
+            <MudTable Items="@costItems" Elevation="0" GroupBy="@grouping" Class="page-layout">
+                <HeaderContent>
+                    <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:ITEM"]</MudTh>
+                    <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:BUDGET"]</MudTh>
+                    <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:COSTS"]</MudTh>
+                    <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:AVAILABLE"]</MudTh>
+                    <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:TEXT"]</MudTh>
+                    <MudTh />
+                </HeaderContent>
+                <GroupHeaderTemplate>
+                    <MudTd>
+                        <MudText>@context.Key</MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>
+                            @(context.Items.
+                                Where(r => r.Cost != null).
+                                Sum(r => r.Item.Value).AsAnyValue()
+                            )
+                        </MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>
+                            @(context.Items.
+                                Where(r => r.Cost != null).
+                                Sum(r => ((ICost)r.Cost!).CostValue).AsAnyValue()
+                            )
+                        </MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>
+                            @(context.Items.
+                                Where(r => r.Cost != null).
+                                Sum(r => ((IItem)r.Item).Available).AsAnyValue()
+                            )
+                        </MudText>
+                    </MudTd>
+                    <MudTd />
+                    <MudTd />
+                </GroupHeaderTemplate>
+                <RowTemplate>
+                    @if (context.Cost == null)
+                    {
+                        <MudTd />
+                        <MudTd />
+                        <MudTd />
+                        <MudTd />
+                        <MudTd />
+                        <MudTd>
+                            <MudButton StartIcon="@Icons.Material.Filled.AddCircleOutline" OnClick="@(_ => OnAddCost(context.Item))">
+                                @L["BUDGET:MANAGE:TABS:COSTS:NEW_COST"]
+                            </MudButton>
+                        </MudTd>
+                    }
+                    else
+                    {
+                        <MudTd>
+                            <MudTextField @bind-Value="@context.Cost.Supplier" />
+                        </MudTd>
+                        <MudTd />
+                        <MudTd>
+                            <MudNumericField Format="N2" @bind-Value="context.Cost.CostValue" />
+                        </MudTd>
+                        <MudTd />
+                        <MudTd>
+                            <MudTextField @bind-Value="@context.Cost.Text" />
+                        </MudTd>
+                        <MudTd>
+                            <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
+                                       OnClick="@(_ => OnDeleteCost(context.Item, context.Cost))" />
+                        </MudTd>
+                    }
+                </RowTemplate>
+            </MudTable>
+        </MudItem>
+        <MudItem xs="4" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:TOTALS"]</MudItem>
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:BUDGET"]</MudItem>
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:COSTS"]</MudItem>
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:AVAILABLE"]</MudItem>
+        <MudItem xs="4" />
+        <MudItem xs="4" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:TOTAL"]</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).ProdValue.AsAnyValue())</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).CostValue.AsAnyValue())</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).Available.AsAnyValue())</MudItem>
+        <MudItem xs="4" />
+    </MudGrid>
+</MudForm>
+
+@code {
+    [Parameter]
+    public BudgetModel Model { get; set; } = BudgetModel.Empty();
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private IEnumerable<Row>? costItems => Model.Groups.
+        SelectMany(g => g.Categories.
+            SelectMany(c => c.Items.
+                SelectMany(i => i.Costs.Select(ct => new Row(g, c, i, ct)).
+                    Concat(new [] { new Row(g, c, i, null) }))
+            )
+        );
+
+    private TableGroupDefinition<Row> grouping = new()
+    {
+        Selector = r => r.Group.Description,
+        Indentation = true,
+        Expandable = true,
+        IsInitiallyExpanded = false,
+        InnerGroup = new()
+        {
+            Selector = r => r.Category.Description,
+            Expandable = true,
+            IsInitiallyExpanded = false,
+            InnerGroup = new()
+            {
+                GroupName = "1",
+                Selector = r => r.Item.Description,
+                Expandable = true,
+                IsInitiallyExpanded = false
+            }
+        }
+    };
+
+    private void OnAddCost(ItemModel item) => item.AddCost(CostModel.Empty());
+
+    private void OnDeleteCost(ItemModel item, CostModel cost) => item.RemoveCost(cost);
+
+    private record struct Row(
+        GroupModel Group,
+        CategoryModel Category,
+        ItemModel Item,
+        CostModel? Cost
+    );
+}

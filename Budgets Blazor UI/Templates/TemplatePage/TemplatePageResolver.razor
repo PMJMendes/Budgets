@@ -1,0 +1,190 @@
+﻿@using BlazorRouter
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
+@using Krypton.Budgets.Blazor.APIClient.Global.AllTemplates
+@using Krypton.Budgets.Blazor.APIClient.Global.NextBudgetCode
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatePage.Create
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatePage.Edit
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatePage.Navigator
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatePage.View
+
+@inject AllTemplatesService SearchService
+@inject BudgetDetailsService DetailsService
+@inject NextBudgetCodeService CodeService
+
+<Switch OnMatch="@OnRouteMatch">
+	<Route>
+        <CascadingValue Value="@Model">
+            <TemplatePageRouter />
+        </CascadingValue>
+    </Route>
+</Switch>
+
+@code {
+    [CascadingParameter]
+    public INavigator Navigator { get; set; } = default!;
+
+    [CascadingParameter]
+    public IErrorHandler Handler { get; set; } = default!;
+
+    private TemplatePageModel Model = TemplatePageModel.Empty();
+
+    private async Task OnRouteMatch(RouteMatchedEventArgs args)
+    {
+        var routeState = Navigator.GetState<TemplatePageModel>();
+        if (routeState is TemplatePageModel model)
+        {
+            Model = model;
+        }
+
+        if (args.Segments.Length < 2 || args.Segments.Length > 3 || args.Segments[0] != "templates")
+        {
+            return;
+        }
+
+        if (args.Segments[1] == "new")
+        {
+            await ResolveModelForCreate();
+            return;
+        }
+
+        if (Guid.TryParse(args.Segments[1], out Guid id))
+        {
+            await ResolveModel(id, args.Segments.Length == 3 && args.Segments[2] == "edit");
+        }
+    }
+
+    private async Task ResolveModelForCreate()
+    {
+        bool update = false;
+
+        var navTask = Task<TemplateNavigatorModel>.FromResult(Model.NavData);
+        if (Model.IsNew)
+        {
+            update = true;
+            navTask = ResolveNavData(Guid.Empty);
+        }
+        else if (Model.NavData.SelectedId != Guid.Empty)
+        {
+            update = true;
+            navTask = Task<TemplateNavigatorModel>.FromResult(Model.NavData.WithId(Guid.Empty));
+        }
+
+        var createTask = Task<TemplateCreateModel>.FromResult(Model.CreateData);
+        if (Model.CreateData is null || string.IsNullOrEmpty(Model.CreateData.Code))
+        {
+            update = true;
+            createTask = ResolveCreateData();
+        }
+
+        if (Model.ViewData is not null || Model.EditData is not null)
+        {
+            update = true;
+        }
+
+        if (update)
+        {
+            await Task.WhenAll(navTask, createTask);
+
+            Model = TemplatePageModel.FromResolver(
+                navTask.Result,
+                createTask.Result
+            );
+        }
+    }
+
+    private async Task ResolveModel(Guid id, bool forEdit)
+    {
+        bool update = false;
+
+        var navTask = Task<TemplateNavigatorModel>.FromResult(Model.NavData);
+        if (Model.IsNew)
+        {
+            update = true;
+            navTask = ResolveNavData(id);
+        }
+        else if (Model.NavData.SelectedId != id)
+        {
+            update = true;
+            navTask = Task<TemplateNavigatorModel>.FromResult(Model.NavData.WithId(id));
+        }
+
+        var viewTask = Task<TemplateViewModel?>.FromResult(Model.ViewData);
+        if (Model.ViewData?.Id is not Guid viewId || viewId != id)
+        {
+            update = true;
+            viewTask = ResolveViewData(id);
+        }
+
+        var editTask = Task<TemplateEditModel?>.FromResult(Model.EditData);
+        if (!forEdit && Model.EditData is not null)
+        {
+            update = true;
+            editTask = Task<TemplateEditModel?>.FromResult((TemplateEditModel?)null);
+        }
+        if (forEdit && (Model.EditData is null || Model.EditData.Id != id))
+        {
+            update = true;
+            editTask = viewTask.ContinueWith(vt => vt.Result is TemplateViewModel vm ?
+                (TemplateEditModel?)TemplateEditModel.FromViewData(vm) : null);
+        }
+
+        if (update)
+        {
+            await Task.WhenAll(navTask, viewTask, editTask);
+
+            Model = TemplatePageModel.FromResolver(
+                navTask.Result,
+                null,
+                viewTask.Result,
+                editTask.Result
+            );
+        }
+    }
+
+    private async Task<TemplateNavigatorModel> ResolveNavData(Guid id)
+    {
+        var results = await SearchService.AllTemplatesAsync();
+
+        var navData = Model.NavData;
+        await Handler.CheckErrorsAsync(results, r => navData = navData.WithTemplates(r).WithId(id));
+        return navData;
+    }
+
+    private async Task<TemplateViewModel?> ResolveViewData(Guid id)
+    {
+        var results = await DetailsService.BudgetDetailsAsync(TargetModel.ForId(id).AsQueryArgs);
+
+        var viewData = Model.ViewData;
+        await Handler.CheckErrorsAsync(results, r =>
+        {
+            if (r.FirstOrDefault() is BudgetDetailsItem item)
+            {
+                viewData = TemplateViewModel.FromService(item);
+            }
+        });
+        return viewData;
+    }
+
+    private async Task<TemplateCreateModel?> ResolveCreateData()
+    {
+        var createData = Model.CreateData ?? TemplateCreateModel.Empty();
+        if (string.IsNullOrWhiteSpace(createData.Code))
+        {
+            var results = await CodeService.NextBudgetCodeAsync(new("T"));
+
+            await Handler.CheckErrorsAsync(results, r =>
+            {
+                if (r.FirstOrDefault()?.NextCode is string code)
+                {
+                    createData = createData.WithCode(code);
+                }
+                else
+                {
+                    createData = TemplateCreateModel.Empty();
+                }
+            });
+        }
+
+        return createData;
+    }
+}

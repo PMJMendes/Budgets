@@ -1,0 +1,25 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Global.AllUsers
+
+@inherits LocalizedComponent<UsersRouter>
+
+<MudContainer Class="full-viewport">
+    <MudText Typo="Typo.h5" Class="pa-2">@L["USER:NAVIGATOR:TITLE"]</MudText>
+
+    <MudContainer Class="justify-end pa-2">
+        <MudIconButton Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnCreateNew" />
+    </MudContainer>
+
+    <UserNavigatorList Model="@Model.Users" SelectedID="@Model.SelectedId" UserSelected="@OnUserSelected" />
+</MudContainer>
+
+@code {
+    [Parameter]
+    public UserNavigatorModel Model { get; set; } = UserNavigatorModel.Empty();
+
+    [CascadingParameter]
+    public IUserPageController Page { get; set; } = default!;
+
+    private void OnCreateNew() => Page.OnCreate();
+
+    private void OnUserSelected(Guid id) => Page.OnView(id);
+}

@@ -1,0 +1,378 @@
+﻿@using FluentValidation
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using Krypton.Budgets.Shared
+@using ValueType = Krypton.Budgets.Shared.ValueType
+
+@inherits ErrorHandlingForm<BudgetsRouter, BudgetModel>
+
+<MudForm @ref="Form">
+    <MudGrid Spacing="0" Class="@Class">
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:SUPPLIER"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudSelect @bind-Value="@selectedSupplier" @bind-Value:after="@OnSupplierSelected"
+                       AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                @if (Model is not null)
+                {
+                    @foreach (var supplier in suppliers)
+                    {
+                        <MudSelectItem Value="supplier" />
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:ITEM"]: </MudText>
+        </MudItem>
+        <MudItem xs="5">
+            <MudSelect @bind-Value:get="@selectedCostByItem" @bind-Value:set="@(value => OnCostSelectedByItem(value))"
+                       ToStringFunc="@(c => c is null ? "" : c?.Group.Description + " -> " + c?.Category.Description + " -> " + c?.Item.Description)"
+                       AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                @if (selectedSupplier is not null)
+                {
+                    @foreach (var cost in costs)
+                    {
+                        <MudSelectItem Value="(CostSelector?)cost">
+                            @(cost.Group.Description + " -> " + cost.Category.Description + " -> " + cost.Item.Description)
+                        </MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:COST_VALUE"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudTextField Value="@selectedCost?.CostValue?.AsAnyValue()" ReadOnly="true" />
+        </MudItem>
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:COST_TEXT"]: </MudText>
+        </MudItem>
+        <MudItem xs="6">
+            <MudSelect @bind-Value:get="@selectedCostByNotes" @bind-Value:set="@(value => OnCostSelectedByNotes(value))"
+                       ToStringFunc="@(c => c?.Cost.Text)"
+                       AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                @if (selectedSupplier is not null)
+                {
+                    @foreach (var cost in costs)
+                    {
+                        <MudSelectItem Value="(CostSelector?)cost">@cost.Cost.Text</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:NUMBER"]: </MudText>
+        </MudItem>
+        <MudItem xs="1">
+            <MudTextField @bind-Value="invoiceNumber" />
+        </MudItem>
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:VALUE"]: </MudText>
+        </MudItem>
+        <MudItem xs="1">
+            <MudNumericField Format="N2" @bind-Value="@invoicedValue" />
+        </MudItem>
+        <MudItem xs="1" Class="justify-end">
+            <MudButton StartIcon="@Icons.Material.Filled.AddCircleOutline" OnClick="@(_ => OnCreateInvoice())"
+                       Disabled="@(selectedItem is null || invoiceNumber is null || invoicedValue is null)">
+                @L["BUDGET:MANAGE:TABS:INVOICING:CREATE_INVOICE"]
+            </MudButton>
+        </MudItem>
+        <MudItem xs="12">
+            <MudDivider />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:GROUP"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudSelect @bind-Value="@selectedGroup" @bind-Value:after="@OnGroupSelected" ToStringFunc="@(g => g?.Description)"
+                       AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                @if (Model is not null)
+                {
+                    @foreach (var group in Model.Groups)
+                    {
+                        <MudSelectItem Value="group">@group.Description</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:CATEGORY"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudSelect @bind-Value="@selectedCat" @bind-Value:after="@OnCatSelected" ToStringFunc="@(c => c?.Description)"
+                       AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                @if (selectedGroup is not null)
+                {
+                    @foreach (var category in selectedGroup.Categories)
+                    {
+                        <MudSelectItem Value="category">@category.Description</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:ITEM"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudSelect @bind-Value="@selectedItem" @bind-Value:after="@OnItemSelected" ToStringFunc="@(c => c?.Description)"
+                       AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                @if (selectedCat is not null)
+                {
+                    @foreach (var item in selectedCat.Items)
+                    {
+                        <MudSelectItem Value="item">@item.Description</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12">
+            <MudDivider />
+        </MudItem>
+        <MudItem xs="12">
+            @if (selectedItem is not null)
+            {
+                <MudDataGrid Items="@invoices" Elevation="0" ReadOnly="false" EditMode="DataGridEditMode.Cell" Class="page-layout">
+                    <Columns>
+                        <TemplateColumn T="InvoiceModel" Field="Supplier" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:SUPPLIER"]">
+                            <EditTemplate>
+                                <MudTextField @bind-Value="@context.Item.Supplier" />
+                            </EditTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn T="InvoiceModel" Field="Text" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:TEXT"]">
+                            <EditTemplate>
+                                <MudTextField @bind-Value="@context.Item.Text" />
+                            </EditTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn T="InvoiceModel" Field="Text" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:NUMBER"]">
+                            <EditTemplate>
+                                <MudTextField @bind-Value="@context.Item.InvoiceNumber" />
+                            </EditTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn T="InvoiceModel" Field="InvoicedValue" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:VALUE"]">
+                            <EditTemplate>
+                                <MudNumericField Format="N2" @bind-Value="@context.Item.InvoicedValue" />
+                            </EditTemplate>
+                        </TemplateColumn>
+
+                        <TemplateColumn T="InvoiceModel" IsEditable="false">
+                            <CellTemplate>
+                                <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
+                                               OnClick="@(_ => OnDeleteInvoice(context.Item))" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                </MudDataGrid>
+            }
+            else
+            {
+                <MudDataGrid Items="@invoices" Elevation="0" Class="page-layout">
+                    <Columns>
+                        <TemplateColumn T="InvoiceModel" Field="Supplier" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:SUPPLIER"]" />
+                        <TemplateColumn T="InvoiceModel" Field="InvoicedValue" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:VALUE"]" />
+                        <TemplateColumn T="InvoiceModel" Field="Text" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:TEXT"]" />
+                    </Columns>
+                </MudDataGrid>
+            }
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton StartIcon="@Icons.Material.Filled.AddCircleOutline" OnClick="@(_ => OnAddInvoice())"
+                       Disabled="@(selectedItem is null)">
+                @L["BUDGET:MANAGE:TABS:INVOICING:NEW_INVOICE"]
+            </MudButton>
+        </MudItem>
+        <MudItem xs="2" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:TOTALS"]</MudItem>
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:BUDGET"]</MudItem>
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:COSTS"]</MudItem>
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:INVOICED"]</MudItem>
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:NOT_INVOICED"]</MudItem>
+        <MudItem xs="2" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:WEATHER_DAYS"]</MudItem>
+        <MudItem xs="2" />
+        <MudItem xs="2" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:ITEM"]</MudItem>
+            @if (selectedItem is IItem item)
+            {
+                <MudItem xs="1">@item.ProdValue.AsAnyValue()</MudItem>
+                <MudItem xs="1">@item.CostValue.AsAnyValue()</MudItem>
+                <MudItem xs="1">@item.InvoicedValue.AsAnyValue()</MudItem>
+                <MudItem xs="1">@item.InvoiceDelta.AsAnyValue()</MudItem>
+            }
+            else
+            {
+                <MudItem xs="4" />
+            }
+        <MudItem xs="1" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:VALUE"]</MudItem>
+        <MudItem xs="1">@((Model.PercentsData.WeatherTotal ?? 0m).AsAnyValue())</MudItem>
+        <MudItem xs="2" />
+        <MudItem xs="2" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:CATEGORY"]</MudItem>
+            @if (selectedCat is ICategory cat)
+            {
+                <MudItem xs="1">@cat.ProdValue.AsAnyValue()</MudItem>
+                <MudItem xs="1">@cat.CostValue.AsAnyValue()</MudItem>
+                <MudItem xs="1">@cat.InvoicedValue.AsAnyValue()</MudItem>
+                <MudItem xs="1">@cat.InvoiceDelta.AsAnyValue()</MudItem>
+            }
+            else
+            {
+                <MudItem xs="4" />
+        }
+        <MudItem xs="1" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:NUM_WDAYS"]</MudItem>
+        <MudItem xs="1">
+            <MudNumericField Format="D" @bind-Value="@Model.PercentsData.NWeatherDays" />
+        </MudItem>
+        <MudItem xs="2" />
+        <MudItem xs="2" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:GROUP"]</MudItem>
+        @if (selectedGroup is IGroup group)
+        {
+            <MudItem xs="1">@group.ProdValue.AsAnyValue()</MudItem>
+            <MudItem xs="1">@group.CostValue.AsAnyValue()</MudItem>
+            <MudItem xs="1">@group.InvoicedValue.AsAnyValue()</MudItem>
+            <MudItem xs="1">@group.InvoiceDelta.AsAnyValue()</MudItem>
+        }
+        else
+        {
+            <MudItem xs="4" />
+        }
+        <MudItem xs="1" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:TOTAL"]</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).WeatherInvoiced.AsAnyValue())</MudItem>
+        <MudItem xs="2" />
+        <MudItem xs="2" />
+        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:INVOICING:TOTALS:TOTAL"]</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).ProdValue.AsAnyValue())</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).CostValue.AsAnyValue())</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).InvoicedValue.AsAnyValue())</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).InvoiceDelta.AsAnyValue())</MudItem>
+        <MudItem xs="5" />
+    </MudGrid>
+</MudForm>
+
+@code {
+    private GroupModel? selectedGroup = null;
+    private CategoryModel? selectedCat = null;
+    private ItemModel? selectedItem = null;
+    private IEnumerable<InvoiceModel>? invoices => selectedItem?.Invoices;
+
+    private IEnumerable<string> suppliers => Model.Groups.SelectMany(g => g.Categories.SelectMany(c => c.Items.SelectMany(i =>
+        i.Costs.Where(ct => ct.Supplier is not null).Select(ct => ct.Supplier!)
+    ))).Distinct().OrderBy(s => s);
+    private string? selectedSupplier = null;
+    private IEnumerable<CostSelector> costs => selectedSupplier is string ?
+        Model.Groups.SelectMany(g => g.Categories.SelectMany(c => c.Items.SelectMany(
+            i => i.Costs.Where(ct => ct.Supplier == selectedSupplier).Select(ct => new CostSelector(g, c, i, ct))
+    ))) : Array.Empty<CostSelector>();
+    private CostSelector? selectedCostByItem = null;
+    private CostSelector? selectedCostByNotes = null;
+    private CostModel? selectedCost => selectedCostByItem?.Cost ?? selectedCostByNotes?.Cost;
+
+    private string? invoiceNumber = null;
+    private decimal? invoicedValue = null;
+
+    [Parameter]
+    public BudgetModel Model { get; set; } = BudgetModel.Empty();
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private void OnGroupSelected()
+    {
+        selectedCat = null;
+        selectedItem = null;
+
+        selectedSupplier = null;
+        selectedCostByItem = null;
+        selectedCostByNotes = null;
+    }
+
+    private void OnCatSelected()
+    {
+        selectedItem = null;
+
+        selectedSupplier = null;
+        selectedCostByItem = null;
+        selectedCostByNotes = null;
+    }
+
+    private void OnItemSelected()
+    {
+        selectedSupplier = null;
+        selectedCostByItem = null;
+        selectedCostByNotes = null;
+    }
+
+    private void OnSupplierSelected()
+    {
+        selectedCostByItem = null;
+        selectedCostByNotes = null;
+
+        invoiceNumber = null;
+        invoicedValue = null;
+    }
+
+    private void OnCostSelectedByItem(CostSelector? value)
+    {
+        if (value != selectedCostByItem)
+        {
+            selectedCostByItem = value;
+
+            if (value is not null)
+            {
+                selectedCostByNotes = null;
+
+                selectedGroup = value?.Group;
+                selectedCat = value?.Category;
+                selectedItem = value?.Item;
+
+                invoiceNumber = null;
+                invoicedValue = null;
+            }
+        }
+    }
+
+    private void OnCostSelectedByNotes(CostSelector? value)
+    {
+        if (value != selectedCostByNotes)
+        {
+            selectedCostByNotes = value;
+
+            if (value is not null)
+            {
+                selectedCostByItem = null;
+
+                selectedGroup = value?.Group;
+                selectedCat = value?.Category;
+                selectedItem = value?.Item;
+
+                invoiceNumber = null;
+                invoicedValue = null;
+            }
+        }
+    }
+
+    private void OnCreateInvoice()
+    {
+        selectedItem!.AddInvoice(InvoiceModel.FromData(
+            invoicedValue,
+            invoiceNumber,
+            selectedSupplier,
+            selectedCost?.Text
+        ));
+
+        invoiceNumber = null;
+        invoicedValue = null;
+    }
+
+    private void OnAddInvoice() => selectedItem!.AddInvoice(InvoiceModel.Empty());
+
+    private void OnDeleteInvoice(InvoiceModel item) => selectedItem!.RemoveInvoice(item);
+
+    private record struct CostSelector(GroupModel Group, CategoryModel Category, ItemModel Item, CostModel Cost);
+}

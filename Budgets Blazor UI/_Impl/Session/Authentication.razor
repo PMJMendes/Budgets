@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+<RemoteAuthenticatorView Action="@Action" OnLogOutSucceeded=@this.OnLogOutSucceeded />
+
+@code{
+    [CascadingParameter(Name = "RouteParameters")]
+    public IDictionary<string, object> RouteParams { get; set; } = default!;
+
+    private string? Action;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if ((RouteParams?.TryGetValue("action", out var val) ?? false) && val is string action)
+        {
+            Action = action;
+        }
+    }
+
+    private void OnLogOutSucceeded()
+    {
+        Action = "login";
+    }
+}

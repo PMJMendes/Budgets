@@ -1,0 +1,79 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.UpdateBudget
+@using Krypton.Budgets.Blazor.UI.Budgets._Common
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Edit
+
+@inherits LocalizedComponent<TemplatesRouter>
+
+@inject UpdateBudgetService Service
+@inject ISnackbar Snackbar
+
+@if (Model is null)
+{
+	<MudContainer Class="full-viewport justify-center align-center">
+		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
+	</MudContainer>
+}
+else
+{
+	<MudContainer Class="full-viewport">
+		@if (_loading)
+		{
+			<MudProgressLinear Indeterminate="true" />
+		}
+
+		<MudGrid Spacing="0" Class="page-layout">
+			<MudItem xs="12" Class="full-viewport pl-2">
+				<MudGrid Spacing="0">
+					<MudItem xs="12" Class="pa-2">
+						<MudText Typo="Typo.h6">@L["TEMPLATE:EDIT:TITLE"]</MudText>
+					</MudItem>
+					<MudItem xs="12" Class="justify-end pa-2">
+						<MudButton OnClick="@CancelEdit">@L["TEMPLATE:EDIT:CANCEL"]</MudButton>
+						<MudButton Class="pl-2" OnClick="@SaveChanges">@L["TEMPLATE:EDIT:OK"]</MudButton>
+					</MudItem>
+					<MudItem xs="12">
+						<BudgetForm @ref="Form" Model="@Model.BudgetData" />
+					</MudItem>
+				</MudGrid>
+			</MudItem>
+		</MudGrid>
+	</MudContainer>
+}
+
+@code {
+	private bool _loading;
+	private bool shouldRender = true;
+
+	private BudgetForm? Form = default!;
+
+	[Parameter]
+	public TemplateEditModel Model { get; set; } = TemplateEditModel.Empty();
+
+	[CascadingParameter]
+	public ITemplatePageController Page { get; set; } = default!;
+
+	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
+
+	private void CancelEdit() => Page.OnCancelEdit();
+
+	private async Task SaveChanges()
+	{
+		if (Form is BudgetForm form && await form.PreValidate())
+		{
+			_loading = true;
+			var results = await Service.UpdateBudgetAsync(Model.AsArgs());
+
+			if (Form is IErrorHandler handler)
+			{
+				await handler.CheckErrorsAsync(results, async r =>
+				{
+					shouldRender = false;
+					await Page.AfterEditAsync(r);
+					Snackbar.Add(L["TEMPLATE:EDIT:SUCCESS"], Severity.Success);
+				});
+			}
+			_loading = false;
+		}
+	}
+}

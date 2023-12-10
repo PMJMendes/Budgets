@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Krypton.Budgets.Blazor.APIClient.Global.ChangeCurrentUserPassword
+@using Krypton.Budgets.Blazor.UI.Users._Common;
+
+@inherits LocalizedComponent<MainRouter>
+
+@inject ChangeCurrentUserPasswordService ChangePasswordService
+@inject IDialogService DialogService
+@inject NavigationManager Navigator
+
+<MudMenu AnchorOrigin="Origin.BottomLeft">
+    <ActivatorContent>
+        <MudText>
+            @(L["USERMENU:HELLO"])@Greeting
+            <MudIcon Style="vertical-align:middle" Icon="@Icons.Material.Filled.ArrowDropDown" />
+        </MudText>
+    </ActivatorContent>
+    <ChildContent>
+        <MudMenuItem OnClick="@Logout">@L["USERMENU:LOGOUT"]</MudMenuItem>
+        @if (Level != SecurityLevel._UNKNOWN)
+        {
+            <MudDivider />
+            <MudMenuItem OnClick="@ChangePassword">@L["USERMENU:CHANGE_PASSWORD"]</MudMenuItem>
+        }
+    </ChildContent>
+</MudMenu>
+
+@code {
+    [Parameter]
+    public string Greeting { get; set; } = string.Empty;
+
+    [Parameter]
+    public SecurityLevel Level { get; set; } = SecurityLevel._UNKNOWN;
+
+    private void Logout()
+    {
+        Navigator.NavigateToLogout("authentication/logout");
+    }
+
+    private async Task ChangePassword()
+    {
+        var result = await DialogService.ShowMessageBox(
+            @L["USERMENU:CONFIRM:TITLE"],
+            @L["USERMENU:CONFIRM:TEXT"],
+            yesText: @L["USERMENU:CONFIRM:SUBMIT"],
+            cancelText: @L["USERMENU:CONFIRM:CANCEL"]);
+
+        if (result ?? false)
+        {
+            await ChangePasswordService.ChangeCurrentUserPasswordAsync();
+
+            Navigator.NavigateToLogout("authentication/logout");
+        }
+    }
+}

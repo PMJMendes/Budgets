@@ -1,0 +1,76 @@
+﻿@using FluentValidation
+
+@inherits ErrorHandlingForm<BudgetsRouter, BudgetCreateFormModel>
+
+<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="full-viewport">
+    <MudGrid>
+        <MudItem xs="6" Class="flex-column">
+            <MudText>@L["BUDGET:FIELDS:CODE"]</MudText>
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Code"
+                          For="@(() => Model.Code)" Required="true" />
+        </MudItem>
+        <MudItem xs="6" Class="flex-column">
+        @if (Model.FromExisting)
+        {
+            <MudText>@L["BUDGET:CREATE:SOURCE"]</MudText>
+            <MudText>@Model.Template.Description</MudText>
+        }
+        else
+        {
+            <MudText>@L["BUDGET:FIELDS:TEMPLATE"]</MudText>
+            <MudSelect @bind-Value="@Model.Template" ToStringFunc="@(v => v.Id == Guid.Empty ? @L["BUDGET:CREATE:NO_TEMPLATE"] : v.Description)"
+                       AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                <MudSelectItem Value="@RefModel.Empty()">@L["BUDGET:CREATE:NO_TEMPLATE"]</MudSelectItem>
+                @foreach (var template in Templates)
+                {
+                    <MudSelectItem Value="template">@template.Description</MudSelectItem>
+                }
+            </MudSelect>
+        }
+        </MudItem>
+        <MudItem xs="6" Class="flex-column">
+            <MudText>@L["BUDGET:FIELDS:BUDGETDATE"]</MudText>
+            <MudDatePicker @bind-Date="@Model.BudgetDate" Editable="true" Clearable="true" DisableToolbar="true"
+                           AnchorOrigin="Origin.TopLeft" TransformOrigin="Origin.TopRight" For="@(() => Model.BudgetDate)"
+                           Mask="@(new DateMask("yyyy.MM.dd"))" DateFormat="yyyy.MM.dd" />
+        </MudItem>
+        <MudItem xs="6" Class="flex-column">
+            <MudText>@L["BUDGET:FIELDS:TITLE"]</MudText>
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Title"
+                          For="@(() => Model.Title)" />
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+@code {
+    [Parameter]
+    public BudgetCreateFormModel Model { get; set; } = BudgetCreateFormModel.Empty();
+
+    [Parameter]
+    public IEnumerable<RefModel> Templates { get; set; } = Array.Empty<RefModel>();
+
+    protected override void ConfigureValidator(AbstractValidator<BudgetCreateFormModel> validator)
+    {
+        validator.RuleFor(m => m.Code).
+            NotEmpty().
+            WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+
+        validator.RuleFor(m => m.BudgetDate).
+            NotEmpty().
+            WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+
+        validator.When(m => m.Template.Id == Guid.Empty, () =>
+        {
+            validator.RuleFor(m => m.Title).
+                NotEmpty().
+                WithMessage(_ => L["BUDGET:CREATE:ERRORS:TITLE_OR_TEMPLATE"]);
+        });
+
+        validator.When(m => string.IsNullOrWhiteSpace(m.Title), () =>
+        {
+            validator.RuleFor(m => m.Template).
+                Must(val => val.Id != Guid.Empty).
+                WithMessage(_ => L["BUDGET:CREATE:ERRORS:TITLE_OR_TEMPLATE"]);
+        });
+    }
+}

@@ -1,0 +1,104 @@
+{
+  "ENUMS": {
+    "USER_STATE": {
+      "_UNKNOWN": "",
+      "DISABLED": "Inactivo",
+      "PENDING": "Pendente",
+      "ENABLED": "Activo"
+    },
+    "SECURITY_LEVEL": {
+      "_UNKNOWN": "",
+      "ADMIN": "Administrador",
+      "PRODUCER": "Produtor",
+      "ACCOUNTING": "Contabilidade",
+      "ASSISTANT": "Chefe de Produção"
+    }
+  },
+  "BREADCRUMBS": {
+    "USERS": "Utilizadores",
+    "NEW": "Novo",
+    "EDIT": "Editar"
+  },
+  "ROOT": {
+    "TITLE": "Gerir Utilizadores",
+    "CREATE": "Novo Utilizador",
+    "LIST": {
+      "EMAIL": "Endereço de Email",
+      "FULLNAME": "Nome (primeiro e último)",
+      "LEVEL": "Nível de Segurança",
+      "STATE": "Estado"
+    },
+    "EMPTY": {
+      "TITLE": "Não há utilizadores definidos",
+      "CHANGE": "Use o link 'Novo Utilizador' para criar um"
+    }
+  },
+  "USER": {
+    "FIELDS": {
+      "EMAIL": "Endereço de Email",
+      "FULLNAME": "Nome (primeiro e último)",
+      "LEVEL": "Nível de Segurança",
+      "STATE": "Estado"
+    },
+    "ACTIONS": {
+      "CANCEL":  "Cancelar",
+      "ACTIVATE": {
+        "SUCCESS": "Foi enviado para o utilizador um email com instruções para criar uma password."
+      },
+      "REACTIVATE": {
+        "TITLE": "Reactivar Utilizador",
+        "PROMPT": "Esta acção vai cancelar o anterior pedido de criação ou alteração de password e enviar um novo pedido para o urilizador. Continuar?",
+        "CONFIRM": "Reactivar",
+        "SUCCESS": "Foi enviado para o utilizador um novo pedido de criação ou alteração da password."
+      },
+      "RESET_PASSWORD": {
+        "TITLE": "Forçar Alteração de Password",
+        "PROMPT": "Esta acção vai cancelar a password do utilizador e enviar um email com instruções para criar uma nova password. Continuar?",
+        "CONFIRM": "Forçar",
+        "SUCCESS": "Foi enviado para o utilizador um email com instruções para criar nova uma password."
+      },
+      "DEACTIVATE": {
+        "TITLE": "Desactivar Utilizador",
+        "PROMPT": "Esta acção vai cancelar a password do utilizador. Continuar?",
+        "CONFIRM": "Desactivar",
+        "SUCCESS": "A password do utilizador foi cancelada."
+      },
+      "DELETE": {
+        "TITLE": "Apagar Utilizador",
+        "PROMPT": "Tem a certeza que quer apagar este utilizador?",
+        "CONFIRM": "Apagar",
+        "SUCCESS": "O utilizador foi apagado."
+      }
+    },
+    "NAVIGATOR": {
+      "TITLE": "Utilizadores",
+      "LIST": {
+        "EMAIL": "Email",
+        "LEVEL": "Nível",
+        "STATE": "Estado"
+      }
+    },
+    "CREATE": {
+      "TITLE": "Criar Utilizador",
+      "OK": "Criar",
+      "SUCCESS": "Utilizador criado com sucesso"
+    },
+    "VIEW": {
+      "TITLE": "Detaches do Utilizador",
+      "ACTIONS": {
+        "EDIT": "Editar Utilizador",
+        "ACTIVATE": "Activar Utilizador",
+        "REACTIVATE": "Reactivar Utilizador",
+        "RESET_PASSWORD": "Forçar Alteração de Password",
+        "DEACTIVATE": "Desactivar Utilizador",
+        "DELETE": "Apagar Utilizador"
+      }
+    },
+    "EDIT": {
+      "TITLE": "Editar Utilizador",
+      "OK": "Guardar alterações",
+      "CANCEL": "Cancelar alterações",
+      "SUCCESS": "Utilizador alterado com sucesso"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "TITLE": "Orçamentos",
+  "USERMENU": {
+    "HELLO": "",
+    "LOGOUT": "Sair",
+    "CHANGE_PASSWORD": "Alterar Password",
+    "CONFIRM": {
+      "TITLE": "Alterar Password",
+      "TEXT": "A aplicação vai sair, e receberá um email com um link para alterar a sua password. Não poderá aceder à aplicação até seguir o link. Continuar?",
+      "SUBMIT": "Sim, alterar a minha password",
+      "CANCEL": "Cancelar"
+    }
+  },
+  "NAVMENU": {
+    "BUDGETS": "Orçamentos",
+    "TEMPLATES": "Templates",
+    "USERS": "Utilizadores"
+  },
+  "ERRORS": {
+    "SERVICE": {
+      "NOT_FOUND": "A aplicação tentou invocar um serviço desconhecido. Por favor, contacte o suporte técnico.",
+      "UNAUTHORIZED": "A sua sessão expirou inesperadamente. Por favor, saia e volte a entrar. Se o problema persistir, por favor, contacte o suporte técnico.",
+      "FORBIDDEN": "A aplicação tentou invocar um serviço inactivo. Por favor, contacte o suporte técnico.",
+      "UNKNOWN_ERROR": "Ocorreu um erro desconhecido na aplicação. Por favor, anote a data e hora e contacte o suporte técnico.",
+      "INVALID_TARGET_ID": "Objecto desconhecido"
+    },
+    "FORM": {
+      "INVALID_BLANK_VALUE": "Este valor não pode estar em branco",
+      "VALUE_REQUIRED": "Este valor é obrigatório",
+      "VALUE_NOT_UNIQUE": "Este valor tem que ser único",
+      "VALUE_SET_NOT_UNIQUE": "Esta combinação de valores tem que ser única",
+      "SECURITY_DUPLICATE_EMAIL": "Este email já existe no sistema de autenticação"
+    }
+  }
+}

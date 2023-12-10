@@ -1,0 +1,47 @@
+﻿@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using Krypton.Budgets.Shared
+@using ValueType = Krypton.Budgets.Shared.ValueType
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+<MudItem xs="1" Class="border-dashed border-r border-b" Style="border-bottom-style:dotted!important" />
+<MudItem xs="2" Class="border-dotted border-r border-b">
+    <MudText Typo="Typo.body1">
+        @(Lang switch
+        {
+            "ENG" => Model.DescEnglish,
+            _ => Model.Description
+        })
+    </MudText>
+</MudItem>
+@foreach (var val in Model.Values)
+{
+    <MudItem xs="1" Class="justify-end border-dotted border-r border-b">
+        <MudText Typo="Typo.body1">
+            @(val.Def.Type switch
+            {
+                ValueType.TEXT => Lang switch
+                {
+                    "ENG" => val.TextEnglish,
+                    _ => val.TextValue
+                },
+                _ => val.BCAAdjustedValue.AsAnyValue()
+            })
+        </MudText>
+    </MudItem>
+}
+@if (Model.Values.Count < 8)
+{
+    <MudItem xs="@(8 - Model.Values.Count)" Class="border-dotted border-r border-b" />
+}
+<MudItem xs="1" Class="justify-end border-dotted border-b">
+    <MudText Typo="Typo.body1">@(((IItem)Model).ClientValue.AsAnyValue())</MudText>
+</MudItem>
+
+@code {
+    [Parameter]
+    public ItemModel Model { get; set; } = default!;
+
+    [Parameter]
+    public string Lang { get; set; } = default!;
+}

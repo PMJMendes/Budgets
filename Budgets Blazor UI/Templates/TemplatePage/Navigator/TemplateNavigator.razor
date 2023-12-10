@@ -1,0 +1,56 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Global.AllTemplates
+@using Krypton.Budgets.Blazor.UI.Budgets._Common
+
+@inherits LocalizedComponent<TemplatesRouter>
+
+@inject AllTemplatesService Service
+
+<MudContainer Class="full-viewport">
+    <MudText Typo="Typo.h5" Class="pa-2">@L["TEMPLATE:NAVIGATOR:TITLE"]</MudText>
+
+    <MudContainer Class="justify-end pa-2">
+        <MudIconButton Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnCreateNew" Class="pl-2" />
+    </MudContainer>
+
+    @if (_loading)
+    {
+        <MudContainer Class="full-viewport justify-center align-center">
+            <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+        </MudContainer>
+    }
+    else
+    {
+        <TemplateNavigatorList Model="@Model.Templates" SelectedID="@Model.SelectedId" TemplateSelected="@OnTemplateSelected" />
+    }
+</MudContainer>
+
+@code {
+    private bool _loading = false;
+
+    [Parameter]
+    public TemplateNavigatorModel Model { get; set; } = TemplateNavigatorModel.Empty();
+
+    [CascadingParameter]
+    public ITemplatePageController Page { get; set; } = default!;
+
+    [CascadingParameter]
+    public IErrorHandler Handler { get; set; } = default!;
+
+    private async Task OnSearch()
+    {
+        _loading = true;
+        var results = await Service.AllTemplatesAsync();
+        await Handler.CheckErrorsAsync(results, r => Model = Model.WithTemplates(r));
+        _loading = false;
+    }
+
+    private void OnCreateNew()
+    {
+        Page.OnCreate();
+    }
+
+    private void OnTemplateSelected(Guid id)
+    {
+        Page.OnView(id);
+    }
+}

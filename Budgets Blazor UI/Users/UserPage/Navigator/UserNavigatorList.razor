@@ -1,0 +1,63 @@
+﻿@inherits LocalizedComponent<UsersRouter>
+
+<ItemList TRow="UserNavigatorListItemModel" Columns="@Columns" DataSource="@Model" Clickable="@true"
+		  SelectedRowClassFunc="@SelectedRowClassFunc" OnRowClick="@OnRowClick" />
+
+@code {
+	private ItemList<UserNavigatorListItemModel>.Colspec[] Columns = new[]
+	{
+		new ItemList<UserNavigatorListItemModel>.Colspec
+		{
+			Selector = item => __builder => { @item.Email }
+		},
+		new ItemList<UserNavigatorListItemModel>.Colspec
+		{
+			Selector = item => __builder => { @item.Level }
+		},
+		new ItemList<UserNavigatorListItemModel>.Colspec
+		{
+			Selector = item => __builder => { @item.State }
+		}
+	};
+
+	[Parameter]
+	public IEnumerable<UserNavigatorListItemModel>? Model { get; set; }
+
+	[Parameter]
+	public Guid SelectedID { get; set; }
+
+	[Parameter]
+	public EventCallback<Guid> UserSelected { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		Columns = new[]
+		{
+			new ItemList<UserNavigatorListItemModel>.Colspec
+			{
+				Header = L["USER:NAVIGATOR:LIST:EMAIL"],
+				Selector = item => __builder => { @item.Email }
+			},
+			new ItemList<UserNavigatorListItemModel>.Colspec
+			{
+				Header = L["USER:NAVIGATOR:LIST:LEVEL"],
+				Selector = item => __builder => { @L["ENUMS:SECURITY_LEVEL:" + item.Level.ToString()] }
+			},
+			new ItemList<UserNavigatorListItemModel>.Colspec
+			{
+				Header = L["USER:NAVIGATOR:LIST:STATE"],
+				Selector = item => __builder => { @L["ENUMS:USER_STATE:" + @item.State.ToString()] }
+			}
+		};
+	}
+
+	private async Task OnRowClick(UserNavigatorListItemModel item)
+	{
+		await UserSelected.InvokeAsync(item.Id);
+	}
+
+	private string SelectedRowClassFunc(UserNavigatorListItemModel item, int rowNumber) =>
+		item.Id == SelectedID ? "mud-theme-primary mud-palette-primary-text" : "";
+}

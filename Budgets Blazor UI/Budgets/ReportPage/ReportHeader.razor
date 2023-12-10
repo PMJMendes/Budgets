@@ -1,0 +1,107 @@
+﻿@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using Krypton.Budgets.Blazor.UI.Users._Common;
+@using Krypton.Budgets.Shared
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+<MudItem xs="12">
+    <MudText Typo="Typo.body1">Orçamento Nº @Code</MudText>
+</MudItem>
+
+<MudItem xs="12" Class="justify-center">
+    <MudText Typo="Typo.h4">@Model.FrontData.Title</MudText>
+</MudItem>
+
+<MudItem xs="1">
+    <MudText Typo="Typo.body1" Style="font-weight:bold;">Produto:</MudText>
+</MudItem>
+<MudItem xs="11">
+    <MudText Typo="Typo.body1">@Model.FrontData.Product</MudText>
+</MudItem>
+<MudItem xs="1">
+    <MudText Typo="Typo.body1" Style="font-weight:bold;">Cliente:</MudText>
+</MudItem>
+<MudItem xs="11">
+    <MudText Typo="Typo.body1">@Model.FrontData.FinalClient</MudText>
+</MudItem>
+<MudItem xs="1">
+    <MudText Typo="Typo.body1" Style="font-weight:bold;">Agência:</MudText>
+</MudItem>
+<MudItem xs="11">
+    <MudText Typo="Typo.body1">@Model.FrontData.Agency</MudText>
+</MudItem>
+
+<MudItem xs="5" />
+<MudItem xs="1" Class="justify-center">
+    <MudText Typo="Typo.body1" Style="font-weight:bold;">Orçamento</MudText>
+</MudItem>
+@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+{
+    <MudItem xs="1" Class="justify-center">
+        <MudText Typo="Typo.body1" Style="font-weight:bold;">% BCA</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="justify-center">
+        <MudText Typo="Typo.body1" Style="font-weight:bold;">BCA</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="justify-center">
+        <MudText Typo="Typo.body1" Style="font-weight:bold;">Orç c/ BCA</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="justify-center">
+        <MudText Typo="Typo.body1" Style="font-weight:bold;">Rúbricas</MudText>
+    </MudItem>
+}
+<MudItem xs="1" Class="justify-center">
+    <MudText Typo="Typo.body1" Style="font-weight:bold;">Gasto</MudText>
+</MudItem>
+<MudItem xs="1" Class="justify-center">
+    <MudText Typo="Typo.body1" Style="font-weight:bold;">Resultados</MudText>
+</MudItem>
+@if (Level != SecurityLevel.ADMIN & Level != SecurityLevel.PRODUCER)
+{
+    <MudItem xs="4" />
+}
+
+<MudItem xs="5" Class="border-t-2">
+    <MudText Typo="Typo.h6">Sub-Totais</MudText>
+</MudItem>
+<MudItem xs="1" Class="border-t-2 justify-end">
+    <MudText Typo="Typo.h6">@(((IBudget)Model).Value.AsAnyValue())</MudText>
+</MudItem>
+@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+{
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6">@((((IBudget)Model).BCAPercent?.AsAnyValue() + '%') ?? "-")</MudText>
+        </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6">@(((IBudget)Model).BCAValue.AsAnyValue())</MudText>
+        </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6">@(((IBudget)Model).ClientValue.AsAnyValue())</MudText>
+        </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6">@(((IBudget)Model).GroupsValue.AsAnyValue())</MudText>
+    </MudItem>
+}
+<MudItem xs="1" Class="border-t-2 justify-end">
+    <MudText Typo="Typo.h6">@(((IBudget)Model).InvoicedValue.AsAnyValue())</MudText>
+</MudItem>
+<MudItem xs="1" Class="border-t-2 justify-end">
+    <MudText Typo="Typo.h6">@(((IBudget)Model).BaseMargin.AsAnyValue())</MudText>
+</MudItem>
+@if (Level != SecurityLevel.ADMIN & Level != SecurityLevel.PRODUCER)
+{
+    <MudItem xs="4" Class="border-t-2">
+        <MudText Typo="Typo.h6">&nbsp;</MudText>
+    </MudItem>
+}
+
+@code {
+    [Parameter]
+    public BudgetModel Model { get; set; } = default!;
+
+    [Parameter]
+    public string Code { get; set; } = default!;
+
+    [CascadingParameter]
+    public SecurityLevel Level { get; set; }
+}

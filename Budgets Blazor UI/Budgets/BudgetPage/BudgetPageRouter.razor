@@ -1,0 +1,71 @@
+﻿@using BlazorRouter
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Create
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Edit
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Manage
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.View
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+@inject NavigationManager NavManager
+
+<LayoutView Layout="@typeof(BudgetPage)">
+	<Switch OnMatch="@OnRouteMatch">
+		<Route Template="budgets/new">
+			<BudgetCreate Model="@Model.CreateData" />
+		</Route>
+		<Route Template="budgets/{id:guid}">
+			<BudgetView Model="@Model.ViewData" />
+		</Route>
+		<Route Template="budgets/{id:guid}/edit">
+			<BudgetEdit Model="@Model.EditData" />
+		</Route>
+		<Route Template="budgets/{id:guid}/manage">
+			<BudgetManage Model="@Model.ManageData" />
+		</Route>
+	</Switch>
+</LayoutView>
+
+@code {
+	private string[] segments = Array.Empty<string>();
+
+	[CascadingParameter]
+	public BudgetPageModel Model { get; set; } = BudgetPageModel.Empty();
+
+	[CascadingParameter]
+	public INavigator Navigator { get; set; } = default!;
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+
+		if (segments != null)
+		{
+			UpdateBreadcrumbs();
+		}
+	}
+
+	private void OnRouteMatch(RouteMatchedEventArgs args)
+	{
+		segments = args.Segments.ToArray();
+
+		UpdateBreadcrumbs();
+	}
+
+	private void UpdateBreadcrumbs()
+	{
+		if (Model.ViewData is BudgetViewModel viewData)
+		{
+			var hrefs = new List<string>(new[] { "" });
+			var crumbs = segments.Select((seg, i) =>
+			{
+				hrefs.Add(seg);
+
+				var localized = i == 1 ? viewData.Code : L["BREADCRUMBS:" + seg.ToUpper()];
+
+				return new BreadcrumbItem(localized, string.Join('/', hrefs));
+			}).ToList();
+
+			Navigator.SetBreadCrumbs(crumbs);
+		}
+	}
+}

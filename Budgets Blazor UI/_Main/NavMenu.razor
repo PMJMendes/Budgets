@@ -1,0 +1,25 @@
+﻿@using Krypton.Budgets.Blazor.UI.Users._Common
+
+@inherits LocalizedComponent<MainRouter>
+
+<MudNavMenu>
+    @if (Level != SecurityLevel._UNKNOWN)
+    {
+        <MudNavLink Icon="@Icons.Material.Outlined.TableView" Href="/budgets">@L["NAVMENU:BUDGETS"]</MudNavLink>
+    }
+
+    @if (Level == SecurityLevel.PRODUCER || Level == SecurityLevel.ADMIN)
+    {
+        <MudNavLink Icon="@Icons.Material.Outlined.BackupTable" Href="/templates">@L["NAVMENU:TEMPLATES"]</MudNavLink>
+    }
+
+    @if (Level == SecurityLevel.ADMIN)
+    {
+        <MudNavLink Icon="@Icons.Material.Outlined.Person" Href="/users">@L["NAVMENU:USERS"]</MudNavLink>
+    }
+</MudNavMenu>
+
+@code {
+    [Parameter]
+    public SecurityLevel Level { get; set; }
+}

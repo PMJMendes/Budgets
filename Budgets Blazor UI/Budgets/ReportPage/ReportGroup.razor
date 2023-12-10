@@ -1,0 +1,50 @@
+﻿@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using Krypton.Budgets.Blazor.UI.Users._Common;
+@using Krypton.Budgets.Shared
+
+<MudItem xs="5" Class="border-t-2">
+    <MudText Typo="Typo.body1" Style="font-weight:bold;">@Model.Description</MudText>
+</MudItem>
+<MudItem xs="1" Class="border-t-2 justify-end">
+    <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).Value.AsAnyValue())</MudText>
+</MudItem>
+@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+{
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).UsedBCA.AsAnyValue())%</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).BCAValue.AsAnyValue())</MudText>
+        </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).ClientValue.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).BaseValue.AsAnyValue())</MudText>
+    </MudItem>
+}
+<MudItem xs="1" Class="border-t-2 justify-end">
+    <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).InvoicedValue.AsAnyValue())</MudText>
+</MudItem>
+<MudItem xs="1" Class="border-t-2 justify-end">
+    <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).ActualMargin.AsAnyValue())</MudText>
+</MudItem>
+@if (Level != SecurityLevel.ADMIN & Level != SecurityLevel.PRODUCER)
+{
+    <MudItem xs="4" Class="border-t-2">
+        <MudText Typo="Typo.body1">&nbsp;</MudText>
+    </MudItem>
+}
+
+@foreach (var cat in Model.Categories)
+{
+    <ReportCategory Model="cat" />
+}
+
+@code {
+    [Parameter]
+    public GroupModel Model { get; set; } = default!;
+
+    [CascadingParameter]
+    public SecurityLevel Level { get; set; }
+}

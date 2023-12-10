@@ -1,0 +1,62 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.AssignManager
+@using Krypton.Budgets.Blazor.APIClient.Global.AllUsers
+@using Krypton.Budgets.Blazor.UI.Users._Common
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+@inject AllUsersService UsersService
+@inject AssignManagerService Service
+
+<MudDialog>
+    <DialogContent>
+        <MudSelect @bind-Value="@Model.Manager" ToStringFunc="@(u => u?.Description ?? L["BUDGET:ASSIGN:NO_MANAGER"])"
+                   AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+            <MudSelectItem Value="@((RefModel?)null)">@L["BUDGET:ASSIGN:NO_MANAGER"]</MudSelectItem>
+            @foreach (var user in users)
+            {
+                <MudSelectItem Value="user">@user.Description</MudSelectItem>
+            }
+        </MudSelect>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["BUDGET:ASSIGN:CANCEL"]</MudButton>
+        <MudButton OnClick="Submit">@L["BUDGET:ASSIGN:OK"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private IEnumerable<RefModel> users = Array.Empty<RefModel>();
+
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; } = default!;
+
+    [CascadingParameter]
+    public IErrorHandler Handler { get; set; } = default!;
+
+    [Parameter]
+    public AssignManagerModel Model { get; set; } = AssignManagerModel.Empty();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await ResolveUsers();
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task Submit()
+    {
+        var result = await Service.AssignManagerAsync(Model.AsArgs);
+        await Handler.CheckErrorsAsync(result, _ => MudDialog.Close(DialogResult.Ok(Model.Manager)));
+    }
+
+    private async Task ResolveUsers()
+    {
+        var result = await UsersService.AllUsersAsync();
+        await Handler.CheckErrorsAsync(result, r =>
+            users = r.
+                Where(u => u is not null && u.State != UserState.DISABLED.ToString()).
+                Select(u => RefModel.FromAllUsers(u!))
+        );
+    }
+}

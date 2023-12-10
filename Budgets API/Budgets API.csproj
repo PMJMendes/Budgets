@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Krypton.Budgets.API</RootNamespace>
+    <IncludeSymbols>True</IncludeSymbols>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Budgets Domain\Budgets Domain.csproj" />
+    <ProjectReference Include="..\Budgets Logging\Budgets Logging.csproj" />
+    <ProjectReference Include="..\Budgets Persistence\Budgets Persistence.csproj" />
+    <ProjectReference Include="..\Budgets Security\Budgets Security.csproj" />
+  </ItemGroup>
+
+</Project>

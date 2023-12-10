@@ -1,0 +1,46 @@
+﻿@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using Krypton.Budgets.Shared
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+<MudItem xs="1" Class="border-r border-b">
+    <MudText Typo="Typo.h5">@Number</MudText>
+</MudItem>
+<MudItem xs="11" Class="border-b">
+    <MudText Typo="Typo.h5">
+        @(Lang switch
+        {
+            "ENG" => Model.DescEnglish,
+            _ => Model.Description
+        })
+    </MudText>
+</MudItem>
+
+@foreach (var cat in Model.Categories)
+{
+    <CategoryBlock Model="@cat" Lang="@Lang" />
+}
+
+<MudItem xs="11" Class="border-t border-r">
+    <MudText Typo="Typo.h5">
+        @L["BUDGET:PRINT:" + Lang + ":TOTAL"] @(Lang switch
+        {
+            "ENG" => Model.DescEnglish,
+            _ => Model.Description
+        })
+    </MudText>
+</MudItem>
+<MudItem xs="1" Class="justify-end border-t">
+    <MudText Typo="Typo.h5">@(((IGroup)Model).ClientValue.AsAnyValue())</MudText>
+</MudItem>
+
+@code {
+    [Parameter]
+    public GroupModel Model { get; set; } = default!;
+
+    [Parameter]
+    public int Number { get; set; } = default!;
+
+    [Parameter]
+    public string Lang { get; set; } = default!;
+}

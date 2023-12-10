@@ -1,0 +1,82 @@
+﻿@inherits LocalizedComponent<BudgetsRouter>
+
+<MudContainer Class="gap-0">
+    <MudIconButton Icon="@Icons.Material.Filled.FilterAlt" OnClick="@ToggleMenu" />
+    <MudTextField Variant="Variant.Text" @bind-Value="Model.Text" Clearable="true"
+                  OnClearButtonClick="@SearchBudgets" OnKeyUp="@CheckEnterKey"
+                  Placeholder="@L["SEARCHFORM:FREE_TEXT"]" />
+    <MudIconButton Icon="@Icons.Material.Filled.Search" OnClick="@SearchBudgets" />
+
+    <MudOverlay Visible="@(isOpen && openCount == 0)" OnClick="@ToggleMenu" LockScroll="true" />
+    <MudPopover @bind-Open="isOpen" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+        <MudGrid Spacing="0">
+            <MudItem xs="12">
+                <MudDatePicker @bind-Date="@Model.BudgetDateFrom" Label="@L["SEARCHFORM:BUDGETDATE_FROM"]"
+                               Editable="true" Clearable="true" DisableToolbar="true"
+                               AnchorOrigin="Origin.TopLeft" TransformOrigin="Origin.TopRight"
+                               Mask="@(new DateMask("yyyy.MM.dd"))" DateFormat="yyyy.MM.dd"
+                               PickerOpened="@PickerOpened" PickerClosed="@PickerClosed" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudDatePicker @bind-Date="@Model.BudgetDateTo" Label="@L["SEARCHFORM:BUDGETDATE_TO"]"
+                               Editable="true" Clearable="true" DisableToolbar="true"
+                               AnchorOrigin="Origin.TopLeft" TransformOrigin="Origin.TopRight"
+                               Mask="@(new DateMask("yyyy.MM.dd"))" DateFormat="yyyy.MM.dd"
+                               PickerOpened="@PickerOpened" PickerClosed="@PickerClosed" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudSelect @bind-Value="@Model.State" ToStringFunc="@(v => L["ENUMS:BUDGET_STATE:" + v])"
+                           AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft"
+                           Label="@L["SEARCHFORM:STATE"]" OnOpen="@PickerOpened" OnClose="@PickerClosed">
+                    @foreach(var state in Enum.GetValues<BudgetState>())
+                    {
+                        <MudSelectItem Value="state">@L["ENUMS:BUDGET_STATE:" + state.ToString()]</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12">
+                <MudDivider />
+            </MudItem>
+            <MudItem xs="12" Class="justify-end">
+                <MudButton OnClick="@Reset">@L["SEARCHFORM:RESET"]</MudButton>
+                <MudButton OnClick="@SearchBudgets">@L["SEARCHFORM:SEARCH"]</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudPopover>
+</MudContainer>
+
+@code {
+    private bool isOpen = false;
+    private int openCount = 0;
+
+    [Parameter]
+    public BudgetsSearchModel Model { get; set; } = BudgetsSearchModel.Empty();
+    [Parameter]
+    public EventCallback<BudgetsSearchModel> ModelChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnSearch { get; set; }
+
+    private void ToggleMenu() => isOpen = !isOpen;
+
+    private async Task CheckEnterKey(KeyboardEventArgs args)
+    {
+        if (args.Code == "Enter" || args.Code == "NumpadEnter")
+        {
+            await SearchBudgets();
+        }
+    }
+
+    private async Task SearchBudgets() => await OnSearch.InvokeAsync();
+
+    private async Task Reset()
+    {
+        Model = BudgetsSearchModel.Empty();
+        await ModelChanged.InvokeAsync(Model);
+        await OnSearch.InvokeAsync();
+    }
+
+    private void PickerOpened() => openCount++;
+
+    private void PickerClosed() => openCount--;
+}

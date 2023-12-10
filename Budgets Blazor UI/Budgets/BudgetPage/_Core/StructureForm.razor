@@ -1,0 +1,284 @@
+﻿@inherits ErrorHandlingForm<BudgetsRouter, List<GroupModel>>
+
+<MudForm @ref="Form" Class="@Class">
+    <MudGrid Spacing="0">
+        <MudItem xs="3">
+            <MudContainer Class="full-viewport">
+                <MudList @bind-SelectedValue="selectedValue" Clickable="true">
+                    @foreach (var group in Model.Groups)
+                    {
+                        <MudListItem Value="@group" ExpandedChanged="@(_ => SelectGroup(group))">
+                            <ChildContent>
+                                <MudContainer Class="flex-row">
+                                    @if (!group.IsValid)
+                                    {
+                                        <MudText Color="Color.Error">*</MudText>
+                                    }
+                                    <MudText>
+                                        @(string.IsNullOrWhiteSpace(group.Description) ?
+                                            L["BUDGET:EDIT:TABS:STRUCTURE:UNDEFINED_GROUP"] :
+                                            group.Description)
+                                    </MudText>
+                                    <MudSpacer />
+                                    <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
+                                                   OnClick="@(_ => OnDeleteGroup(group))" />
+                                </MudContainer>
+                            </ChildContent>
+                            <NestedList>
+                                @foreach (var category in group.Categories)
+                                {
+                                    <MudListItem Value="@category" OnClick="@(_ => SelectCategory(group, category))">
+                                        <MudContainer Class="flex-row">
+                                            @if (!category.IsValid)
+                                            {
+                                                <MudText Color="Color.Error">*</MudText>
+                                            }
+                                            <MudText>
+                                                @(string.IsNullOrWhiteSpace(category.Description) ?
+                                                    L["BUDGET:EDIT:TABS:STRUCTURE:UNDEFINED_CATEGORY"] :
+                                                    category.Description)
+                                            </MudText>
+                                            <MudSpacer />
+                                            <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
+                                                           OnClick="@(_ => OnDeleteCategory(group, category))" />
+                                        </MudContainer>
+                                    </MudListItem>
+                                }
+                                <MudDivider />
+                                <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@(_ => OnAddCategory(group))"
+                                             Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_CATEGORY"]" />
+                                <MudDivider />
+                            </NestedList>
+                        </MudListItem>
+                    }
+                    @if (Model.Groups.Any())
+                    {
+                        <MudDivider />
+                    }
+                    <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnAddGroup"
+                                 Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_GROUP"]" />
+                </MudList>
+            </MudContainer>
+        </MudItem>
+        <MudItem xs="3">
+            <MudContainer Class="full-viewport">
+                <MudList @bind-SelectedValue="selectedSubValue" Clickable="true">
+                    @if (selectedCat is CategoryModel category)
+                    {
+                        @foreach (var def in category.Defs)
+                        {
+                            <MudListItem Value="@def" OnClick="@(_ => SelectDef(def))">
+                                <MudContainer Class="flex-row">
+                                    @if (!def.IsValid)
+                                    {
+                                        <MudText Color="Color.Error">*</MudText>
+                                    }
+                                    <MudText>@("P" + def.Order) -
+                                        @(string.IsNullOrWhiteSpace(def.Description) ?
+                                            L["BUDGET:EDIT:TABS:STRUCTURE:UNDEFINED_VALUEDEF"] :
+                                            def.Description)
+                                    </MudText>
+                                    <MudSpacer />
+                                    <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
+                                                   OnClick="@(_ => OnDeleteDef(def))" />
+                                </MudContainer>
+                            </MudListItem>
+                        }
+                        @if (category.Defs.Any())
+                        {
+                            <MudDivider />
+                        }
+                        <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnAddDef"
+                                     Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_VALUEDEF"]" />
+                    }
+                    else
+                    {
+                        <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" Disabled="true"
+                                     Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_VALUEDEF"]" />
+                    }
+                </MudList>
+            </MudContainer>
+        </MudItem>
+        <MudItem xs="6">
+            <MudContainer Class="full-viewport">
+                <MudGrid Spacing="0">
+                    <MudItem xs="12">
+                        <MudText Class="pa-2">@L["GROUP:EDIT:TITLE"]</MudText>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <GroupForm @ref="GroupForm" Model="selectedGroup" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudText Class="pa-2">@L["CATEGORY:EDIT:TITLE"]</MudText>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <CategoryForm @ref="CategoryForm" Model="selectedCat" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudText Class="pa-2">@L["VALUEDEF:EDIT:TITLE"]</MudText>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <ValueDefForm @ref="ValueDefForm" Model="selectedDef" />
+                    </MudItem>
+                </MudGrid>
+            </MudContainer>
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+@code {
+    private object? selectedValue = null;
+    private GroupModel? selectedGroup = null;
+    private CategoryModel? selectedCat = null;
+
+    private object? selectedSubValue = null;
+    private ValueDefModel? selectedDef = null;
+
+    private GroupForm? GroupForm = null;
+    private CategoryForm? CategoryForm = null;
+    private ValueDefForm? ValueDefForm = null;
+
+    [Parameter]
+    public BudgetModel Model { get; set; } = BudgetModel.Empty();
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    protected override async Task<bool> InnerValidate()
+    {
+        foreach (var group in Model.Groups)
+        {
+            if (!group.IsValid)
+            {
+                SelectGroup(group);
+                return await GroupForm!.PreValidate();
+            }
+            foreach (var category in group.Categories)
+            {
+                if (!category.IsValid)
+                {
+                    SelectCategory(group, category);
+                    return await CategoryForm!.PreValidate();
+                }
+                foreach (var def in category.Defs)
+                {
+                    if (!def.IsValid)
+                    {
+                        SelectCategory(group, category);
+                        SelectDef(def);
+                        return await ValueDefForm!.PreValidate();
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private void UnselectGroup()
+    {
+        if (selectedGroup is not null)
+        {
+            Form!.ResetValidation();
+
+            selectedValue = null;
+            selectedGroup = null;
+            selectedCat = null;
+
+            selectedSubValue = null;
+            selectedDef = null;
+        }
+    }
+
+    private void SelectGroup(GroupModel group)
+    {
+        if (selectedGroup != group)
+        {
+            Form!.ResetValidation();
+            GroupForm?.SetFocus();
+
+            selectedValue = group;
+            selectedGroup = group;
+            selectedCat = null;
+
+            selectedSubValue = null;
+            selectedDef = null;
+        }
+    }
+
+    private void SelectCategory(GroupModel group, CategoryModel category)
+    {
+        if (selectedCat != category)
+        {
+            Form!.ResetValidation();
+            CategoryForm?.SetFocus();
+
+            selectedValue = category;
+            selectedGroup = group;
+            selectedCat = category;
+
+            selectedSubValue = null;
+            selectedDef = null;
+        }
+    }
+
+    private void UnselectDef()
+    {
+        if (selectedDef is not null)
+        {
+            Form!.ResetValidation();
+            ValueDefForm?.SetFocus();
+
+            selectedSubValue = null;
+            selectedDef = null;
+        }
+    }
+
+    private void SelectDef(ValueDefModel def)
+    {
+        if (selectedDef != def)
+        {
+            Form!.ResetValidation();
+            ValueDefForm?.SetFocus();
+
+            selectedSubValue = def;
+            selectedDef = def;
+        }
+    }
+
+    private void OnAddGroup()
+    {
+        var group = GroupModel.Empty();
+        SelectGroup(Model.AddGroup(group));
+    }
+
+    private void OnAddCategory(GroupModel group)
+    {
+        var category = CategoryModel.Empty();
+        SelectCategory(group, group.AddCategory(category));
+    }
+
+    private void OnAddDef()
+    {
+        var def = ValueDefModel.Empty().WithOrder(selectedCat!.Defs.Count() + 1);
+        SelectDef(selectedCat.AddDef(def));
+    }
+
+    private void OnDeleteGroup(GroupModel group)
+    {
+        Model.RemoveGroup(group);
+        UnselectGroup();
+    }
+
+    private void OnDeleteCategory(GroupModel group, CategoryModel category)
+    {
+        group.RemoveCategory(category);
+        SelectGroup(group);
+    }
+
+    private void OnDeleteDef(ValueDefModel def)
+    {
+        selectedCat!.RemoveDef(def);
+        UnselectDef();
+    }
+}

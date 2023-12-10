@@ -1,0 +1,54 @@
+﻿@typeparam TRow
+
+<MudContainer Class="full-viewport">
+    <MudTable T="TRow" Elevation="0" Style="@TableStyle()" Items="@DataSource"
+              Hover="@Clickable" Dense="true" Bordered="true" Striped="true"
+              OnRowClick="@RowClickHandler" RowClassFunc="@SelectedRowClassFunc">
+        <HeaderContent>
+            @foreach (var col in Columns.Where(c => c.Visible))
+            {
+                <MudTh>@col.Header</MudTh>
+            }
+        </HeaderContent>
+        <RowTemplate>
+            @foreach (var col in Columns.Where(c => c.Visible))
+            {
+                <MudTd DataLabel="@col.Header">@col.Selector(context)</MudTd>
+            }
+        </RowTemplate>
+    </MudTable>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public IEnumerable<Colspec> Columns { get; set; } = Array.Empty<Colspec>();
+
+    [Parameter]
+    public IEnumerable<TRow>? DataSource { get; set; }
+
+    [Parameter]
+    public bool Clickable { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<TRow> OnRowClick { get; set; }
+
+    [Parameter]
+    public Func<TRow, int, string> SelectedRowClassFunc { get; set; } = (_, _) => "";
+
+    private string TableStyle() => Clickable ? "cursor: pointer" : "";
+
+    private async Task RowClickHandler(TableRowClickEventArgs<TRow> args)
+    {
+        if (Clickable)
+        {
+            await OnRowClick.InvokeAsync(args.Item);
+        }
+    }
+
+    public class Colspec
+    {
+        public bool Visible { get; set; } = true;
+        public string Header { get; set; } = default!;
+        public Func<TRow, RenderFragment> Selector { get; init; } = default!;
+    }
+}

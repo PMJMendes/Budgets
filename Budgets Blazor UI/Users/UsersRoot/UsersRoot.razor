@@ -1,0 +1,68 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Global.AllUsers
+@using Krypton.Budgets.Blazor.UI.Users.UserPage
+
+@inherits LocalizedComponent<UsersRouter>
+
+@inject AllUsersService Service
+
+<MudContainer Class="pa-2">
+    <MudText Typo="Typo.h5">@L["ROOT:TITLE"]</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Text" OnClick="@OnCreateNew">@L["ROOT:CREATE"]</MudButton>
+</MudContainer>
+
+@if (_loading)
+{
+    <MudContainer Class="full-viewport justify-center align-center">
+        <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+    </MudContainer>
+}
+else if (Model.Items.Any())
+{
+    <UsersRootList Model="@Model.Items" UserSelected="@OnUserSelected" />
+}
+else
+{
+    <MudContainer Class="full-viewport justify-center align-center">
+        <MudIcon Icon="@Icons.Material.Filled.Search" />
+        <MudText Typo="Typo.h6" Class="pl-3">@L["ROOT:EMPTY:TITLE"]</MudText>
+        <MudText>@L["ROOT:EMPTY:CHANGE"]</MudText>
+    </MudContainer>
+}
+
+@code {
+    private bool _loading;
+    private UsersRootModel Model = UsersRootModel.Empty();
+
+    [CascadingParameter]
+    public INavigator? Navigator { get; set; }
+
+    [CascadingParameter]
+    public IErrorHandler Handler { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await OnSearch();
+    }
+
+    private async Task OnSearch()
+    {
+        _loading = true;
+        var results = await Service.AllUsersAsync();
+        await Handler.CheckErrorsAsync(results, r => Model = UsersRootModel.WithResults(r));
+        _loading = false;
+    }
+
+    private void OnCreateNew()
+    {
+        var model = UserPageModel.FromRoot(Model, true).ForCreate();
+        Navigator?.NavigateWithState("/users/new", model);
+    }
+
+    private void OnUserSelected(Guid id)
+    {
+        var model = UserPageModel.FromRoot(Model, false);
+        Navigator?.NavigateWithState("/users/" + id.ToString(), model);
+    }
+}

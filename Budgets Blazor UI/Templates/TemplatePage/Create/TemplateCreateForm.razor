@@ -1,0 +1,34 @@
+﻿@using FluentValidation
+
+@inherits ErrorHandlingForm<TemplatesRouter, TemplateCreateModel>
+
+<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="full-viewport">
+    <MudGrid>
+        <MudItem xs="6" Class="flex-column">
+            <MudText>@L["TEMPLATE:FIELDS:CODE"]</MudText>
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Code"
+                          For="@(() => Model.Code)" />
+        </MudItem>
+        <MudItem xs="6" Class="flex-column">
+            <MudText>@L["TEMPLATE:FIELDS:TITLE"]</MudText>
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Title"
+                          For="@(() => Model.Title)" />
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+@code {
+    [Parameter]
+    public TemplateCreateModel Model { get; set; } = TemplateCreateModel.Empty();
+
+    protected override void ConfigureValidator(AbstractValidator<TemplateCreateModel> validator)
+    {
+        validator.RuleFor(m => m.Code).
+            NotEmpty().
+            WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+
+        validator.RuleFor(m => m.Title).
+            NotEmpty().
+            WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+    }
+}

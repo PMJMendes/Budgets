@@ -1,0 +1,226 @@
+﻿@using FluentValidation
+@using Krypton.Budgets.Shared
+@using ValueType = Krypton.Budgets.Shared.ValueType
+
+@inherits ErrorHandlingForm<BudgetsRouter, BudgetModel>
+
+<MudForm @ref="Form">
+    <MudGrid Spacing="0" Class="@Class">
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:VALUES:FIELDS:GROUP"]: </MudText>
+        </MudItem>
+        <MudItem xs="4">
+            <MudSelect @bind-Value="@selectedGroup" @bind-Value:after="@OnGroupSelected" ToStringFunc="@(g => g?.Description)"
+                       AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                @if (Model is not null)
+                {
+                    @foreach (var group in Model.Groups)
+                    {
+                        <MudSelectItem Value="group">@group.Description</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:VALUES:FIELDS:CATEGORY"]: </MudText>
+        </MudItem>
+        <MudItem xs="4">
+            <MudSelect @bind-Value:get="@selectedCat" @bind-Value:set="@(async value => await OnCategorySelectedAsync(value))"
+                       ToStringFunc="@(c => c?.Description)" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                @if (selectedGroup is not null)
+                {
+                    @foreach (var category in selectedGroup.Categories)
+                    {
+                        <MudSelectItem Value="category">@category.Description</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12">
+            <MudDivider />
+        </MudItem>
+        <MudItem xs="12">
+            @if (selectedCat is not null)
+            {
+                <MudDataGrid Items="@items" Elevation="0" ReadOnly="false" EditMode="DataGridEditMode.Cell" Class="page-layout">
+                    <Columns>
+                        <TemplateColumn T="ItemModel" Field="Description" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCRIPTION"]">
+                            <EditTemplate>
+                                <MudTextField @bind-Value="@context.Item.Description" Required="true"
+                                              RequiredError="@ErrorL["ERRORS:FORM:VALUE_REQUIRED"]" />
+                            </EditTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn T="ItemModel" Field="DescEnglish" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCENGLISH"]">
+                            <EditTemplate>
+                                <MudTextField @bind-Value="@context.Item.DescEnglish" />
+                            </EditTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn T="ItemModel" Field="ExcludeFromBase" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:EXCLUDEFROMBASE"]">
+                            <EditTemplate>
+                                <MudSwitch @bind-Checked="@context.Item.ExcludeFromBase" />
+                            </EditTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn T="ItemModel" Field="CanBePercent" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:CANBEPERCENT"]">
+                            <EditTemplate>
+                                <MudSwitch @bind-Checked="@context.Item.CanBePercent" />
+                            </EditTemplate>
+                        </TemplateColumn>
+
+                        @foreach (var def in selectedCat.Defs)
+                        {
+                            <TemplateColumn T="ItemModel" Title="@( def.Description + (def.Type == ValueType.TEXT ? "/" + L["BUDGET:EDIT:TABS:VALUES:FIELDS:ENGLISH"] : ""))">
+                                <CellTemplate>
+                                    @if (context.Item[def.Description] is ValueModel model)
+                                    {
+                                        @if (def.Type == ValueType.NUMBER)
+                                        {
+                                            @model.NumberValue?.AsAnyValue()
+                                        }
+                                        else
+                                        {
+                                            @model.TextValue
+                                        }
+                                    }
+                                </CellTemplate>
+                                <EditTemplate>
+                                    @if (context.Item[def.Description] is ValueModel model)
+                                    {
+                                        @if (def.Type == ValueType.NUMBER)
+                                        {
+                                            <MudNumericField Format="N2" @bind-Value:get="@model.NumberValue"
+                                                             @bind-Value:set="@(value => OnSetValue(context.Item, model, value))" />
+                                        }
+                                        else
+                                        {
+                                            <MudContainer Class="flex-row">
+                                                <MudTextField @bind-Value="@model.TextValue" />
+                                                @("/")
+                                                <MudTextField @bind-Value="@model.TextEnglish" />
+                                            </MudContainer>
+                                        }
+                                    }
+                                </EditTemplate>
+                            </TemplateColumn>
+                        }
+
+                        <TemplateColumn T="ItemModel" Field="Value" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:TOTAL"]">
+                            <CellTemplate>
+                                <MudText>@context.Item.Value.AsAnyValue()</MudText>
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                        <TemplateColumn T="ItemModel" IsEditable="false">
+                            <CellTemplate>
+                                <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
+                                           OnClick="@(_ => OnDeleteItem(context.Item))" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                </MudDataGrid>
+            }
+            else
+            {
+                <MudDataGrid Items="@items" Elevation="0" Class="page-layout">
+                    <Columns>
+                        <TemplateColumn T="ItemModel" Field="Description" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCRIPTION"]" />
+                        <TemplateColumn T="ItemModel" Field="DescEnglish" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCENGLISH"]" />
+                        <TemplateColumn T="ItemModel" Field="Value" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:TOTAL"]" />
+                    </Columns>
+                </MudDataGrid>
+            }
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton StartIcon="@Icons.Material.Filled.AddCircleOutline" OnClick="@(_ => OnAddItem())"
+                       Disabled="@(selectedCat is null)">
+                @L["BUDGET:EDIT:TABS:VALUES:NEW_ITEM"]
+            </MudButton>
+        </MudItem>
+        <MudItem xs="4" />
+        <MudItem xs="1">@L["BUDGET:EDIT:TABS:VALUES:TOTALS:TOTALS"]</MudItem>
+        <MudItem xs="1">@L["BUDGET:EDIT:TABS:VALUES:TOTALS:BASE"]</MudItem>
+        <MudItem xs="1">@L["BUDGET:EDIT:TABS:VALUES:TOTALS:INTERNAL"]</MudItem>
+        <MudItem xs="1">@L["BUDGET:EDIT:TABS:VALUES:TOTALS:CLIENT"]</MudItem>
+        <MudItem xs="4" />
+        <MudItem xs="4" />
+        <MudItem xs="1">@L["BUDGET:EDIT:TABS:VALUES:TOTALS:CATEGORY"]</MudItem>
+        @if (selectedCat is ICategory cat)
+        {
+            <MudItem xs="1">@cat.BaseValue.AsAnyValue()</MudItem>
+            <MudItem xs="1">@cat.Value.AsAnyValue()</MudItem>
+            <MudItem xs="1">@cat.ClientValue.AsAnyValue()</MudItem>
+        }
+        else
+        {
+            <MudItem xs="3" />
+        }
+        <MudItem xs="4" />
+        <MudItem xs="4" />
+        <MudItem xs="1">@L["BUDGET:EDIT:TABS:VALUES:TOTALS:GROUP"]</MudItem>
+        @if (selectedGroup is IGroup group)
+        {
+            <MudItem xs="1">@group.BaseValue.AsAnyValue()</MudItem>
+            <MudItem xs="1">@group.Value.AsAnyValue()</MudItem>
+            <MudItem xs="1">@group.ClientValue.AsAnyValue()</MudItem>
+        }
+        else
+        {
+            <MudItem xs="3" />
+        }
+        <MudItem xs="4" />
+        <MudItem xs="4" />
+        <MudItem xs="1">@L["BUDGET:EDIT:TABS:VALUES:TOTALS:TOTAL"]</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).BaseValue.AsAnyValue())</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).Value.AsAnyValue())</MudItem>
+        <MudItem xs="1">@(((IBudget)Model).ClientValue.AsAnyValue())</MudItem>
+        <MudItem xs="4" />
+    </MudGrid>
+</MudForm>
+
+@code {
+    private GroupModel? selectedGroup = null;
+    private CategoryModel? selectedCat = null;
+    private IEnumerable<ItemModel>? items => selectedCat?.Items;
+
+    [Parameter]
+    public BudgetModel Model { get; set; } = BudgetModel.Empty();
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private void OnGroupSelected()
+    {
+        selectedCat = null;
+    }
+
+    private async Task OnCategorySelectedAsync(CategoryModel cat)
+    {
+        if (selectedCat != cat)
+        {
+            selectedCat = null;
+
+            await Task.Delay(1);
+            selectedCat = cat;
+        }
+    }
+
+    private void OnAddItem()
+    {
+        selectedCat!.AddItem(ItemModel.Empty());
+    }
+
+    private void OnDeleteItem(ItemModel item)
+    {
+        selectedCat!.RemoveItem(item);
+    }
+
+    private void OnSetValue(ItemModel item, ValueModel model, decimal? value)
+    {
+        model.NumberValue = value;
+        model.ProdValue = value;
+        item.Percent = null;
+        ((IItem)item).RecalculateBase();
+        ((IItem)item).Recalculate(((IBudget)Model).BaseValue);
+        ((IItem)item).RecalculateClientTotal(((IBudget)Model).Value);
+        ((IItem)item).RecalculateProd();
+    }
+}

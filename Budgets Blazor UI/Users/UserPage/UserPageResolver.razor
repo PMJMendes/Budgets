@@ -1,0 +1,181 @@
+﻿@using BlazorRouter
+@using Krypton.Budgets.Blazor.APIClient.Users.User.UserDetails
+@using Krypton.Budgets.Blazor.APIClient.Global.AllUsers
+@using Krypton.Budgets.Blazor.UI.Users.UserPage.Create
+@using Krypton.Budgets.Blazor.UI.Users.UserPage.Edit
+@using Krypton.Budgets.Blazor.UI.Users.UserPage.Navigator
+@using Krypton.Budgets.Blazor.UI.Users.UserPage.View
+
+@inject AllUsersService SearchService
+@inject UserDetailsService DetailsService
+
+<Switch OnMatch="@OnRouteMatch">
+	<Route>
+        <CascadingValue Value="@Model">
+            <UserPageRouter />
+        </CascadingValue>
+    </Route>
+</Switch>
+
+@code {
+    private UserPageModel Model = UserPageModel.Empty();
+    private string[] routeSegments = Array.Empty<string>();
+
+    [CascadingParameter]
+    public INavigator Navigator { get; set; } = default!;
+
+    [CascadingParameter]
+    public IErrorHandler Handler { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Navigator.StateHasChangedAsync = async () =>
+        {
+            await LoadPageStateAsync();
+            await InvokeAsync(() => StateHasChanged());
+        };
+    }
+
+    private async Task OnRouteMatch(RouteMatchedEventArgs args)
+    {
+        routeSegments = args.Segments;
+        await LoadPageStateAsync();
+    }
+
+    private async Task LoadPageStateAsync()
+    {
+        if (Navigator.GetState<UserPageModel>() is UserPageModel model)
+        {
+            Model = model;
+        }
+
+        if (routeSegments.Length < 2 || routeSegments.Length > 3 || routeSegments[0] != "users")
+        {
+            return;
+        }
+
+        if (routeSegments[1] == "new")
+        {
+            await ResolveModelForCreate();
+            return;
+        }
+
+        if (Guid.TryParse(routeSegments[1], out Guid id))
+        {
+            await ResolveModel(id, routeSegments.Length == 3);
+        }
+    }
+
+    private async Task ResolveModelForCreate()
+    {
+        bool update = false;
+
+        var navTask = Task<UserNavigatorModel>.FromResult(Model.NavData);
+        if (Model.IsNew)
+        {
+            update = true;
+            navTask = ResolveNavData(Guid.Empty);
+        }
+        else if (Model.NavData.SelectedId != Guid.Empty)
+        {
+            update = true;
+            navTask = Task<UserNavigatorModel>.FromResult(Model.NavData.WithId(Guid.Empty));
+        }
+
+        var createModel = Model.CreateData;
+        if (createModel is null)
+        {
+            update = true;
+            createModel = UserCreateModel.Empty();
+        }
+
+        if (Model.ViewData is not null)
+        {
+            update = true;
+        }
+
+        if (update)
+        {
+            await navTask;
+
+            Model = UserPageModel.FromResolver(
+                navTask.Result,
+                createModel
+            );
+        }
+    }
+
+    private async Task ResolveModel(Guid id, bool forEdit)
+    {
+        bool update = false;
+
+        var navTask = Task<UserNavigatorModel>.FromResult(Model.NavData);
+        if (Model.IsNew)
+        {
+            update = true;
+            navTask = ResolveNavData(id);
+        }
+        else if (Model.NavData.SelectedId != id)
+        {
+            update = true;
+            navTask = Task<UserNavigatorModel>.FromResult(Model.NavData.WithId(id));
+        }
+
+        var viewTask = Task<UserViewModel?>.FromResult(Model.ViewData);
+        if (Model.ViewData?.Id is not Guid viewId || viewId != id)
+        {
+            update = true;
+            viewTask = ResolveViewData(id);
+        }
+
+        var editTask = Task<UserEditModel?>.FromResult(Model.EditData);
+        if (!forEdit && Model.EditData is not null)
+        {
+            update = true;
+            editTask = Task<UserEditModel?>.FromResult((UserEditModel?)null);
+        }
+        if (forEdit && (Model.EditData is null || Model.EditData.Id != id))
+        {
+            update = true;
+            editTask = viewTask.ContinueWith(vt => vt.Result is UserViewModel vm ?
+                (UserEditModel?)UserEditModel.FromViewData(vm) : null);
+        }
+
+        if (update)
+        {
+            await Task.WhenAll(navTask, viewTask);
+
+            Model = UserPageModel.FromResolver(
+                navTask.Result,
+                null,
+                viewTask.Result
+            );
+        }
+    }
+
+    private async Task<UserNavigatorModel> ResolveNavData(Guid id)
+    {
+        var results = await SearchService.AllUsersAsync();
+
+        var navData = Model.NavData;
+        await Handler.CheckErrorsAsync(results, r => navData = navData.WithResults(r).WithId(id));
+        return navData;
+    }
+
+    private async Task<UserViewModel?> ResolveViewData(Guid id)
+    {
+        var results = await DetailsService.UserDetailsAsync(TargetModel.ForId(id).AsQueryArgs);
+
+        var viewData = Model.ViewData;
+        await Handler.CheckErrorsAsync(results, r =>
+        {
+            if (r.FirstOrDefault() is UserDetailsItem item)
+            {
+                viewData = UserViewModel.FromService(item);
+            }
+        });
+        return viewData;
+    }
+}

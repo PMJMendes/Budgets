@@ -1,0 +1,154 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Global.Echo
+@using Krypton.Budgets.Blazor.UI._Impl.Session
+@using Krypton.Budgets.Blazor.UI.Users._Common;
+
+@inherits LocalizedLayout<MainRouter>
+
+@inject EchoService EchoService
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+                       OnClick="@((e) => drawerOpen = !drawerOpen)" />
+        <MudText Typo="Typo.h5" Class="pl-3">@L["TITLE"]</MudText>
+        <MudBreadcrumbs Items="@State.BreadCrumbs">
+            <SeparatorTemplate>
+                <MudText Color="Color.Inherit">/</MudText>
+            </SeparatorTemplate>
+            <ItemTemplate Context="item">
+                <MudButton Variant="Variant.Text" Color="Color.Inherit" OnClick="@(() => OnBreadcrumbClick(item.Href))">
+                    @item.Text
+                </MudButton>
+            </ItemTemplate>
+        </MudBreadcrumbs>
+        <MudSpacer />
+        <UserMenu Greeting="@greeting" Level="@level" />
+    </MudAppBar>
+    <MudDrawer Variant="@DrawerVariant.Mini" @bind-Open="drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu Level="@level" />
+    </MudDrawer>
+    <MudMainContent Class="full-viewport">
+        <CascadingValue Value="@((INavigator)State)" IsFixed="true">
+            <CascadingValue Value="@level">
+                @Body
+            </CascadingValue>
+        </CascadingValue>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool drawerOpen = false;
+    private PageState State;
+    private string greeting = string.Empty;
+    private SecurityLevel level = SecurityLevel._UNKNOWN;
+
+    [CascadingParameter]
+    public IErrorHandler Handler { get; set; } = default!;
+
+    [Inject]
+    private NavigationManager NavManager { get; set; } = default!;
+
+    public MainLayout()
+    {
+        State = new PageState(this);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var result = await EchoService.EchoAsync();
+
+        await Handler.CheckErrorsAsync(result, r =>
+        {
+            if (r.FirstOrDefault() is EchoItem echo)
+            {
+                greeting = echo.Name ?? "root";
+                level = Enum.TryParse(echo.Level, true, out SecurityLevel lv) ? lv : SecurityLevel._UNKNOWN;
+
+            }
+        });
+    }
+
+    private void OnBreadcrumbClick(string url)
+    {
+        NavManager.NavigateTo(url);
+    }
+
+    private class PageState : INavigator
+    {
+        private MainLayout owner;
+        private object? state;
+
+        public PageState(MainLayout owner)
+        {
+            this.owner = owner;
+        }
+
+        public List<BreadcrumbItem> BreadCrumbs = Array.Empty<BreadcrumbItem>().ToList();
+
+        T? INavigator.GetState<T>() where T : class => state as T;
+
+        async Task INavigator.SetBreadCrumbs(List<BreadcrumbItem> crumbs)
+        {
+            if (BreadCrumbs.Count == crumbs.Count &&
+                crumbs.Select((c, i) => (c, i)).All(c => c.c.Href == BreadCrumbs[c.i].Href))
+            {
+                return;
+            }
+
+            BreadCrumbs = crumbs;
+            await owner.InvokeAsync(() => owner.StateHasChanged());
+        }
+
+        async Task INavigator.SetBreadCrumbs(string[] segments, IStringLocalizer loc)
+        {
+            var hrefs = new List<string>(new[] { "" });
+            await ((INavigator)this).SetBreadCrumbs(segments.Select(seg =>
+            {
+                hrefs.Add(seg);
+
+                var localized = loc["BREADCRUMBS:" + seg.ToUpper()];
+                var translated = localized.ResourceNotFound ? seg : localized.Value;
+
+                return new BreadcrumbItem(translated, string.Join('/', hrefs));
+            }).ToList());
+        }
+
+        void INavigator.NavigateWithState(string url, object state)
+        {
+            this.state = state;
+            owner.NavManager.NavigateTo(url);
+        }
+
+        async Task INavigator.NavigateWithStateAsync(string url, object state)
+        {
+            var blocker = new TaskCompletionSource();
+
+            owner.NavManager.LocationChanged += LocationChanged!;
+
+            this.state = state;
+            owner.NavManager.NavigateTo(url);
+
+            await blocker.Task;
+
+            void LocationChanged(object sender, LocationChangedEventArgs e)
+            {
+                owner.NavManager.LocationChanged -= LocationChanged!;
+                blocker.SetResult();
+            }
+        }
+
+        async Task INavigator.RefreshWithStateAsync(object state)
+        {
+            this.state = state;
+            await ((INavigator)this).StateHasChangedAsync();
+        }
+
+        Func<Task> INavigator.StateHasChangedAsync { get; set; } = () => Task.CompletedTask;
+    }
+}

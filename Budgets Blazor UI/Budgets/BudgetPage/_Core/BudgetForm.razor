@@ -1,0 +1,68 @@
+﻿@using FluentValidation
+
+@inherits ErrorHandlingForm<BudgetsRouter, BudgetModel>
+
+<MudContainer Class="full-viewport">
+    <MudTabs @bind-ActivePanelIndex="activeTab">
+        <MudTabPanel Text="@L["BUDGET:EDIT:TABS:STRUCTURE:HEADER"]"></MudTabPanel>
+        <MudTabPanel Text="@L["BUDGET:EDIT:TABS:FRONT_DATA:HEADER"]"></MudTabPanel>
+        <MudTabPanel Text="@L["BUDGET:EDIT:TABS:VALUES:HEADER"]"></MudTabPanel>
+        <MudTabPanel Text="@L["BUDGET:EDIT:TABS:PERCENTS:HEADER"]"></MudTabPanel>
+        <MudTabPanel Text="@L["BUDGET:EDIT:TABS:PRODUCTION:HEADER"]"></MudTabPanel>
+    </MudTabs>
+
+    <MudContainer Class="full-viewport">
+        <StructureForm @ref="StructureForm" Model="@Model" Class="@(activeTab == 0 ? string.Empty : "d-none")" />
+        <FrontDataForm @ref="FrontForm" Model="@Model.FrontData" Class="@(activeTab == 1 ? string.Empty : "d-none")" />
+        <ValuesForm @ref="ValuesForm" Model="@Model" Class="@(activeTab == 2 ? string.Empty : "d-none")" />
+        <PercentsForm @ref="PercentsForm" Model="@Model" Class="@(activeTab == 3 ? string.Empty : "d-none")" />
+        <ProductionForm @ref="ProductionForm" Model="@Model" Class="@(activeTab == 4 ? string.Empty : "d-none")" />
+    </MudContainer>
+</MudContainer>
+
+@code {
+    private int activeTab = 1;
+    private StructureForm? StructureForm = default!;
+    private FrontDataForm? FrontForm = default!;
+    private ValuesForm? ValuesForm = default!;
+    private PercentsForm? PercentsForm = default!;
+    private ProductionForm? ProductionForm = default!;
+
+    [Parameter]
+    public BudgetModel Model { get; set; } = BudgetModel.Empty();
+
+    protected override async Task<bool> InnerValidate()
+    {
+        if (!await StructureForm!.PreValidate())
+        {
+            activeTab = 0;
+            return false;
+        }
+
+        if (!await FrontForm!.PreValidate())
+        {
+            activeTab = 1;
+            return false;
+        }
+
+        if (!await ValuesForm!.PreValidate())
+        {
+            activeTab = 2;
+            return false;
+        }
+
+        if (!await PercentsForm!.PreValidate())
+        {
+            activeTab = 3;
+            return false;
+        }
+
+        if (!await ProductionForm!.PreValidate())
+        {
+            activeTab = 4;
+            return false;
+        }
+
+        return true;
+    }
+}

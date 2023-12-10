@@ -1,0 +1,38 @@
+﻿@inherits LocalizedComponent<TemplatesRouter>
+
+<ItemList TRow="TemplatesRootListItemModel" Columns="@Columns" DataSource="@Model" Clickable="@true"
+		  OnRowClick="@OnRowClick" />
+
+@code {
+	private ItemList<TemplatesRootListItemModel>.Colspec[] Columns = default!;
+
+	[Parameter]
+	public IEnumerable<TemplatesRootListItemModel>? Model { get; set; }
+
+	[Parameter]
+	public EventCallback<Guid> TemplateSelected { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		Columns = new[]
+		{
+			new ItemList<TemplatesRootListItemModel>.Colspec
+			{
+				Selector = item => __builder => { @item.Code },
+				Header = L["ROOT:LIST:CODE"]
+			},
+			new ItemList<TemplatesRootListItemModel>.Colspec
+			{
+				Selector = item => __builder => { @item.Title },
+				Header = L["ROOT:LIST:TITLE"]
+			}
+		};
+	}
+
+	private async Task OnRowClick(TemplatesRootListItemModel item)
+	{
+		await TemplateSelected.InvokeAsync(item.Id);
+	}
+}

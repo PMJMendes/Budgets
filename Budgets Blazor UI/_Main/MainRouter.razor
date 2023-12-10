@@ -1,0 +1,66 @@
+﻿@using BlazorRouter
+@using Krypton.Budgets.Blazor.APIClient._Common
+@using Krypton.Budgets.Blazor.UI.Budgets
+@using Krypton.Budgets.Blazor.UI.Templates
+@using Krypton.Budgets.Blazor.UI.Users
+
+@inherits LocalizedComponent<MainRouter>
+
+@implements IErrorHandler
+
+@inject ISnackbar Snackbar
+
+<CascadingValue Value="@((IErrorHandler)this)" IsFixed="true">
+	<LayoutView Layout="@typeof(MainLayout)">
+		<Switch>
+			<Route Template="budgets/**">
+				<BudgetsRouter />
+			</Route>
+			<Route Template="templates/**">
+				<TemplatesRouter />
+			</Route>
+			<Route Template="users/**">
+				<UsersRouter />
+			</Route>
+		</Switch>
+	</LayoutView>
+</CascadingValue>
+
+@code {
+	Task IErrorHandler.CheckErrorsAsync<T>(SafeResult<T> result, Action<T> handleResult)
+	{
+		if (result.IsErrors)
+		{
+			ShowSnackbar(result.Errors);
+		}
+		else
+		{
+			handleResult(result.Result);
+		}
+
+		return Task.CompletedTask;
+	}
+
+	async Task IErrorHandler.CheckErrorsAsync<T>(SafeResult<T> result, Func<T, Task> handleResult)
+	{
+		if (result.IsErrors)
+		{
+			ShowSnackbar(result.Errors);
+		}
+		else
+		{
+			await handleResult(result.Result);
+		}
+	}
+
+	private void ShowSnackbar(ErrorResults errors)
+	{
+		if (errors.InvalidParams is IEnumerable<ErrorResultsItem> items)
+		{
+			foreach (var error in items.Where(e => e is not null))
+			{
+				Snackbar.Add(L["ERRORS:SERVICE:" + error!.Reason], Severity.Error);
+			}
+		}
+	}
+}

@@ -1,0 +1,70 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Global.SearchBudgets
+@using Krypton.Budgets.Blazor.UI.Budgets._Common
+@using Krypton.Budgets.Blazor.UI.Users._Common
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+@inject SearchBudgetsService Service
+
+<MudContainer Class="full-viewport">
+    <MudText Typo="Typo.h5" Class="pa-2">@L["BUDGET:NAVIGATOR:TITLE"]</MudText>
+
+    
+	@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+	{
+        <MudContainer Class="justify-space-between pa-2">
+            <BudgetsSearchForm Model="@Model.SearchArgs" ModelChanged="@OnSearchModelChanged" OnSearch="@OnSearch" />
+            <MudIconButton Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnCreateNew" Class="pl-2" />
+        </MudContainer>
+    }
+
+    @if (_loading)
+    {
+        <MudContainer Class="full-viewport justify-center align-center">
+            <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+        </MudContainer>
+    }
+    else
+    {
+        <BudgetNavigatorList Model="@Model.Budgets" SelectedID="@Model.SelectedId" BudgetSelected="@OnBudgetSelected" />
+    }
+</MudContainer>
+
+@code {
+    private bool _loading = false;
+
+    [Parameter]
+    public BudgetNavigatorModel Model { get; set; } = BudgetNavigatorModel.Empty();
+
+    [CascadingParameter]
+    public SecurityLevel Level { get; set; }
+
+    [CascadingParameter]
+    public IBudgetPageController Page { get; set; } = default!;
+
+    [CascadingParameter]
+    public IErrorHandler Handler { get; set; } = default!;
+
+    private void OnSearchModelChanged(BudgetsSearchModel model)
+    {
+        Model = Model.WithSearchArgs(model);
+    }
+
+    private async Task OnSearch()
+    {
+        _loading = true;
+        var results = await Service.SearchBudgetsAsync(Model.SearchArgs.AsArgs());
+        await Handler.CheckErrorsAsync(results, r => Model = Model.WithSearchResults(r));
+        _loading = false;
+    }
+
+    private void OnCreateNew()
+    {
+        Page.OnCreate();
+    }
+
+    private void OnBudgetSelected(Guid id)
+    {
+        Page.OnView(id);
+    }
+}

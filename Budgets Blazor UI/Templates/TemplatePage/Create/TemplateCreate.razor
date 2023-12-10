@@ -1,0 +1,88 @@
+﻿@using Krypton.Budgets.Blazor.APIClient._Common
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.CloneBudget
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
+@using Krypton.Budgets.Blazor.APIClient.Global.CreateBudget
+@using Krypton.Budgets.Blazor.UI.Budgets._Common
+
+@inherits LocalizedComponent<TemplatesRouter>
+
+@inject CreateBudgetService CreateService
+@inject CloneBudgetService CloneService
+@inject ISnackbar Snackbar
+
+@if (Model is null)
+{
+	<MudContainer Class="full-viewport justify-center align-center">
+		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
+	</MudContainer>
+}
+else
+{
+	<MudContainer Class="full-viewport">
+		@if (_loading)
+		{
+			<MudProgressLinear Indeterminate="true" />
+		}
+
+		<MudGrid Spacing="0" Class="page-layout">
+			<MudItem xs="12" Class="full-viewport pl-2">
+				<MudGrid Spacing="0">
+					<MudItem xs="12" Class="pa-2">
+						<MudText Typo="Typo.h6">@L["TEMPLATE:CREATE:TITLE"]</MudText>
+					</MudItem>
+					<MudItem xs="12">
+						<TemplateCreateForm @ref="TemplateForm" Model="@Model" />
+					</MudItem>
+					<MudItem xs="12" Class="justify-end pa-2">
+						<MudButton OnClick="@SaveChanges">@L["TEMPLATE:CREATE:OK"]</MudButton>
+					</MudItem>
+				</MudGrid>
+			</MudItem>
+		</MudGrid>
+	</MudContainer>
+}
+
+@code {
+	private bool _loading = false;
+	private bool shouldRender = true;
+
+	private TemplateCreateForm? TemplateForm = default!;
+
+	[Parameter]
+	public TemplateCreateModel Model { get; set; } = TemplateCreateModel.Empty();
+
+	[CascadingParameter]
+	public ITemplatePageController Page { get; set; } = default!;
+
+	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
+
+	private async Task SaveChanges()
+	{
+		if (TemplateForm is TemplateCreateForm form && await form.PreValidate())
+		{
+			_loading = true;
+			var results = await (Model.SourceId == Guid.Empty ? CreateTemplate() : CloneTemplate());
+
+			if (TemplateForm is IErrorHandler handler)
+			{
+				await handler.CheckErrorsAsync(results, async r =>
+				{
+					shouldRender = false;
+					await Page.AfterCreateAsync(r);
+					Snackbar.Add(L["TEMPLATE:CREATE:SUCCESS"], Severity.Success);
+				});
+			}
+			_loading = false;
+		}
+	}
+
+	private async Task<SafeResult<BudgetDetailsItem>> CreateTemplate()
+	{
+		return await CreateService.CreateBudgetAsync(Model.AsCreateArgs());
+	}
+
+	private async Task<SafeResult<BudgetDetailsItem>> CloneTemplate()
+	{
+		return await CloneService.CloneBudgetAsync(Model.AsCloneArgs());
+	}
+}

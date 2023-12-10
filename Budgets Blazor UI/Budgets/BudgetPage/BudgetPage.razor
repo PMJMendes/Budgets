@@ -1,0 +1,107 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.ProductionDetails;
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Navigator
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.View
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetsRoot
+@using Krypton.Budgets.Blazor.UI.Budgets._Common;
+
+@inherits LocalizedLayout<BudgetsRouter>
+@implements IBudgetPageController
+
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<CascadingValue Value="@((IBudgetPageController)this)" IsFixed="true">
+	<MudGrid Spacing="0" Class="page-layout">
+		<MudItem xs="4">
+			<BudgetNavigator Model="@Model.NavData" />
+		</MudItem>
+		<MudItem xs="8">
+			@Body
+		</MudItem>
+	</MudGrid>
+</CascadingValue>
+
+@code {
+	[CascadingParameter]
+	public BudgetPageModel Model { get; set; } = BudgetPageModel.Empty();
+
+	[CascadingParameter]
+	public INavigator Navigator { get; set; } = default!;
+
+	void IBudgetPageController.OnCreate()
+	{
+		var model = Model.ForCreate();
+		Navigator.NavigateWithState("/budgets/new", model);
+	}
+
+	void IBudgetPageController.OnClone()
+	{
+		var model = Model.ForClone();
+		Navigator.NavigateWithState("/budgets/new", model);
+	}
+
+	async Task IBudgetPageController.AfterCreateAsync(BudgetDetailsItem? results)
+	{
+		var model = Model.WithCreateResults(results);
+		await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	void IBudgetPageController.OnView(Guid id)
+	{
+		var model = Model.ForView(id);
+		Navigator.NavigateWithState("/budgets/" + id.ToString(), model);
+	}
+
+	async Task IBudgetPageController.OnPrint(System.Guid id, bool isEnglish)
+	{
+		var url = "print/" + id.ToString() + "/" + isEnglish;
+		await JSRuntime.InvokeAsync<string>("open", $"{Navigation.BaseUri}/{url}", "_blank");
+	}
+
+	async Task IBudgetPageController.OnReport(System.Guid id)
+	{
+		var url = "report/" + id.ToString();
+		await JSRuntime.InvokeAsync<string>("open", $"{Navigation.BaseUri}/{url}", "_blank");
+	}
+
+	void IBudgetPageController.OnEdit()
+	{
+		var model = Model.ForEdit();
+		Navigator.NavigateWithState("/budgets/" + model.ViewData!.Id.ToString() + "/edit", model);
+	}
+
+	async Task IBudgetPageController.AfterEditAsync(BudgetDetailsItem? results)
+	{
+		var model = Model.WithEditResults(results);
+		await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	void IBudgetPageController.OnCancelEdit()
+	{
+		var model = Model.CancelEdit();
+		Navigator.NavigateWithState("/budgets/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	void IBudgetPageController.OnManage()
+	{
+		var model = Model.ForManage();
+		Navigator.NavigateWithState("/budgets/" + model.ViewData!.Id.ToString() + "/manage", model);
+	}
+
+	async Task IBudgetPageController.AfterManageAsync(ProductionDetailsItem? results)
+	{
+		var model = Model.WithManageResults(results);
+		await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	async Task IBudgetPageController.OnStateChangedAsync(BudgetState state)
+	{
+		await Navigator.RefreshWithStateAsync(Model.WithSelectedUserState(state));
+	}
+
+	async Task IBudgetPageController.OnDeleteAsync()
+	{
+		await Navigator.NavigateWithStateAsync("/budgets", BudgetsRootModel.Empty());
+	}
+}

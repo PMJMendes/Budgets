@@ -1,0 +1,61 @@
+﻿@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using Krypton.Budgets.Shared
+
+@inherits LocalizedComponent<BudgetsRouter>
+
+<MudItem xs="1" Class="border-dashed border-r border-b" />
+<MudItem xs="2" Class="border-dashed border-r border-b" Style="border-right-style:dotted!important">
+    <MudText Typo="Typo.h6">
+        @(Lang switch
+        {
+            "ENG" => Model.DescEnglish,
+            _ => Model.Description
+        })
+    </MudText>
+</MudItem>
+@foreach (var def in Model.Defs)
+{
+    <MudItem xs="1" Class="justify-center border-dashed border-r border-b" Style="border-right-style:dotted!important">
+        <MudText Typo="Typo.h6">
+            @(Lang switch
+            {
+                "ENG" => def.DescEnglish,
+                _ => def.Description
+            })
+        </MudText>
+    </MudItem>
+}
+@if (Model.Defs.Count < 8)
+{
+    <MudItem xs="@(8 - Model.Defs.Count)" Class="border-dashed border-r border-b" Style="border-right-style:dotted!important" />
+}
+<MudItem xs="1" Class="justify-center border-dashed border-b">
+    <MudText Typo="Typo.h6">@L["BUDGET:PRINT:" + Lang + ":ESTIMATED"]</MudText>
+</MudItem>
+
+@foreach (var item in Model.Items)
+{
+    <ItemBlock Model="@item" Lang="@Lang" />
+}
+
+<MudItem xs="1" Class="border-dashed border-r" />
+<MudItem xs="10" Class="border-dotted border-r">
+    <MudText Typo="Typo.h6">
+        @L["BUDGET:PRINT:" + Lang + ":SUBTOTAL"] @(Lang switch
+        {
+            "ENG" => Model.DescEnglish,
+            _ => Model.Description
+        })
+    </MudText>
+</MudItem>
+<MudItem xs="1" Class="justify-end">
+    <MudText Typo="Typo.h6">@(((ICategory)Model).ClientValue.AsAnyValue())</MudText>
+</MudItem>
+
+@code {
+    [Parameter]
+    public CategoryModel Model { get; set; } = default!;
+
+    [Parameter]
+    public string Lang { get; set; } = default!;
+}

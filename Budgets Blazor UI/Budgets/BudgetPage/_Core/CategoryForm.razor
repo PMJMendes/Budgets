@@ -1,0 +1,75 @@
+﻿@using FluentValidation
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+
+@inherits ErrorHandlingForm<BudgetsRouter, CategoryModel>
+
+@if (Model is null)
+{
+	<MudForm @ref="Form" Class="full-viewport">
+		<MudGrid>
+			<MudItem xs="12" Class="flex-column">
+				<MudText Class="mud-text-disabled">@L["CATEGORY:FIELDS:FORMULA"]</MudText>
+				<MudTextField T="string" Disabled="true" />
+			</MudItem>
+			<MudItem xs="6" Class="flex-column">
+				<MudText Class="mud-text-disabled">@L["CATEGORY:FIELDS:DESCRIPTION"]</MudText>
+				<MudTextField T="string" Disabled="true" />
+			</MudItem>
+			<MudItem xs="6" Class="flex-column">
+				<MudText Class="mud-text-disabled">@L["CATEGORY:FIELDS:DESCENGLISH"]</MudText>
+				<MudTextField T="string" Disabled="true" />
+			</MudItem>
+		</MudGrid>
+	</MudForm>
+}
+else
+{
+	<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="full-viewport">
+		<MudGrid>
+			<MudItem xs="12" Class="flex-column">
+				<MudText>@L["CATEGORY:FIELDS:FORMULA"]</MudText>
+				<MudTextField @ref="focusField" Variant="Variant.Text" @bind-Value="Model.Formula"
+						  For="@(() => Model.Formula)" />
+			</MudItem>
+			<MudItem xs="6" Class="flex-column">
+				<MudText>@L["CATEGORY:FIELDS:DESCRIPTION"]</MudText>
+				<MudTextField Variant="Variant.Text" @bind-Value="Model.Description"
+						  For="@(() => Model.Description)" />
+			</MudItem>
+			<MudItem xs="6" Class="flex-column">
+				<MudText>@L["CATEGORY:FIELDS:DESCENGLISH"]</MudText>
+				<MudTextField Variant="Variant.Text" @bind-Value="Model.DescEnglish"
+						  For="@(() => Model.DescEnglish)" />
+			</MudItem>
+		</MudGrid>
+	</MudForm>
+}
+
+@code {
+	private MudTextField<string>? focusField = default!;
+
+	[Parameter]
+	public CategoryModel Model { get; set; } = default!;
+
+	public async Task SetFocus()
+	{
+		if (focusField is not null)
+		{
+			await focusField.FocusAsync();
+		}
+	}
+
+	protected override void ConfigureValidator(AbstractValidator<CategoryModel> validator)
+	{
+		validator.When(m => m is not null, () =>
+		{
+			validator.RuleFor(m => m.Formula).
+				NotEmpty().
+				WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+
+			validator.RuleFor(m => m.Description).
+				NotEmpty().
+				WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+		});
+	}
+}

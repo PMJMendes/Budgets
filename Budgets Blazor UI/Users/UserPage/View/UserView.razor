@@ -1,0 +1,141 @@
+﻿@using Krypton.Budgets.Blazor.APIClient._Common
+@using Krypton.Budgets.Blazor.APIClient._Impl
+@using Krypton.Budgets.Blazor.APIClient.Users.User.DeactivateUser
+@using Krypton.Budgets.Blazor.APIClient.Users.User.DeleteUser
+@using Krypton.Budgets.Blazor.APIClient.Users.User.TriggerActivation
+@using Krypton.Budgets.Blazor.UI.Users._Common
+
+@inherits LocalizedComponent<UsersRouter>
+
+@inject IDialogService DialogService
+@inject TriggerActivationService ActivateService
+@inject DeactivateUserService DeactivateService
+@inject DeleteUserService DeleteService
+@inject ISnackbar Snackbar
+
+@if (Model is null)
+{
+	<MudContainer Class="full-viewport justify-center align-center">
+		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
+	</MudContainer>
+}
+else
+{
+	<MudContainer Class="full-viewport pl-2">
+		@if (_loading)
+		{
+			<MudProgressLinear Indeterminate="true" />
+			<MudOverlay />
+		}
+
+		<MudGrid Spacing="0" Class="page-layout">
+			<MudItem xs="12" Class="full-viewport pl-2">
+				<MudGrid Spacing="0">
+					<MudItem xs="12" Class="pa-2">
+						<MudText Typo="Typo.h6">@Model.UserData.FullName</MudText>
+					</MudItem>
+					<MudItem xs="12">
+						<MudButton OnClick="EditUser">@L["USER:VIEW:ACTIONS:EDIT"]</MudButton>
+						@if (Model.State == _Common.UserState.DISABLED)
+						{
+							<MudButton Class="pl-2" OnClick="Activate">@L["USER:VIEW:ACTIONS:ACTIVATE"]</MudButton>
+							<MudButton Class="pl-2" OnClick="Delete">@L["USER:VIEW:ACTIONS:DELETE"]</MudButton>
+						}
+						@if (Model.State == _Common.UserState.PENDING)
+						{
+							<MudButton Class="pl-2" OnClick="Reactivate">@L["USER:VIEW:ACTIONS:REACTIVATE"]</MudButton>
+							<MudButton Class="pl-2" OnClick="Deactivate">@L["USER:VIEW:ACTIONS:DEACTIVATE"]</MudButton>
+						}
+						@if (Model.State == _Common.UserState.ENABLED)
+						{
+							<MudButton Class="pl-2" OnClick="ResetPassword">@L["USER:VIEW:ACTIONS:RESET_PASSWORD"]</MudButton>
+							<MudButton Class="pl-2" OnClick="Deactivate">@L["USER:VIEW:ACTIONS:DEACTIVATE"]</MudButton>
+						}
+					</MudItem>
+					<MudItem xs="6" Class="flex-column">
+						<MudText>@L["USER:FIELDS:EMAIL"]</MudText>
+						<MudText>@Model.UserData.Email</MudText>
+					</MudItem>
+					<MudItem xs="6" Class="flex-column">
+						<MudText>@L["USER:FIELDS:LEVEL"]</MudText>
+						<MudText>@L["ENUMS:SECURITY_LEVEL:" + Model.UserData.Level.ToString()]</MudText>
+					</MudItem>
+					<MudItem xs="6" Class="flex-column">
+						<MudText>@L["USER:FIELDS:FULLNAME"]</MudText>
+						<MudText>@Model.UserData.FullName</MudText>
+					</MudItem>
+					<MudItem xs="6" Class="flex-column">
+						<MudText>@L["USER:FIELDS:STATE"]</MudText>
+						<MudText>@L["ENUMS:USER_STATE:" + Model.State.ToString()]</MudText>
+					</MudItem>
+				</MudGrid>
+			</MudItem>
+		</MudGrid>
+	</MudContainer>
+}
+
+@code {
+	private bool _loading = false;
+	private bool shouldRender = true;
+
+	[Parameter]
+	public UserViewModel Model { get; set; } = UserViewModel.Empty();
+
+	[CascadingParameter]
+	public IErrorHandler Handler { get; set; } = default!;
+
+	[CascadingParameter]
+	public IUserPageController Page { get; set; } = default!;
+
+	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
+
+	private void EditUser() => Page.OnEdit();
+
+	private async Task Activate() => await LifeCycleAction("ACTIVATE", args => ActivateService.TriggerActivationAsync(args), r => r.State, true);
+	private async Task Reactivate() => await LifeCycleAction("REACTIVATE:TITLE", args => ActivateService.TriggerActivationAsync(args), r => r.State);
+	private async Task ResetPassword() => await LifeCycleAction("RESET_PASSWORD:TITLE", args => ActivateService.TriggerActivationAsync(args), r => r.State);
+	private async Task Deactivate() => await LifeCycleAction("DEACTIVATE", args => DeactivateService.DeactivateUserAsync(args), r => r.State);
+
+	private async Task LifeCycleAction<T>(string action, Func<TargetPostArgs, Task<SafeResult<T>>> service, Func<T, string?> handler, bool skipDialog = false)
+	{
+		if (skipDialog || await Confirm(L["USER:ACTIONS:" + action + ":TITLE"], L["USER:ACTIONS:" + action + ":PROMPT"], L["USER:ACTIONS:" + action + ":CONFIRM"]))
+		{
+			_loading = true;
+			var results = await service(TargetModel.ForId(Model.Id).AsPostArgs);
+			await Handler.CheckErrorsAsync(results, async r =>
+			{
+				var state = Enum.TryParse(handler(r), true, out UserState st) ? st : UserState._UNKNOWN;
+				await Page.OnStateChangedAsync(state);
+				Snackbar.Add(L["USER:ACTIONS:" + action + ":SUCCESS"], Severity.Success);
+			});
+			_loading = false;
+		}
+	}
+
+	private async Task Delete()
+	{
+		if (await Confirm(L["USER:ACTIONS:DELETE:TITLE"], L["USER:ACTIONS:DELETE:PROMPT"], L["USER:ACTIONS:DELETE:CONFIRM"]))
+		{
+			_loading = true;
+			var results = await DeleteService.DeleteUserAsync(TargetModel.ForId(Model.Id).AsPostArgs);
+			await Handler.CheckErrorsAsync(results, async r =>
+			{
+				shouldRender = false;
+				await Page.OnDeleteAsync();
+				Snackbar.Add(L["USER:ACTIONS:DELETE:SUCCESS"], Severity.Success);
+			});
+			_loading = false;
+		}
+	}
+
+	private async Task<bool> Confirm(string title, string prompt, string confirm)
+	{
+		var result = await DialogService.ShowMessageBox(
+			title,
+			prompt,
+			yesText: confirm,
+			cancelText: @L["USER:ACTIONS:CANCEL"]);
+
+		return result ?? false;
+	}
+}

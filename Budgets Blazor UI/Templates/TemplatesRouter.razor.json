@@ -1,0 +1,60 @@
+{
+  "BREADCRUMBS": {
+    "BUDGETS": "Orçamentos",
+    "NEW": "Novo",
+    "EDIT": "Editar"
+  },
+  "ROOT": {
+    "TITLE": "Gerir Templates",
+    "CREATE": "Novo Template",
+    "LIST": {
+      "CODE": "Nº de Série",
+      "TITLE": "Designação"
+    },
+    "EMPTY": {
+      "TITLE": "Não há templates definidos.",
+      "CREATE": "Criar Novo Template"
+    }
+  },
+  "TEMPLATE": {
+    "FIELDS": {
+      "CODE": "Nº de Série",
+      "TITLE": "Designação"
+    },
+    "ACTIONS": {
+      "CANCEL": "Cancelar",
+      "DELETE": {
+        "TITLE": "Apagar Template",
+        "PROMPT": "Tem a certeza que quer apagar este template?",
+        "CONFIRM": "Apagar",
+        "SUCCESS": "O template foi apagado."
+      }
+    },
+    "NAVIGATOR": {
+      "TITLE": "Templates",
+      "LIST": {
+        "CODE": "Nº",
+        "TITLE": "Designação"
+      }
+    },
+    "CREATE": {
+      "TITLE": "Criar Template",
+      "OK": "Criar",
+      "SUCCESS": "Template criado com sucesso"
+    },
+    "VIEW": {
+      "TITLE": "Detalhes do Template",
+      "ACTIONS": {
+        "EDIT": "Editar Template",
+        "CLONE": "Duplicar Template",
+        "DELETE": "Apagar Template"
+      }
+    },
+    "EDIT": {
+      "TITLE": "Editar Template",
+      "OK": "Guardar alterações",
+      "CANCEL": "Cancelar alterações",
+      "SUCCESS": "Template alterado com sucesso"
+    }
+  }
+}

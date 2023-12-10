@@ -1,0 +1,67 @@
+﻿@using BlazorRouter
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatePage.Create
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatePage.Edit
+@using Krypton.Budgets.Blazor.UI.Templates.TemplatePage.View
+
+@inherits LocalizedComponent<TemplatesRouter>
+
+@inject NavigationManager NavManager
+
+<LayoutView Layout="@typeof(TemplatePage)">
+	<Switch OnMatch="@OnRouteMatch">
+		<Route Template="templates/new">
+			<TemplateCreate Model="@Model.CreateData" />
+		</Route>
+		<Route Template="templates/{id:guid}">
+			<TemplateView Model="@Model.ViewData" />
+		</Route>
+		<Route Template="templates/{id:guid}/edit">
+			<TemplateEdit Model="@Model.EditData" />
+		</Route>
+	</Switch>
+</LayoutView>
+
+@code {
+	private string[] segments = Array.Empty<string>();
+
+	[CascadingParameter]
+	public TemplatePageModel Model { get; set; } = TemplatePageModel.Empty();
+
+	[CascadingParameter]
+	public INavigator Navigator { get; set; } = default!;
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+
+		if (segments != null)
+		{
+			UpdateBreadcrumbs();
+		}
+	}
+
+	private void OnRouteMatch(RouteMatchedEventArgs args)
+	{
+		segments = args.Segments.ToArray();
+
+		UpdateBreadcrumbs();
+	}
+
+	private void UpdateBreadcrumbs()
+	{
+		if (Model.ViewData is TemplateViewModel viewData)
+		{
+			var hrefs = new List<string>(new[] { "" });
+			var crumbs = segments.Select((seg, i) =>
+			{
+				hrefs.Add(seg);
+
+				var localized = i == 1 ? viewData.Code : L["BREADCRUMBS:" + seg.ToUpper()];
+
+				return new BreadcrumbItem(localized, string.Join('/', hrefs));
+			}).ToList();
+
+			Navigator.SetBreadCrumbs(crumbs);
+		}
+	}
+}

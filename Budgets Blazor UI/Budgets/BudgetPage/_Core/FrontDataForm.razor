@@ -1,0 +1,198 @@
+﻿@using FluentValidation
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+
+@inherits ErrorHandlingForm<BudgetsRouter, BudgetFrontModel>
+
+<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="@Class">
+    <MudGrid Spacing="0">
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:FIELDS:TITLE"]: </MudText>
+        </MudItem>
+        <MudItem xs="5">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Title"
+                            For="@(() => Model.Title)" />
+        </MudItem>
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:CLIENT"]: </MudText>
+        </MudItem>
+        <MudItem xs="5">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.FinalClient"
+                            For="@(() => Model.FinalClient)" />
+        </MudItem>
+<!---->
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:PRODUCT"]: </MudText>
+        </MudItem>
+        <MudItem xs="5">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Product"
+                          For="@(() => Model.Title)" />
+        </MudItem>
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:AGENCY"]: </MudText>
+        </MudItem>
+        <MudItem xs="5">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Agency"
+                          For="@(() => Model.FinalClient)" />
+        </MudItem>
+<!---->
+        <MudItem xs="12" Class="pa-2"><MudDivider /></MudItem>
+<!---->
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:VALUE"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudText>@Model.Value.AsAnyValue()</MudText>
+        </MudItem>
+        <MudItem xs="1" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:CLIENT_VALUE"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudText>@Model.ClientValue.AsAnyValue()</MudText>
+        </MudItem>
+<!---->
+        <MudItem xs="12" Class="pa-2"><MudDivider /></MudItem>
+<!---->
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:FIELDS:BUDGETDATE"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.BudgetDate"
+                          For="@(() => Model.BudgetDate)" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:STUDIO_DAYS"]: </MudText>
+        </MudItem>
+        <MudItem xs="1">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.StudioDays"
+                          For="@(() => Model.StudioDays)" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:TVAGENCY"]: </MudText>
+        </MudItem>
+        <MudItem xs="3">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.TVAgency"
+                          For="@(() => Model.TVAgency)" />
+        </MudItem>
+<!---->
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:FILMDATE"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.FilmDate"
+                          For="@(() => Model.FilmDate)" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:LOCATION_DAYS"]: </MudText>
+        </MudItem>
+        <MudItem xs="1">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.LocationDays"
+                          For="@(() => Model.LocationDays)" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:POST_DURATION"]: </MudText>
+        </MudItem>
+        <MudItem xs="3">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.PostProdDuration"
+                          For="@(() => Model.PostProdDuration)" />
+        </MudItem>
+<!---->
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:DIRECTOR"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Director"
+                          For="@(() => Model.Director)" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:OUTSIDE_DAYS"]: </MudText>
+        </MudItem>
+        <MudItem xs="1">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.OutsideDays"
+                          For="@(() => Model.OutsideDays)" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:POST_VERSIONS"]: </MudText>
+        </MudItem>
+        <MudItem xs="3">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.PostProdVersions"
+                          For="@(() => Model.PostProdVersions)" />
+        </MudItem>
+<!---->
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:PRODUCER"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Producer"
+                          For="@(() => Model.Producer)" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:WEEKEND_HOLIDAYS"]: </MudText>
+        </MudItem>
+        <MudItem xs="1">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.WeekendHolidays"
+                          For="@(() => Model.WeekendHolidays)" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:POST_SOUND"]: </MudText>
+        </MudItem>
+        <MudItem xs="3">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.PostProdSound"
+                          For="@(() => Model.PostProdSound)" />
+        </MudItem>
+<!---->
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:RIGHTS"]: </MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.Rights"
+                          For="@(() => Model.Rights)" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:TOTAL_DAYS"]: </MudText>
+        </MudItem>
+        <MudItem xs="1">
+            <MudTextField Variant="Variant.Text" Value="Model.TotalDays" ReadOnly="true" />
+        </MudItem>
+        <MudItem xs="2" Class="justify-end">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:POST_NVOICES"]: </MudText>
+        </MudItem>
+        <MudItem xs="3">
+            <MudTextField Variant="Variant.Text" @bind-Value="Model.PostProdNVoices"
+                          For="@(() => Model.PostProdNVoices)" />
+        </MudItem>
+<!---->
+        <MudItem xs="12" Class="pa-2"><MudDivider /></MudItem>
+<!---->
+        <MudItem xs="12">
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:FIELDS:COMMENTS"]: </MudText>
+            <MudSpacer />
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:PORTUGUESE"]</MudText>
+            <MudSwitch @bind-Checked="@english" />
+            <MudText>@L["BUDGET:EDIT:TABS:FRONT_DATA:ENGLISH"]</MudText>
+        </MudItem>
+        @if (english)
+        {
+            <MudItem xs="12">
+                <MudTextField Variant="Variant.Text" @bind-Value="Model.CommentsEnglish"
+                              Lines="5" For="@(() => Model.CommentsEnglish)" />
+            </MudItem>
+        }
+        else
+        {
+            <MudItem xs="12">
+                <MudTextField Variant="Variant.Text" @bind-Value="Model.Comments"
+                              Lines="5" For="@(() => Model.Comments)" />
+            </MudItem>
+        }
+    </MudGrid>
+</MudForm>
+
+@code {
+    private bool english = false;
+
+	[Parameter]
+    public BudgetFrontModel Model { get; set; } = default!;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+}

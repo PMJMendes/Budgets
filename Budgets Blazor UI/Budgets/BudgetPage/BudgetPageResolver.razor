@@ -1,0 +1,310 @@
+﻿@using BlazorRouter
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.ProductionDetails
+@using Krypton.Budgets.Blazor.APIClient.Global.AllTemplates
+@using Krypton.Budgets.Blazor.APIClient.Global.NextBudgetCode
+@using Krypton.Budgets.Blazor.APIClient.Global.SearchBudgets
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Create
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Edit
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Manage;
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Navigator
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.View
+@using Krypton.Budgets.Blazor.UI.Users._Common
+
+@inject SearchBudgetsService SearchService
+@inject BudgetDetailsService DetailsService
+@inject ProductionDetailsService ProdDetailsService
+@inject NextBudgetCodeService CodeService
+@inject AllTemplatesService TemplatesService
+
+<Switch OnMatch="@OnRouteMatch">
+	<Route>
+        <CascadingValue Value="@Model">
+            <BudgetPageRouter />
+        </CascadingValue>
+    </Route>
+</Switch>
+
+@code {
+    private BudgetPageModel Model = BudgetPageModel.Empty();
+    private string[] routeSegments = Array.Empty<string>();
+
+    [CascadingParameter]
+    public SecurityLevel Level { get; set; }
+
+    [CascadingParameter]
+    public INavigator Navigator { get; set; } = default!;
+
+    [CascadingParameter]
+    public IErrorHandler Handler { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Navigator.StateHasChangedAsync = async () =>
+        {
+            await LoadPageStateAsync();
+            await InvokeAsync(() => StateHasChanged());
+        };
+    }
+
+    private async Task OnRouteMatch(RouteMatchedEventArgs args)
+    {
+        routeSegments = args.Segments;
+        await LoadPageStateAsync();
+    }
+
+    private async Task LoadPageStateAsync()
+    {
+        if (Navigator.GetState<BudgetPageModel>() is BudgetPageModel model)
+        {
+            Model = model;
+        }
+
+        if (routeSegments.Length < 2 || routeSegments.Length > 3 || routeSegments[0] != "budgets")
+        {
+            return;
+        }
+
+        if (routeSegments[1] == "new")
+        {
+            await ResolveModelForCreate();
+            return;
+        }
+
+        if (Guid.TryParse(routeSegments[1], out Guid id))
+        {
+            Mode mode = Mode.VIEW;
+            if (routeSegments.Length == 3)
+            {
+                Enum.TryParse(routeSegments[2], true, out mode);
+            }
+            await ResolveModel(id, mode);
+        }
+    }
+
+    private async Task ResolveModelForCreate()
+    {
+        bool update = false;
+
+        var navTask = Task<BudgetNavigatorModel>.FromResult(Model.NavData);
+        if (Model.IsNew)
+        {
+            update = true;
+            navTask = ResolveNavData(Guid.Empty);
+        }
+        else if (Model.NavData.SelectedId != Guid.Empty)
+        {
+            update = true;
+            navTask = Task<BudgetNavigatorModel>.FromResult(Model.NavData.WithId(Guid.Empty));
+        }
+
+        var createTask = Task<BudgetCreateModel>.FromResult(Model.CreateData);
+        if (Model.CreateData is null || string.IsNullOrWhiteSpace(Model.CreateData.FormData.Code))
+        {
+            update = true;
+            createTask = ResolveCreateData();
+        }
+
+        if (Model.ViewData is not null || Model.EditData is not null)
+        {
+            update = true;
+        }
+
+        if (update)
+        {
+            await Task.WhenAll(navTask, createTask);
+
+            Model = BudgetPageModel.FromResolver(
+                navTask.Result,
+                createTask.Result
+            );
+        }
+    }
+
+    private async Task ResolveModel(Guid id, Mode mode)
+    {
+        bool update = false;
+
+        var navTask = Task<BudgetNavigatorModel>.FromResult(Model.NavData);
+        if (Model.IsNew)
+        {
+            update = true;
+            navTask = ResolveNavData(id);
+        }
+        else if (Model.NavData.SelectedId != id)
+        {
+            update = true;
+            navTask = Task<BudgetNavigatorModel>.FromResult(Model.NavData.WithId(id));
+        }
+
+        var viewTask = Task<BudgetViewModel?>.FromResult(Model.ViewData);
+        if (Model.ViewData?.Id is not Guid viewId || viewId != id)
+        {
+            update = true;
+            if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+            {
+                viewTask = ResolveViewData(id);
+            }
+            else
+            {
+                viewTask = ResolveProdData(id);
+            }
+        }
+
+        var editTask = Task<BudgetEditModel?>.FromResult(Model.EditData);
+        if (mode == Mode.EDIT)
+        {
+            if (Model.EditData is null || Model.EditData.Id != id)
+            {
+                update = true;
+                editTask = viewTask.ContinueWith(vt => vt.Result is BudgetViewModel vm ?
+                    (BudgetEditModel?)BudgetEditModel.FromViewData(vm) : null);
+            }
+        }
+        else
+        {
+            if (Model.EditData is not null)
+            {
+                update = true;
+                editTask = Task<BudgetEditModel?>.FromResult((BudgetEditModel?)null);
+            }
+        }
+
+        var manageTask = Task<BudgetEditModel?>.FromResult(Model.ManageData);
+        if (mode == Mode.MANAGE)
+        {
+            if (Model.ManageData is null || Model.ManageData.Id != id)
+            {
+                update = true;
+                manageTask = viewTask.ContinueWith(vt => vt.Result is BudgetViewModel vm ?
+                    (BudgetManageModel?)BudgetManageModel.FromViewData(vm) : null);
+            }
+        }
+        else
+        {
+            if (Model.ManageData is not null)
+            {
+                update = true;
+                manageTask = Task<BudgetManageModel?>.FromResult((BudgetManageModel?)null);
+            }
+        }
+
+        if (update)
+        {
+            await Task.WhenAll(navTask, viewTask, editTask, manageTask);
+
+            Model = BudgetPageModel.FromResolver(
+                navTask.Result,
+                null,
+                viewTask.Result,
+                editTask.Result,
+                manageTask.Result
+            );
+        }
+    }
+
+    private async Task<BudgetNavigatorModel> ResolveNavData(Guid id)
+    {
+        var results = await SearchService.SearchBudgetsAsync(Model.NavData.SearchArgs.AsArgs());
+
+        var navData = Model.NavData;
+        await Handler.CheckErrorsAsync(results, r => navData = navData.WithSearchResults(r).WithId(id));
+        return navData;
+    }
+
+    private async Task<BudgetViewModel?> ResolveViewData(Guid id)
+    {
+        var results = await DetailsService.BudgetDetailsAsync(TargetModel.ForId(id).AsQueryArgs);
+
+        var viewData = Model.ViewData;
+        await Handler.CheckErrorsAsync(results, r =>
+        {
+            if (r.FirstOrDefault() is BudgetDetailsItem item)
+            {
+                viewData = BudgetViewModel.FromService(item);
+            }
+        });
+        return viewData;
+    }
+
+    private async Task<BudgetViewModel?> ResolveProdData(Guid id)
+    {
+        var results = await ProdDetailsService.ProductionDetailsAsync(TargetModel.ForId(id).AsQueryArgs);
+
+        var viewData = Model.ViewData;
+        await Handler.CheckErrorsAsync(results, r =>
+        {
+            if (r.FirstOrDefault() is ProductionDetailsItem item)
+            {
+                viewData = BudgetViewModel.FromService(item);
+            }
+        });
+        return viewData;
+    }
+
+    private async Task<BudgetCreateModel?> ResolveCreateData()
+    {
+        var createData = Model.CreateData ?? BudgetCreateModel.Empty();
+        var update = false;
+
+        var codeTask = Task<string>.FromResult(createData.FormData.Code);
+        if (string.IsNullOrWhiteSpace(createData.FormData.Code))
+        {
+            update = true;
+            codeTask = ResolveNextCode();
+        }
+
+        var listTask = Task<IEnumerable<RefModel>>.FromResult(createData.Templates);
+        if (!createData.Templates.Any())
+        {
+            update = true;
+            listTask = ResolveTemplates();
+        }
+
+        if (update)
+        {
+            await Task.WhenAll(codeTask, listTask);
+            createData = createData.WithCode(codeTask.Result).WithTemplates(listTask.Result);
+        }
+
+        return createData;
+    }
+
+    private async Task<string> ResolveNextCode()
+    {
+        var code = string.Empty;
+
+        var results = await CodeService.NextBudgetCodeAsync(new(null));
+        await Handler.CheckErrorsAsync(results, r =>
+        {
+            code = r.FirstOrDefault()?.NextCode is string str ? str : string.Empty;
+        });
+
+        return code;
+    }
+
+    private async Task<IEnumerable<RefModel>> ResolveTemplates()
+    {
+        IEnumerable<RefModel> templates = Array.Empty<RefModel>();
+
+        var results = await TemplatesService.AllTemplatesAsync();
+        await Handler.CheckErrorsAsync(results, r =>
+        {
+            templates = r.
+                Where(i => i is not null).
+                Select(i => RefModel.FromAllTemplates(i!)).
+                ToList();
+        });
+
+        return templates;
+    }
+
+    private enum Mode
+    {
+        VIEW,
+        EDIT,
+        MANAGE
+    }
+}

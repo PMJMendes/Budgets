@@ -1,0 +1,27 @@
+﻿@using BlazorRouter
+@using Krypton.Budgets.Blazor.UI.Users.UserPage
+@using Krypton.Budgets.Blazor.UI.Users.UsersRoot
+
+@inherits LocalizedComponent<UsersRouter>
+
+<Switch OnMatch="@OnRouteMatch">
+	<Route Template="users">
+		<UsersRoot />
+	</Route>
+	<Route Template="users/new">
+		<UserPageResolver />
+	</Route>
+	<Route Template="users/{id:guid}/*">
+		<UserPageResolver />
+	</Route>
+</Switch>
+
+@code {
+	[CascadingParameter]
+	public INavigator Navigator { get; set; } = default!;
+
+	private void OnRouteMatch(RouteMatchedEventArgs args)
+	{
+		Navigator.SetBreadCrumbs(args.Segments.Take(1).ToArray(), L);
+	}
+}

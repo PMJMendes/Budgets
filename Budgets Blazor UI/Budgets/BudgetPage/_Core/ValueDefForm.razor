@@ -1,0 +1,90 @@
+﻿@using FluentValidation
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+@using ValueType = Krypton.Budgets.Shared.ValueType
+
+@inherits ErrorHandlingForm<BudgetsRouter, ValueDefModel>
+
+@if (Model is null)
+{
+	<MudForm @ref="Form" Class="full-viewport">
+		<MudGrid>
+			<MudItem xs="6" Class="flex-column">
+			<MudText Class="mud-text-disabled">@L["VALUEDEF:FIELDS:DESCRIPTION"]</MudText>
+				<MudTextField T="string" Disabled="true" />
+			</MudItem>
+			<MudItem xs="6" Class="flex-column">
+				<MudText Class="mud-text-disabled">@L["VALUEDEF:FIELDS:TYPE"]</MudText>
+				<MudTextField T="string" Disabled="true" />
+            </MudItem>
+            <MudItem xs="6" Class="flex-column">
+                <MudText Class="mud-text-disabled">@L["VALUEDEF:FIELDS:DESCENGLISH"]</MudText>
+                <MudTextField T="string" Disabled="true" />
+            </MudItem>
+			<MudItem xs="6" Class="flex-column">
+				<MudText Class="mud-text-disabled">@L["VALUEDEF:FIELDS:BCAFORMULA"]</MudText>
+				<MudTextField T="string" Disabled="true" />
+			</MudItem>
+		</MudGrid>
+	</MudForm>
+}
+else
+{
+	<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="full-viewport">
+		<MudGrid>
+			<MudItem xs="6" Class="flex-column">
+				<MudText>@L["VALUEDEF:FIELDS:DESCRIPTION"]</MudText>
+				<MudTextField @ref="focusField" Variant="Variant.Text" @bind-Value="Model.Description"
+						      For="@(() => Model.Description)" />
+            </MudItem>
+            <MudItem xs="6" Class="flex-column">
+                <MudText>@L["VALUEDEF:FIELDS:TYPE"]</MudText>
+                <MudSelect @bind-Value="@Model.Type" ToStringFunc="@(v => L["ENUMS:VALUE_TYPE:" + v])"
+						   AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                    @foreach (var type in Enum.GetValues<ValueType>())
+                    {
+                        <MudSelectItem Value="type">@L["ENUMS:VALUE_TYPE:" + type.ToString()]</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+			<MudItem xs="6" Class="flex-column">
+				<MudText>@L["VALUEDEF:FIELDS:DESCENGLISH"]</MudText>
+				<MudTextField Variant="Variant.Text" @bind-Value="Model.DescEnglish"
+						      For="@(() => Model.DescEnglish)" />
+			</MudItem>
+			<MudItem xs="6" Class="flex-column">
+				<MudText>@L["VALUEDEF:FIELDS:BCAFORMULA"]</MudText>
+				<MudTextField Variant="Variant.Text" @bind-Value="Model.BCAFormula"
+							  For="@(() => Model.BCAFormula)" />
+			</MudItem>
+		</MudGrid>
+	</MudForm>
+}
+
+@code {
+	private MudTextField<string>? focusField = default!;
+
+	[Parameter]
+	public ValueDefModel Model { get; set; } = default!;
+
+	public async Task SetFocus()
+	{
+		if (focusField is not null)
+		{
+			await focusField.FocusAsync();
+		}
+	}
+
+	protected override void ConfigureValidator(AbstractValidator<ValueDefModel> validator)
+	{
+		validator.When(m => m is not null, () =>
+		{
+			validator.RuleFor(m => m.Type).
+				Must(level => level != ValueType._UNKNOWN).
+				WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+
+			validator.RuleFor(m => m.Description).
+				NotEmpty().
+				WithMessage(_ => ErrorL["ERRORS:FORM:VALUE_REQUIRED"]);
+		});
+	}
+}

@@ -1,0 +1,104 @@
+﻿@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.DeleteBudget
+@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
+
+@inherits LocalizedComponent<TemplatesRouter>
+
+@inject IDialogService DialogService
+@inject DeleteBudgetService DeleteService
+@inject ISnackbar Snackbar
+
+@if (Model is null)
+{
+	<MudContainer Class="full-viewport justify-center align-center">
+		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
+	</MudContainer>
+}
+else
+{
+	<MudContainer Class="full-viewport">
+		@if (_loading)
+		{
+			<MudProgressLinear Indeterminate="true" />
+			<MudOverlay />
+		}
+
+		<MudGrid Spacing="0">
+			<MudItem xs="12" Class="full-viewport pl-2">
+				<MudGrid Spacing="0">
+					<MudItem xs="12" Class="pa-2">
+						<MudText Typo="Typo.h6">@(Model.Code) - @Model.TemplateData.FrontData.Title</MudText>
+					</MudItem>
+					<MudItem xs="12">
+						<MudButton OnClick="EditTemplate">@L["TEMPLATE:VIEW:ACTIONS:EDIT"]</MudButton>
+						<MudButton Class="pl-2" OnClick="CloneBudget">@L["TEMPLATE:VIEW:ACTIONS:CLONE"]</MudButton>
+						<MudButton Class="pl-2" OnClick="Delete">@L["TEMPLATE:VIEW:ACTIONS:DELETE"]</MudButton>
+					</MudItem>
+					<MudItem xs="6" Class="flex-column">
+						<MudText>@L["TEMPLATE:FIELDS:CODE"]</MudText>
+						<MudText>@Model.Code</MudText>
+					</MudItem>
+					<MudItem xs="6" Class="flex-column">
+						<MudText>@L["TEMPLATE:FIELDS:TITLE"]</MudText>
+						<MudText>@Model.TemplateData.FrontData.Title</MudText>
+					</MudItem>
+				</MudGrid>
+			</MudItem>
+			<MudItem>
+				<MudDivider />
+			</MudItem>
+			<MudItem xs="12">
+				<BudgetViewer Model="@Model.TemplateData" />
+			</MudItem>
+			<MudItem xs="12">
+				<MudSpacer />
+			</MudItem>
+		</MudGrid>
+	</MudContainer>
+}
+
+@code {
+	private bool _loading = false;
+	private bool shouldRender = true;
+
+	[Parameter]
+	public TemplateViewModel Model { get; set; } = TemplateViewModel.Empty();
+
+	[CascadingParameter]
+	public IErrorHandler Handler { get; set; } = default!;
+
+	[CascadingParameter]
+	public ITemplatePageController Page { get; set; } = default!;
+
+	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
+
+	public void EditTemplate() => Page.OnEdit();
+
+	private void CloneBudget() => Page.OnClone();
+
+	private async Task Delete()
+	{
+		if (await Confirm(L["TEMPLATE:ACTIONS:DELETE:TITLE"], L["TEMPLATE:ACTIONS:DELETE:PROMPT"], L["TEMPLATE:ACTIONS:DELETE:CONFIRM"]))
+		{
+			_loading = true;
+			var results = await DeleteService.DeleteBudgetAsync(TargetModel.ForId(Model.Id).AsPostArgs);
+			await Handler.CheckErrorsAsync(results, async r =>
+			{
+				shouldRender = false;
+				await Page.OnDeleteAsync();
+				Snackbar.Add(L["TEMPLATE:ACTIONS:DELETE:SUCCESS"], Severity.Success);
+			});
+			_loading = false;
+		}
+	}
+
+	private async Task<bool> Confirm(string title, string prompt, string confirm)
+	{
+		var result = await DialogService.ShowMessageBox(
+			title,
+			prompt,
+			yesText: confirm,
+			cancelText: @L["TEMPLATE:ACTIONS:CANCEL"]);
+
+		return result ?? false;
+	}
+}

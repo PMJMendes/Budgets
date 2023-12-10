@@ -1,0 +1,44 @@
+﻿@inherits LocalizedComponent<TemplatesRouter>
+
+<ItemList TRow="TemplateNavigatorListItemModel" Columns="@Columns" DataSource="@Model" Clickable="@true"
+		  SelectedRowClassFunc="@SelectedRowClassFunc" OnRowClick="@OnRowClick" />
+
+@code {
+	private ItemList<TemplateNavigatorListItemModel>.Colspec[] Columns = default!;
+
+	[Parameter]
+	public IEnumerable<TemplateNavigatorListItemModel>? Model { get; set; }
+
+	[Parameter]
+	public Guid SelectedID { get; set; }
+
+	[Parameter]
+	public EventCallback<Guid> TemplateSelected { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		
+		Columns = new[]
+		{
+			new ItemList<TemplateNavigatorListItemModel>.Colspec
+			{
+				Header = L["TEMPLATE:NAVIGATOR:LIST:CODE"],
+				Selector = item => __builder => { @item.Code }
+			},
+			new ItemList<TemplateNavigatorListItemModel>.Colspec
+			{
+				Header = L["TEMPLATE:NAVIGATOR:LIST:TITLE"],
+				Selector = item => __builder => { @item.Title }
+			}
+		};
+	}
+
+	private async Task OnRowClick(TemplateNavigatorListItemModel item)
+	{
+		await TemplateSelected.InvokeAsync(item.Id);
+	}
+
+	private string SelectedRowClassFunc(TemplateNavigatorListItemModel item, int rowNumber) =>
+		item.Id == SelectedID ? "mud-theme-primary mud-palette-primary-text" : "";
+}
