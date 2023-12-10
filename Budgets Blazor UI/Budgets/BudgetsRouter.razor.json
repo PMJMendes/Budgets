@@ -141,7 +141,7 @@
     },
     "EDIT": {
       "OK": "Guardar alterações",
-      "CANCEL": "Cancelar alterações",
+      "CANCEL": "Sair do modo de edição",
       "TABS": {
         "STRUCTURE": {
           "HEADER": "Estrutura",

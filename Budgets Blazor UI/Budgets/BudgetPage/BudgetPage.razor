@@ -74,7 +74,8 @@
 	async Task IBudgetPageController.AfterEditAsync(BudgetDetailsItem? results)
 	{
 		var model = Model.WithEditResults(results);
-		await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
+		//await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
+		await Task.CompletedTask;
 	}
 
 	void IBudgetPageController.OnCancelEdit()
