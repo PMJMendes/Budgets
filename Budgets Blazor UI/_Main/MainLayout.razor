@@ -6,7 +6,7 @@
 
 @inject EchoService EchoService
 
-<MudThemeProvider />
+<MudThemeProvider Theme="@_theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -41,6 +41,43 @@
 </MudLayout>
 
 @code {
+    private MudTheme _theme = new()
+    {
+        Palette = new()
+        {
+            AppbarBackground = "#D91A20",
+            AppbarText = Colors.Shades.White,
+            Primary = "#D91A20"
+        },
+        Typography = new()
+        {
+            Default = new()
+            {
+                FontSize = "0.75rem"
+            },
+            H1 = new()
+            {
+                FontSize = "1.5rem",
+                FontWeight = 600
+            },
+            H2 = new()
+            {
+                FontSize = "1.25rem",
+                FontWeight = 600
+            },
+            H6 = new()
+            {
+              FontSize = "0.875rem",
+              FontWeight = 500
+              
+            },
+            Button = new()
+            {
+                FontSize = "0.75rem"
+            }
+        }
+    };
+
     private bool drawerOpen = false;
     private PageState State;
     private string greeting = string.Empty;

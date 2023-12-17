@@ -41,9 +41,6 @@ else
 	[Parameter]
 	public GroupModel Model { get; set; } = default!;
 
-	[CascadingParameter]
-	public MudTheme Theme { get; set; } = default!;
-
 	public async Task SetFocus()
 	{
 		if (focusField is not null)

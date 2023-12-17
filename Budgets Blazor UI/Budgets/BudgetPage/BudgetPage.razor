@@ -1,4 +1,4 @@
-@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
+﻿@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
 @using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.ProductionDetails;
 @using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Navigator
 @using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.View
@@ -13,10 +13,10 @@
 
 <CascadingValue Value="@((IBudgetPageController)this)" IsFixed="true">
 	<MudGrid Spacing="0" Class="page-layout">
-		<MudItem xs="4">
+		<MudItem Class="navigator" xs="3">
 			<BudgetNavigator Model="@Model.NavData" />
 		</MudItem>
-		<MudItem xs="8">
+		<MudItem Class="page-content" xs="9">
 			@Body
 		</MudItem>
 	</MudGrid>

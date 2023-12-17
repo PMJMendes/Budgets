@@ -1,11 +1,13 @@
 ﻿@inherits LocalizedComponent<BudgetsRouter>
 
 <MudContainer Class="gap-0">
-    <MudIconButton Icon="@Icons.Material.Filled.FilterAlt" OnClick="@ToggleMenu" />
-    <MudTextField Variant="Variant.Text" @bind-Value="Model.Text" Clearable="true"
-                  OnClearButtonClick="@SearchBudgets" OnKeyUp="@CheckEnterKey"
-                  Placeholder="@L["SEARCHFORM:FREE_TEXT"]" />
-    <MudIconButton Icon="@Icons.Material.Filled.Search" OnClick="@SearchBudgets" />
+    <MudButton Class="soft-border pl-3 pr-4" StartIcon="@Icons.Material.Filled.FilterAlt" OnClick="@ToggleMenu">@L["SEARCHFORM:FILTER"]</MudButton>
+    <MudContainer Class="gap-0 soft-border border-2 ml-2 pl-1 pr-4" Style="background-color: white;">
+            <MudIconButton Icon="@Icons.Material.Filled.Search" OnClick="@SearchBudgets" />
+            <MudTextField Variant="Variant.Text" Class="ml-2 pt-2 pb-2" @bind-Value="Model.Text" Clearable="true"
+                          OnClearButtonClick="@SearchBudgets" OnKeyUp="@CheckEnterKey"
+                          Placeholder="@L["SEARCHFORM:FREE_TEXT"]" />
+    </MudContainer>
 
     <MudOverlay Visible="@(isOpen && openCount == 0)" OnClick="@ToggleMenu" LockScroll="true" />
     <MudPopover @bind-Open="isOpen" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">

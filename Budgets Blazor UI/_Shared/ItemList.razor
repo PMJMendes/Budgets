@@ -1,7 +1,7 @@
 ﻿@typeparam TRow
 
 <MudContainer Class="full-viewport">
-    <MudTable T="TRow" Elevation="0" Style="@TableStyle()" Items="@DataSource"
+    <MudTable Class="item-list" T="TRow" Elevation="0" Style="@TableStyle()" Items="@DataSource"
               Hover="@Clickable" Dense="true" Bordered="true" Striped="true"
               OnRowClick="@RowClickHandler" RowClassFunc="@SelectedRowClassFunc">
         <HeaderContent>
