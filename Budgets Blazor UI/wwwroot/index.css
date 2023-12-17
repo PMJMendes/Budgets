@@ -75,7 +75,9 @@
 }
 
 .mud-input {
-    font-size: var(--mud-typography-default-size);
+    font-size: var(--mud-typography-body2-size);
+    width: fit-content;
+    min-width: 50%;
 }
 
 .mud-input-control {
@@ -86,14 +88,26 @@
     margin: unset;
 }
 
-.page-layout {
-    flex-direction: row;
-    flex: 1 1 auto;
-}
-
 .full-viewport {
     flex-direction: column;
     flex: 1 1 100%;
+    min-height: 100%;
+}
+
+.viewport-header {
+    height: fit-content;
+}
+
+.viewport-body {
+    flex-direction: row;
+    flex: 1 1 100%;
+}
+
+.page-layout {
+    flex-direction: row;
+    flex: 1 1 auto;
+    min-width: 100%;
+    align-content: flex-start;
 }
 
 .soft-border {
@@ -136,7 +150,7 @@
 }
 
 .item-list td {
-    font-size: var(--mud-typography-body2);
+    font-size: var(--mud-typography-body2-size);
     padding: 15px 12px !important;
     border-right: 0px !important;
 }
@@ -157,6 +171,8 @@
 .page-content {
     padding: 16px;
     background-color: var(--mud-palette-background);
+    min-height: 100%;
+    align-content: flex-start;
 }
 
 .page-content h2 {
@@ -165,6 +181,7 @@
 
 .page-content .buttons {
     align-items: flex-start;
+    flex-grow: 1;
     flex-wrap: wrap;
     margin-bottom: 6px;
 }
