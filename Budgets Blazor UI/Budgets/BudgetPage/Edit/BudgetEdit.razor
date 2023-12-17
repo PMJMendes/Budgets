@@ -42,7 +42,6 @@ else
 
 @code {
 	private bool _loading;
-	private bool shouldRender = true;
 
 	private BudgetForm? Form = default!;
 
@@ -51,8 +50,6 @@ else
 
 	[CascadingParameter]
 	public IBudgetPageController Page { get; set; } = default!;
-
-	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
 
 	private void CancelEdit() => Page.OnCancelEdit();
 
@@ -67,7 +64,6 @@ else
 			{
 				await handler.CheckErrorsAsync(results, async r =>
 				{
-					shouldRender = false;
 					await Page.AfterEditAsync(r);
 					Snackbar.Add(L["BUDGET:EDIT:SUCCESS"], Severity.Success);
 				});

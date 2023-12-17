@@ -1,4 +1,4 @@
-﻿@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
+@using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
 @using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.ProductionDetails;
 @using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.Navigator
 @using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.View
@@ -73,7 +73,7 @@
 
 	async Task IBudgetPageController.AfterEditAsync(BudgetDetailsItem? results)
 	{
-		var model = Model.WithEditResults(results);
+		var model = Model.WithEditResults(results).ForEdit();
 		//await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
 		await Task.CompletedTask;
 	}
