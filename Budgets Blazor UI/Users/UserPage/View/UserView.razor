@@ -15,63 +15,59 @@
 
 @if (Model is null)
 {
-	<MudContainer Class="full-viewport justify-center align-center">
+	<MudContainer MaxWidth="MaxWidth.False" Class="justify-center align-center">
 		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
 	</MudContainer>
 }
 else
 {
-	<MudContainer Class="full-viewport pl-2">
+	<MudStack Spacing="0" Class="viewport">
 		@if (_loading)
 		{
 			<MudProgressLinear Indeterminate="true" />
 			<MudOverlay />
 		}
 
-		<MudGrid Spacing="0" Class="page-layout">
-			<MudItem xs="12" Class="full-viewport pl-2">
-				<MudGrid Spacing="0">
-					<MudItem xs="12" Class="pa-2">
-						<MudText Typo="Typo.h6">@Model.UserData.FullName</MudText>
-					</MudItem>
-					<MudItem xs="12">
-						<MudButton OnClick="EditUser">@L["USER:VIEW:ACTIONS:EDIT"]</MudButton>
-						@if (Model.State == _Common.UserState.DISABLED)
-						{
-							<MudButton Class="pl-2" OnClick="Activate">@L["USER:VIEW:ACTIONS:ACTIVATE"]</MudButton>
-							<MudButton Class="pl-2" OnClick="Delete">@L["USER:VIEW:ACTIONS:DELETE"]</MudButton>
-						}
-						@if (Model.State == _Common.UserState.PENDING)
-						{
-							<MudButton Class="pl-2" OnClick="Reactivate">@L["USER:VIEW:ACTIONS:REACTIVATE"]</MudButton>
-							<MudButton Class="pl-2" OnClick="Deactivate">@L["USER:VIEW:ACTIONS:DEACTIVATE"]</MudButton>
-						}
-						@if (Model.State == _Common.UserState.ENABLED)
-						{
-							<MudButton Class="pl-2" OnClick="ResetPassword">@L["USER:VIEW:ACTIONS:RESET_PASSWORD"]</MudButton>
-							<MudButton Class="pl-2" OnClick="Deactivate">@L["USER:VIEW:ACTIONS:DEACTIVATE"]</MudButton>
-						}
-					</MudItem>
-					<MudItem xs="6" Class="flex-column">
-						<MudText>@L["USER:FIELDS:EMAIL"]</MudText>
-						<MudText>@Model.UserData.Email</MudText>
-					</MudItem>
-					<MudItem xs="6" Class="flex-column">
-						<MudText>@L["USER:FIELDS:LEVEL"]</MudText>
-						<MudText>@L["ENUMS:SECURITY_LEVEL:" + Model.UserData.Level.ToString()]</MudText>
-					</MudItem>
-					<MudItem xs="6" Class="flex-column">
-						<MudText>@L["USER:FIELDS:FULLNAME"]</MudText>
-						<MudText>@Model.UserData.FullName</MudText>
-					</MudItem>
-					<MudItem xs="6" Class="flex-column">
-						<MudText>@L["USER:FIELDS:STATE"]</MudText>
-						<MudText>@L["ENUMS:USER_STATE:" + Model.State.ToString()]</MudText>
-					</MudItem>
-				</MudGrid>
+		<MudText Typo="Typo.h2">@Model.UserData.FullName</MudText>
+
+		<MudContainer MaxWidth="MaxWidth.False" Class="viewport-header buttons">
+			<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" OnClick="EditUser">@L["USER:VIEW:ACTIONS:EDIT"]</MudButton>
+			@if (Model.State == _Common.UserState.DISABLED)
+			{
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.LockOpen" Class="pl-2" OnClick="Activate">@L["USER:VIEW:ACTIONS:ACTIVATE"]</MudButton>
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.DeleteForever" Class="pl-2" OnClick="Delete">@L["USER:VIEW:ACTIONS:DELETE"]</MudButton>
+			}
+			@if (Model.State == _Common.UserState.PENDING)
+			{
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.Password" Class="pl-2" OnClick="Reactivate">@L["USER:VIEW:ACTIONS:REACTIVATE"]</MudButton>
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.Lock" Class="pl-2" OnClick="Deactivate">@L["USER:VIEW:ACTIONS:DEACTIVATE"]</MudButton>
+			}
+			@if (Model.State == _Common.UserState.ENABLED)
+			{
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.Password" Class="pl-2" OnClick="ResetPassword">@L["USER:VIEW:ACTIONS:RESET_PASSWORD"]</MudButton>
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.Lock" Class="pl-2" OnClick="Deactivate">@L["USER:VIEW:ACTIONS:DEACTIVATE"]</MudButton>
+			}
+		</MudContainer>
+
+		<MudGrid Spacing="0" Class="viewport-header">
+			<MudItem xs="6" Class="flex-column" Style="min-height: 80px">
+				<MudText Typo="Typo.h6">@L["USER:FIELDS:EMAIL"]</MudText>
+				<MudText Typo="Typo.body2">@Model.UserData.Email</MudText>
+			</MudItem>
+			<MudItem xs="6" Class="flex-column" Style="min-height: 80px">
+				<MudText Typo="Typo.h6">@L["USER:FIELDS:LEVEL"]</MudText>
+				<MudText Typo="Typo.body2">@L["ENUMS:SECURITY_LEVEL:" + Model.UserData.Level.ToString()]</MudText>
+			</MudItem>
+			<MudItem xs="6" Class="flex-column" Style="min-height: 80px">
+				<MudText Typo="Typo.h6">@L["USER:FIELDS:FULLNAME"]</MudText>
+				<MudText Typo="Typo.body2">@Model.UserData.FullName</MudText>
+			</MudItem>
+			<MudItem xs="6" Class="flex-column" Style="min-height: 80px">
+				<MudText Typo="Typo.h6">@L["USER:FIELDS:STATE"]</MudText>
+				<MudText Typo="Typo.body2">@L["ENUMS:USER_STATE:" + Model.State.ToString()]</MudText>
 			</MudItem>
 		</MudGrid>
-	</MudContainer>
+	</MudStack>
 }
 
 @code {

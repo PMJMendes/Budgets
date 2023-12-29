@@ -8,6 +8,7 @@ public interface IUserPageController
 {
 	void OnCreate();
 	Task AfterCreateAsync(CreateUserResults? results);
+	void OnCancelCreate();
 
 	void OnView(Guid id);
 

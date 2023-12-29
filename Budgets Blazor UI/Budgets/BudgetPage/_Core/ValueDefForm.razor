@@ -6,40 +6,35 @@
 
 @if (Model is null)
 {
-	<MudForm @ref="Form" Class="full-viewport">
+	<MudForm @ref="Form">
 		<MudGrid>
 			<MudItem xs="6" Class="flex-column">
-			<MudText Class="mud-text-disabled">@L["VALUEDEF:FIELDS:DESCRIPTION"]</MudText>
-				<MudTextField T="string" Disabled="true" />
+				<MudTextField T="string" Disabled="true" Label="@L["VALUEDEF:FIELDS:DESCRIPTION"]" />
 			</MudItem>
 			<MudItem xs="6" Class="flex-column">
-				<MudText Class="mud-text-disabled">@L["VALUEDEF:FIELDS:TYPE"]</MudText>
-				<MudTextField T="string" Disabled="true" />
+				<MudTextField T="string" Disabled="true" Label="@L["VALUEDEF:FIELDS:TYPE"]" />
             </MudItem>
             <MudItem xs="6" Class="flex-column">
-                <MudText Class="mud-text-disabled">@L["VALUEDEF:FIELDS:DESCENGLISH"]</MudText>
-                <MudTextField T="string" Disabled="true" />
+				<MudTextField T="string" Disabled="true" Label="@L["VALUEDEF:FIELDS:DESCENGLISH"]" />
             </MudItem>
 			<MudItem xs="6" Class="flex-column">
-				<MudText Class="mud-text-disabled">@L["VALUEDEF:FIELDS:BCAFORMULA"]</MudText>
-				<MudTextField T="string" Disabled="true" />
+				<MudTextField T="string" Disabled="true" Label="@L["VALUEDEF:FIELDS:BCAFORMULA"]" />
 			</MudItem>
 		</MudGrid>
 	</MudForm>
 }
 else
 {
-	<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="full-viewport">
+	<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue">
 		<MudGrid>
 			<MudItem xs="6" Class="flex-column">
-				<MudText>@L["VALUEDEF:FIELDS:DESCRIPTION"]</MudText>
-				<MudTextField @ref="focusField" Variant="Variant.Text" @bind-Value="Model.Description"
-						      For="@(() => Model.Description)" />
+				<MudTextField @ref="focusField" Variant="Variant.Text" Label="@L["VALUEDEF:FIELDS:DESCRIPTION"]"
+							  @bind-Value="Model.Description" For="@(() => Model.Description)" />
             </MudItem>
             <MudItem xs="6" Class="flex-column">
-                <MudText>@L["VALUEDEF:FIELDS:TYPE"]</MudText>
                 <MudSelect @bind-Value="@Model.Type" ToStringFunc="@(v => L["ENUMS:VALUE_TYPE:" + v])"
-						   AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+						   AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft"
+						   Label="@L["VALUEDEF:FIELDS:TYPE"]">
                     @foreach (var type in Enum.GetValues<ValueType>())
                     {
                         <MudSelectItem Value="type">@L["ENUMS:VALUE_TYPE:" + type.ToString()]</MudSelectItem>
@@ -47,14 +42,12 @@ else
                 </MudSelect>
             </MudItem>
 			<MudItem xs="6" Class="flex-column">
-				<MudText>@L["VALUEDEF:FIELDS:DESCENGLISH"]</MudText>
-				<MudTextField Variant="Variant.Text" @bind-Value="Model.DescEnglish"
-						      For="@(() => Model.DescEnglish)" />
+				<MudTextField Variant="Variant.Text" Label="@L["VALUEDEF:FIELDS:DESCENGLISH"]"
+							  @bind-Value="Model.DescEnglish" For="@(() => Model.DescEnglish)" />
 			</MudItem>
 			<MudItem xs="6" Class="flex-column">
-				<MudText>@L["VALUEDEF:FIELDS:BCAFORMULA"]</MudText>
-				<MudTextField Variant="Variant.Text" @bind-Value="Model.BCAFormula"
-							  For="@(() => Model.BCAFormula)" />
+				<MudTextField Variant="Variant.Text" Label="@L["VALUEDEF:FIELDS:BCAFORMULA"]"
+							  @bind-Value="Model.BCAFormula" For="@(() => Model.BCAFormula)" />
 			</MudItem>
 		</MudGrid>
 	</MudForm>

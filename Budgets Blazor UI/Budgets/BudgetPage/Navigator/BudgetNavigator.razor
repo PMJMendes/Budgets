@@ -6,29 +6,33 @@
 
 @inject SearchBudgetsService Service
 
-<MudContainer Class="full-viewport">
-    <MudText Typo="Typo.h1" Class="pa-2">@L["BUDGET:NAVIGATOR:TITLE"]</MudText>
+<MudStack Spacing="0" Class="viewport">
+    <MudContainer MaxWidth="MaxWidth.False" Class="viewport-header">
+        <MudText Typo="Typo.h1" Class="pa-2">@L["BUDGET:NAVIGATOR:TITLE"]</MudText>
+        @if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+        {
+            <MudSpacer />
+            <MudContainer MaxWidth="MaxWidth.False" Class="flex-1 pa-2">
+                <BudgetsSearchForm Small="true" Model="@Model.SearchArgs"
+                                   ModelChanged="@OnSearchModelChanged" OnSearch="@OnSearch" />
+                <MudIconButton Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnCreateNew" Class="pl-2" />
+            </MudContainer>
+        }
+    </MudContainer>
 
-    
-	@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
-	{
-        <MudContainer Class="justify-space-between pa-2">
-            <BudgetsSearchForm Model="@Model.SearchArgs" ModelChanged="@OnSearchModelChanged" OnSearch="@OnSearch" />
-            <MudIconButton Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnCreateNew" Class="pl-2" />
-        </MudContainer>
-    }
-
-    @if (_loading)
-    {
-        <MudContainer Class="full-viewport justify-center align-center">
-            <MudProgressCircular Size="Size.Large" Indeterminate="true" />
-        </MudContainer>
-    }
-    else
-    {
-        <BudgetNavigatorList Model="@Model.Budgets" SelectedID="@Model.SelectedId" BudgetSelected="@OnBudgetSelected" />
-    }
-</MudContainer>
+    <MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
+        @if (_loading)
+        {
+            <MudContainer MaxWidth="MaxWidth.False" Class="justify-center align-center">
+                <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+            </MudContainer>
+        }
+        else
+        {
+            <BudgetNavigatorList Model="@Model.Budgets" SelectedID="@Model.SelectedId" BudgetSelected="@OnBudgetSelected" />
+        }
+    </MudContainer>
+</MudStack>
 
 @code {
     private bool _loading = false;

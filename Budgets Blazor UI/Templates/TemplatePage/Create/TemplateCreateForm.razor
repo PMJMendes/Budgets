@@ -2,17 +2,15 @@
 
 @inherits ErrorHandlingForm<TemplatesRouter, TemplateCreateModel>
 
-<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="full-viewport">
+<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue">
     <MudGrid>
         <MudItem xs="6" Class="flex-column">
-            <MudText>@L["TEMPLATE:FIELDS:CODE"]</MudText>
-            <MudTextField Variant="Variant.Text" @bind-Value="Model.Code"
-                          For="@(() => Model.Code)" />
+            <MudTextField Variant="Variant.Text" Label="@L["TEMPLATE:FIELDS:CODE"]"
+                          @bind-Value="Model.Code" For="@(() => Model.Code)" />
         </MudItem>
         <MudItem xs="6" Class="flex-column">
-            <MudText>@L["TEMPLATE:FIELDS:TITLE"]</MudText>
-            <MudTextField Variant="Variant.Text" @bind-Value="Model.Title"
-                          For="@(() => Model.Title)" />
+            <MudTextField Variant="Variant.Text" Label="@L["TEMPLATE:FIELDS:TITLE"]"
+                          @bind-Value="Model.Title" For="@(() => Model.Title)" />
         </MudItem>
     </MudGrid>
 </MudForm>

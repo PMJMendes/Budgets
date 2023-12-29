@@ -5,10 +5,11 @@
 
 @inherits ErrorHandlingForm<BudgetsRouter, BudgetModel>
 
-<MudForm @ref="Form">
-    <MudGrid Spacing="0" Class="@Class">
-        <MudItem xs="12">
-            <MudTable Items="@costItems" Elevation="0" GroupBy="@grouping" Class="page-layout">
+<MudForm @ref="Form" Class="@Class">
+    <MudStack Spacing="0" Class="viewport">
+        <MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
+            <MudTable Elevation="0" FixedHeader="true" Height="100%"
+                      Items="@costItems" GroupBy="@grouping">
                 <HeaderContent>
                     <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:ITEM"]</MudTh>
                     <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:BUDGET"]</MudTh>
@@ -82,20 +83,39 @@
                     }
                 </RowTemplate>
             </MudTable>
-        </MudItem>
-        <MudItem xs="4" />
-        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:TOTALS"]</MudItem>
-        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:BUDGET"]</MudItem>
-        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:COSTS"]</MudItem>
-        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:AVAILABLE"]</MudItem>
-        <MudItem xs="4" />
-        <MudItem xs="4" />
-        <MudItem xs="1">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:TOTAL"]</MudItem>
-        <MudItem xs="1">@(((IBudget)Model).ProdValue.AsAnyValue())</MudItem>
-        <MudItem xs="1">@(((IBudget)Model).CostValue.AsAnyValue())</MudItem>
-        <MudItem xs="1">@(((IBudget)Model).Available.AsAnyValue())</MudItem>
-        <MudItem xs="4" />
-    </MudGrid>
+        </MudContainer>
+
+        <MudGrid Spacing="0" Class="viewport-header">
+            <MudItem xs="4" />
+            <MudItem xs="1">
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:TOTALS"]</MudText>
+            </MudItem>
+            <MudItem xs="1">
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:BUDGET"]</MudText>
+            </MudItem>
+            <MudItem xs="1">
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:COSTS"]</MudText>
+            </MudItem>
+            <MudItem xs="1">
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:AVAILABLE"]</MudText>
+            </MudItem>
+            <MudItem xs="4" />
+            <MudItem xs="4" />
+            <MudItem xs="1">
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:TOTAL"]</MudText>
+            </MudItem>
+            <MudItem xs="1">
+                <MudText Typo="Typo.body2">@(((IBudget)Model).ProdValue.AsAnyValue())</MudText>
+            </MudItem>
+            <MudItem xs="1">
+                <MudText Typo="Typo.body2">@(((IBudget)Model).CostValue.AsAnyValue())</MudText>
+            </MudItem>
+            <MudItem xs="1">
+                <MudText Typo="Typo.body2">@(((IBudget)Model).Available.AsAnyValue())</MudText>
+            </MudItem>
+            <MudItem xs="4" />
+        </MudGrid>
+    </MudStack>
 </MudForm>
 
 @code {

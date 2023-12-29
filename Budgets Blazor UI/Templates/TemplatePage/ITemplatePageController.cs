@@ -7,6 +7,7 @@ public interface ITemplatePageController
 	void OnCreate();
 	void OnClone();
 	Task AfterCreateAsync(BudgetDetailsItem? results);
+	void OnCancelCreate();
 
 	void OnView(Guid id);
 

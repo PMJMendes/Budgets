@@ -5,30 +5,32 @@
 
 @inject AllUsersService Service
 
-<MudContainer Class="pa-2">
-    <MudText Typo="Typo.h5">@L["ROOT:TITLE"]</MudText>
-    <MudSpacer />
-    <MudButton Variant="Variant.Text" OnClick="@OnCreateNew">@L["ROOT:CREATE"]</MudButton>
-</MudContainer>
+<MudStack Spacing="0" Class="viewport pa-4">
+    <MudContainer MaxWidth="MaxWidth.False" Class="pb-4">
+        <MudText Typo="Typo.h1">@L["ROOT:TITLE"]</MudText>
+        <MudSpacer />
+        <MudButton Variant="Variant.Text" Class="ml-2 main-action" OnClick="@OnCreateNew">@L["ROOT:CREATE"]</MudButton>
+    </MudContainer>
 
-@if (_loading)
-{
-    <MudContainer Class="full-viewport justify-center align-center">
-        <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+    <MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
+        @if (_loading)
+        {
+            <MudContainer Class="justify-center align-center">
+                <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+            </MudContainer>
+        }
+        else if (Model.Items.Any())
+        {
+            <UsersRootList Model="@Model.Items" UserSelected="@OnUserSelected" />
+        }
+        else
+        {
+            <MudIcon Icon="@Icons.Material.Filled.Search" />
+            <MudText Typo="Typo.h6" Class="pl-3">@L["ROOT:EMPTY:TITLE"]</MudText>
+            <MudText>@L["ROOT:EMPTY:CHANGE"]</MudText>
+        }
     </MudContainer>
-}
-else if (Model.Items.Any())
-{
-    <UsersRootList Model="@Model.Items" UserSelected="@OnUserSelected" />
-}
-else
-{
-    <MudContainer Class="full-viewport justify-center align-center">
-        <MudIcon Icon="@Icons.Material.Filled.Search" />
-        <MudText Typo="Typo.h6" Class="pl-3">@L["ROOT:EMPTY:TITLE"]</MudText>
-        <MudText>@L["ROOT:EMPTY:CHANGE"]</MudText>
-    </MudContainer>
-}
+</MudStack>
 
 @code {
     private bool _loading;

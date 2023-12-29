@@ -4,33 +4,37 @@
 
 @inherits ErrorHandlingForm<BudgetsRouter, BudgetModel>
 
-<MudContainer Class="full-viewport">
-    <MudTabs @bind-ActivePanelIndex="activeTab">
-        <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:BUDGET:HEADER"]"></MudTabPanel>
-        <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:COSTS:HEADER"]"></MudTabPanel>
-        <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:INVOICING:HEADER"]"></MudTabPanel>
-        @if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
-        {
-            <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:SOURCE:HEADER"]"></MudTabPanel>
-        }
-    </MudTabs>
+<MudContainer MaxWidth="MaxWidth.False" Class="viewport-container">
+    <MudStack Spacing="0" Class="viewport">
+        <MudTabs Class="viewport-header mb-4" @bind-ActivePanelIndex="activeTab">
+            <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:BUDGET:HEADER"]"></MudTabPanel>
+            <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:COSTS:HEADER"]"></MudTabPanel>
+            <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:INVOICING:HEADER"]"></MudTabPanel>
+            @if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+            {
+                <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:SOURCE:HEADER"]"></MudTabPanel>
+            }
+        </MudTabs>
 
-    <MudContainer Class="full-viewport">
-        @if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
-        {
-            <BudgetProdViewer Model="@Model" Class="@(activeTab == 0 ? string.Empty : "d-none")" />
-            <BudgetViewer Model="@Model" Class="@(activeTab == 3 ? string.Empty : "d-none")" />
-        }
-        else
-        {
-            <BudgetViewer Model="@Model" Class="@(activeTab == 0 ? string.Empty : "d-none")" />
-        }
-        <CostsForm Model="@Model" Class="@(activeTab == 1 ? string.Empty : "d-none")" />
-        <InvoicesForm Model="@Model" Class="@(activeTab == 2 ? string.Empty : "d-none")" />
-    </MudContainer>
+        <MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
+            @if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+            {
+                <BudgetProdViewer Model="@Model" Class="@(activeTab == 0 ? _VIEWPORT_STYLE : "d-none")" />
+                <BudgetViewer Model="@Model" Class="@(activeTab == 3 ? _VIEWPORT_STYLE : "d-none")" />
+            }
+            else
+            {
+                <BudgetViewer Model="@Model" Class="@(activeTab == 0 ? _VIEWPORT_STYLE : "d-none")" />
+            }
+            <CostsForm Model="@Model" Class="@(activeTab == 1 ? _VIEWPORT_STYLE : "d-none")" />
+            <InvoicesForm Model="@Model" Class="@(activeTab == 2 ? _VIEWPORT_STYLE : "d-none")" />
+        </MudContainer>
+    </MudStack>
 </MudContainer>
 
 @code {
+    private const string _VIEWPORT_STYLE = "viewport-container";
+
     private int activeTab = 1;
 
     [Parameter]

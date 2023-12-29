@@ -101,6 +101,7 @@
         "TITLE_OR_TEMPLATE": "Ou título ou o template devem estar preenchidos"
       },
       "OK": "Criar",
+      "CANCEL": "Cancelar",
       "SUCCESS": "Orçamento inicializado com sucesso"
     },
     "VIEW": {
@@ -231,7 +232,7 @@
           },
           "WEATHERDAY": "Weather Day",
           "WEATHER_PERCENT": "Em Percentagem",
-          "WEATHER_BCA": "Com BCA"
+          "WEATHER_BCA": "Weather Day Com BCA"
         },
         "PRODUCTION": {
           "HEADER": "Parâmetros de Produção",
@@ -251,6 +252,24 @@
             "DELTA": "Diferença",
             "CATEGORY": "Categoria",
             "GROUP": "Grupo",
+            "TOTAL": "Total"
+          }
+        },
+        "COSTS": {
+          "HEADER": "Custos Antecipados",
+          "NEW_COST": "Adicionar custo",
+          "COSTS_TABLE": {
+            "ITEM": "Item",
+            "BUDGET": "Orçamento",
+            "COSTS": "Custos",
+            "AVAILABLE": "Disponível",
+            "TEXT": "Notas"
+          },
+          "TOTALS": {
+            "TOTALS": "Totais",
+            "BUDGET": "Orçamento",
+            "COSTS": "Custos",
+            "AVAILABLE": "Disponível",
             "TOTAL": "Total"
           }
         }
@@ -314,7 +333,7 @@
           "FIELDS": {
             "SUPPLIER": "Fornecedor",
             "ITEM": "Item",
-            "COST_VALUE": "Acordo",
+            "COST_VALUE": "Valor Acordado",
             "COST_TEXT": "Notas",
             "NUMBER": "Num. Factura",
             "VALUE": "Valor",

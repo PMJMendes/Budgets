@@ -1,6 +1,6 @@
 {
   "BREADCRUMBS": {
-    "BUDGETS": "Orçamentos",
+    "TEMPLATES": "Templates",
     "NEW": "Novo",
     "EDIT": "Editar"
   },
@@ -40,6 +40,7 @@
     "CREATE": {
       "TITLE": "Criar Template",
       "OK": "Criar",
+      "CANCEL": "Cancelar",
       "SUCCESS": "Template criado com sucesso"
     },
     "VIEW": {

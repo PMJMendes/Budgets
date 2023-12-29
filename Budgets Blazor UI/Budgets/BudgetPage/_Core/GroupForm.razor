@@ -4,32 +4,28 @@
 
 @if(Model is null)
 {
-	<MudForm @ref="Form" Class="full-viewport">
+	<MudForm @ref="Form">
 		<MudGrid>
 			<MudItem xs="6" Class="flex-column">
-				<MudText Class="mud-text-disabled">@L["GROUP:FIELDS:DESCRIPTION"]</MudText>
-				<MudTextField T="string" Disabled="true" />
+				<MudTextField T="string" Disabled="true" Label="@L["GROUP:FIELDS:DESCRIPTION"]" />
 			</MudItem>
 			<MudItem xs="6" Class="flex-column">
-				<MudText Class="mud-text-disabled">@L["GROUP:FIELDS:DESCENGLISH"]</MudText>
-				<MudTextField T="string" Disabled="true" />
+				<MudTextField T="string" Disabled="true" Label="@L["GROUP:FIELDS:DESCENGLISH"]" />
 			</MudItem>
 		</MudGrid>
 	</MudForm>
 }
 else
 {
-	<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="full-viewport">
+	<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue">
 		<MudGrid>
 			<MudItem xs="6" Class="flex-column">
-				<MudText>@L["GROUP:FIELDS:DESCRIPTION"]</MudText>
-				<MudTextField @ref="focusField" Variant="Variant.Text" @bind-Value="Model.Description"
-						  For="@(() => Model.Description)" />
+				<MudTextField @ref="focusField" Variant="Variant.Text" Label="@L["GROUP:FIELDS:DESCRIPTION"]"
+							  @bind-Value="Model.Description" For="@(() => Model.Description)" />
 			</MudItem>
 			<MudItem xs="6" Class="flex-column">
-				<MudText>@L["GROUP:FIELDS:DESCENGLISH"]</MudText>
-				<MudTextField Variant="Variant.Text" @bind-Value="Model.DescEnglish"
-						  For="@(() => Model.DescEnglish)" />
+				<MudTextField Variant="Variant.Text" Label="@L["GROUP:FIELDS:DESCENGLISH"]"
+							  @bind-Value="Model.DescEnglish" For="@(() => Model.DescEnglish)" />
 			</MudItem>
 		</MudGrid>
 	</MudForm>

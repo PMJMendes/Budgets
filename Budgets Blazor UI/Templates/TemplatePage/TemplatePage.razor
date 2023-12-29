@@ -6,14 +6,17 @@
 @implements ITemplatePageController
 
 <CascadingValue Value="@((ITemplatePageController)this)" IsFixed="true">
-	<MudGrid Spacing="0" Class="page-layout">
-		<MudItem xs="4">
-			<TemplateNavigator Model="@Model.NavData" />
-		</MudItem>
-		<MudItem xs="8">
+	<MudStack Spacing="0" Row="true" Class="viewport">
+		@if (Model.CreateData == null && Model.EditData == null)
+		{
+			<MudContainer MaxWidth="MaxWidth.False" Class="navigator">
+				<TemplateNavigator Model="@Model.NavData" />
+			</MudContainer>
+		}
+		<MudContainer MaxWidth="MaxWidth.False" Class="page-content">
 			@Body
-		</MudItem>
-	</MudGrid>
+		</MudContainer>
+	</MudStack>
 </CascadingValue>
 
 @code {
@@ -41,6 +44,11 @@
 		await Navigator.NavigateWithStateAsync("/templates/" + model.ViewData!.Id.ToString(), model);
 	}
 
+	void ITemplatePageController.OnCancelCreate()
+	{
+		Navigator.NavigateWithState("/templates", TemplatesRootModel.Empty());
+	}
+
 	void ITemplatePageController.OnView(Guid id)
 	{
 		var model = Model.ForView(id);
@@ -55,8 +63,9 @@
 
 	async Task ITemplatePageController.AfterEditAsync(BudgetDetailsItem? results)
 	{
-		var model = Model.WithEditResults(results);
-		await Navigator.NavigateWithStateAsync("/templates/" + model.ViewData!.Id.ToString(), model);
+		var model = Model.WithEditResults(results).ForEdit();
+		//await Navigator.NavigateWithStateAsync("/templates/" + model.ViewData!.Id.ToString(), model);
+		await Task.CompletedTask;
 	}
 
 	void ITemplatePageController.OnCancelEdit()

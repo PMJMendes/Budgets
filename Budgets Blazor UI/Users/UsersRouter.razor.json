@@ -81,6 +81,7 @@
     "CREATE": {
       "TITLE": "Criar Utilizador",
       "OK": "Criar",
+      "CANCEL": "Cancelar",
       "SUCCESS": "Utilizador criado com sucesso"
     },
     "VIEW": {

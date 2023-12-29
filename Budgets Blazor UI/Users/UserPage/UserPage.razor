@@ -9,14 +9,14 @@
 @implements IUserPageController
 
 <CascadingValue Value="@((IUserPageController)this)" IsFixed="true">
-	<MudGrid Spacing="0" Class="page-layout">
-		<MudItem xs="4">
+	<MudStack Spacing="0" Row="true" Class="viewport">
+		<MudContainer MaxWidth="MaxWidth.False" Class="navigator">
 			<UserNavigator Model="@Model.NavData" />
-		</MudItem>
-		<MudItem xs="8">
+		</MudContainer>
+		<MudContainer MaxWidth="MaxWidth.False" Class="page-content">
 			@Body
-		</MudItem>
-	</MudGrid>
+		</MudContainer>
+	</MudStack>
 </CascadingValue>
 
 @code {
@@ -36,6 +36,11 @@
 	{
 		var model = Model.WithCreateResults(results);
 		await Navigator.NavigateWithStateAsync("/users/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	void IUserPageController.OnCancelCreate()
+	{
+		Navigator.NavigateWithState("/users", UsersRootModel.Empty());
 	}
 
 	void IUserPageController.OnView(Guid id)

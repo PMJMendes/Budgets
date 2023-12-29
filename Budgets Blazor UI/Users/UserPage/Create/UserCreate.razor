@@ -8,34 +8,28 @@
 
 @if (Model is null)
 {
-	<MudContainer Class="full-viewport justify-center align-center">
+	<MudContainer Class="justify-center align-center">
 		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
 	</MudContainer>
 }
 else
 {
-	<MudContainer Class="full-viewport">
+	<MudStack Spacing="0" Class="viewport">
 		@if (_loading)
 		{
 			<MudProgressLinear Indeterminate="true" />
+			<MudOverlay />
 		}
 
-		<MudGrid Spacing="0" Class="page-layout">
-			<MudItem xs="12" Class="full-viewport pl-2">
-				<MudGrid Spacing="0">
-					<MudItem xs="12" Class="pa-2">
-						<MudText Typo="Typo.h6">@L["USER:CREATE:TITLE"]</MudText>
-					</MudItem>
-					<MudItem xs="12">
-						<UserForm @ref="UserForm" Model="@Model.UserData" />
-					</MudItem>
-					<MudItem xs="12" Class="justify-end pa-2">
-						<MudButton OnClick="@SaveChanges">@L["USER:CREATE:OK"]</MudButton>
-					</MudItem>
-				</MudGrid>
-			</MudItem>
-		</MudGrid>
-	</MudContainer>
+		<MudText Typo="Typo.h2">@L["USER:CREATE:TITLE"]</MudText>
+
+		<UserForm @ref="UserForm" Model="@Model.UserData" />
+
+		<MudContainer MaxWidth="MaxWidth.False" Class="viewport-header buttons justify-end pa-2">
+			<MudButton OnClick="@CancelCreate">@L["USER:CREATE:CANCEL"]</MudButton>
+			<MudButton OnClick="@SaveChanges">@L["USER:CREATE:OK"]</MudButton>
+		</MudContainer>
+	</MudStack>
 }
 
 @code {
@@ -51,6 +45,8 @@ else
 	public IUserPageController Page { get; set; } = default!;
 
 	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
+
+	private void CancelCreate() => Page.OnCancelCreate();
 
 	private async Task SaveChanges()
 	{

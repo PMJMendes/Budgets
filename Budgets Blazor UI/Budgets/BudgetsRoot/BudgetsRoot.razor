@@ -7,38 +7,37 @@
 
 @inject SearchBudgetsService Service
 
-<MudContainer Class="pa-4 full-viewport">
-    <MudContainer Class="pb-4">
+<MudStack Spacing="0" Class="viewport pa-4">
+    <MudContainer MaxWidth="MaxWidth.False" Class="viewport-header pb-4">
         <MudText Typo="Typo.h1">@L["ROOT:TITLE"]</MudText>
-            @if (Level == SecurityLevel.PRODUCER || Level == SecurityLevel.ADMIN)
+        @if (Level == SecurityLevel.PRODUCER || Level == SecurityLevel.ADMIN)
         {
-
             <MudSpacer />
             <BudgetsSearchForm Model="@Model.SearchArgs" ModelChanged="@OnSearchModelChanged" OnSearch="@OnSearch" />
             <MudButton Variant="Variant.Text" Class="ml-2 main-action" OnClick="@OnCreateNew">@L["ROOT:CREATE"]</MudButton>
         }
     </MudContainer>
 
-    @if (_loading)
-    {
-        <MudContainer Class="full-viewport justify-center align-center">
-            <MudProgressCircular Size="Size.Large" Indeterminate="true" />
-        </MudContainer>
-    }
-    else if (Model.Items.Any())
-    {
-        <BudgetsRootList Model="@Model.Items" BudgetSelected="@OnBudgetSelected" />
-    }
-    else
-    {
-        <MudContainer Class="full-viewport justify-center align-center">
+    <MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
+        @if (_loading)
+        {
+            <MudContainer MaxWidth="MaxWidth.False" Class="justify-center align-center">
+                <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+            </MudContainer>
+        }
+        else if (Model.Items.Any())
+        {
+            <BudgetsRootList Model="@Model.Items" BudgetSelected="@OnBudgetSelected" />
+        }
+        else
+        {
             <MudIcon Icon="@Icons.Material.Filled.Search" />
             <MudText Typo="Typo.h6" Class="pl-3">@L["ROOT:EMPTY:TITLE"]</MudText>
-                <MudText>@L["ROOT:EMPTY:CHANGE"]</MudText>
-                <MudButton Variant="Variant.Text" OnClick="@ResetSearch">@L["ROOT:EMPTY:RESET"]</MudButton>
-            </MudContainer>
-    }
-</MudContainer>
+            <MudText>@L["ROOT:EMPTY:CHANGE"]</MudText>
+            <MudButton Variant="Variant.Text" OnClick="@ResetSearch">@L["ROOT:EMPTY:RESET"]</MudButton>
+        }
+    </MudContainer>
+</MudStack>
 
 @code {
     private bool _loading;

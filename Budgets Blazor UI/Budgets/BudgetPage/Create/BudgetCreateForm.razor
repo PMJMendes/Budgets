@@ -2,14 +2,13 @@
 
 @inherits ErrorHandlingForm<BudgetsRouter, BudgetCreateFormModel>
 
-<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="full-viewport">
+<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue">
     <MudGrid>
-        <MudItem xs="6" Class="flex-column">
-            <MudText>@L["BUDGET:FIELDS:CODE"]</MudText>
-            <MudTextField Variant="Variant.Text" @bind-Value="Model.Code"
-                          For="@(() => Model.Code)" Required="true" />
+        <MudItem xs="6">
+            <MudTextField Variant="Variant.Text" Label="@L["BUDGET:FIELDS:CODE"]"
+                          @bind-Value="Model.Code" For="@(() => Model.Code)" Required="true" />
         </MudItem>
-        <MudItem xs="6" Class="flex-column">
+        <MudItem xs="6">
         @if (Model.FromExisting)
         {
             <MudText>@L["BUDGET:CREATE:SOURCE"]</MudText>
@@ -17,8 +16,8 @@
         }
         else
         {
-            <MudText>@L["BUDGET:FIELDS:TEMPLATE"]</MudText>
-            <MudSelect @bind-Value="@Model.Template" ToStringFunc="@(v => v.Id == Guid.Empty ? @L["BUDGET:CREATE:NO_TEMPLATE"] : v.Description)"
+            <MudSelect @bind-Value="@Model.Template" Label="@L["BUDGET:FIELDS:TEMPLATE"]"
+                       ToStringFunc="@(v => v.Id == Guid.Empty ? @L["BUDGET:CREATE:NO_TEMPLATE"] : v.Description)"
                        AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
                 <MudSelectItem Value="@RefModel.Empty()">@L["BUDGET:CREATE:NO_TEMPLATE"]</MudSelectItem>
                 @foreach (var template in Templates)
@@ -28,16 +27,15 @@
             </MudSelect>
         }
         </MudItem>
-        <MudItem xs="6" Class="flex-column">
-            <MudText>@L["BUDGET:FIELDS:BUDGETDATE"]</MudText>
-            <MudDatePicker @bind-Date="@Model.BudgetDate" Editable="true" Clearable="true" DisableToolbar="true"
-                           AnchorOrigin="Origin.TopLeft" TransformOrigin="Origin.TopRight" For="@(() => Model.BudgetDate)"
+        <MudItem xs="6">
+            <MudDatePicker @bind-Date="@Model.BudgetDate" Label="@L["BUDGET:FIELDS:BUDGETDATE"]"
+                           For="@(() => Model.BudgetDate)" Editable="true" Clearable="true" DisableToolbar="true"
+                           AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft"
                            Mask="@(new DateMask("yyyy.MM.dd"))" DateFormat="yyyy.MM.dd" />
         </MudItem>
-        <MudItem xs="6" Class="flex-column">
-            <MudText>@L["BUDGET:FIELDS:TITLE"]</MudText>
-            <MudTextField Variant="Variant.Text" @bind-Value="Model.Title"
-                          For="@(() => Model.Title)" />
+        <MudItem xs="6">
+            <MudTextField Variant="Variant.Text" Label="@L["BUDGET:FIELDS:TITLE"]"
+                          @bind-Value="Model.Title" For="@(() => Model.Title)" />
         </MudItem>
     </MudGrid>
 </MudForm>

@@ -3,27 +3,25 @@
 
 @inherits ErrorHandlingForm<UsersRouter, UserModel>
 
-<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="full-viewport">
+<MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue">
 	<MudGrid>
-		<MudItem xs="6" Class="flex-column">
-			<MudText>@L["USER:FIELDS:EMAIL"]</MudText>
-			<MudTextField Variant="Variant.Text" @bind-Value="Model.Email"
-                          For="@(() => Model.Email)" />
+		<MudItem xs="6">
+			<MudTextField Variant="Variant.Text" Label="@L["USER:FIELDS:EMAIL"]"
+						  @bind-Value="Model.Email" For="@(() => Model.Email)" />
 		</MudItem>
-		<MudItem xs="6" Class="flex-column">
-			<MudText>@L["USER:FIELDS:LEVEL"]</MudText>
+		<MudItem xs="6">
 			<MudSelect @bind-Value="@Model.Level" ToStringFunc="@(v => L["ENUMS:SECURITY_LEVEL:" + v])"
-					   AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+					   AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft"
+					   Label="@L["USER:FIELDS:LEVEL"]">
                 @foreach(var state in Enum.GetValues<SecurityLevel>())
                 {
 					<MudSelectItem Value="state">@L["ENUMS:SECURITY_LEVEL:" + state.ToString()]</MudSelectItem>
                 }
             </MudSelect>
 		</MudItem>
-		<MudItem xs="12" Class="flex-column">
-			<MudText>@L["USER:FIELDS:FULLNAME"]</MudText>
-            <MudTextField Variant="Variant.Text" @bind-Value="Model.FullName"
-                          For="@(() => Model.FullName)" />
+		<MudItem xs="12">
+			<MudTextField Variant="Variant.Text" Label="@L["USER:FIELDS:FULLNAME"]"
+						  @bind-Value="Model.FullName" For="@(() => Model.FullName)" />
 		</MudItem>
 	</MudGrid>
 </MudForm>

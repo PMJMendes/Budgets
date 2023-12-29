@@ -9,51 +9,40 @@
 
 @if (Model is null)
 {
-	<MudContainer Class="full-viewport justify-center align-center">
+	<MudContainer MaxWidth="MaxWidth.False" Class="justify-center align-center">
 		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
 	</MudContainer>
 }
 else
 {
-	<MudContainer Class="full-viewport">
+	<MudStack Spacing="0" Class="viewport">
 		@if (_loading)
 		{
 			<MudProgressLinear Indeterminate="true" />
 			<MudOverlay />
 		}
 
-		<MudGrid Spacing="0">
-			<MudItem xs="12" Class="full-viewport pl-2">
-				<MudGrid Spacing="0">
-					<MudItem xs="12" Class="pa-2">
-						<MudText Typo="Typo.h6">@(Model.Code) - @Model.TemplateData.FrontData.Title</MudText>
-					</MudItem>
-					<MudItem xs="12">
-						<MudButton OnClick="EditTemplate">@L["TEMPLATE:VIEW:ACTIONS:EDIT"]</MudButton>
-						<MudButton Class="pl-2" OnClick="CloneBudget">@L["TEMPLATE:VIEW:ACTIONS:CLONE"]</MudButton>
-						<MudButton Class="pl-2" OnClick="Delete">@L["TEMPLATE:VIEW:ACTIONS:DELETE"]</MudButton>
-					</MudItem>
-					<MudItem xs="6" Class="flex-column">
-						<MudText>@L["TEMPLATE:FIELDS:CODE"]</MudText>
-						<MudText>@Model.Code</MudText>
-					</MudItem>
-					<MudItem xs="6" Class="flex-column">
-						<MudText>@L["TEMPLATE:FIELDS:TITLE"]</MudText>
-						<MudText>@Model.TemplateData.FrontData.Title</MudText>
-					</MudItem>
-				</MudGrid>
+		<MudText Typo="Typo.h2">@(Model.Code) - @Model.TemplateData.FrontData.Title</MudText>
+
+		<MudContainer MaxWidth="MaxWidth.False" Class="viewport-header buttons">
+			<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" OnClick="EditTemplate">@L["TEMPLATE:VIEW:ACTIONS:EDIT"]</MudButton>
+			<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.FileCopy" Class="pl-2" OnClick="CloneBudget">@L["TEMPLATE:VIEW:ACTIONS:CLONE"]</MudButton>
+			<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.DeleteForever" Class="pl-2" OnClick="Delete">@L["TEMPLATE:VIEW:ACTIONS:DELETE"]</MudButton>
+		</MudContainer>
+
+		<MudGrid Spacing="0" Class="viewport-header">
+			<MudItem xs="6" Class="flex-column">
+				<MudText Typo="Typo.h6">@L["TEMPLATE:FIELDS:CODE"]</MudText>
+				<MudText Typo="Typo.body2">@Model.Code</MudText>
 			</MudItem>
-			<MudItem>
-				<MudDivider />
-			</MudItem>
-			<MudItem xs="12">
-				<BudgetViewer Model="@Model.TemplateData" />
-			</MudItem>
-			<MudItem xs="12">
-				<MudSpacer />
+			<MudItem xs="6" Class="flex-column">
+				<MudText Typo="Typo.h6">@L["TEMPLATE:FIELDS:TITLE"]</MudText>
+				<MudText Typo="Typo.body2">@Model.TemplateData.FrontData.Title</MudText>
 			</MudItem>
 		</MudGrid>
-	</MudContainer>
+
+		<BudgetViewer Class="viewport-container" Model="@Model.TemplateData" />
+	</MudStack>
 }
 
 @code {

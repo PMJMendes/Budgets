@@ -22,59 +22,56 @@
 
 @if (Model is null)
 {
-	<MudContainer Class="full-viewport justify-center align-center">
+	<MudContainer MaxWidth="MaxWidth.False" Class="justify-center align-center">
 		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
 	</MudContainer>
 }
 else
 {
-	<MudContainer Class="full-viewport">
+	<MudStack Spacing="0" Class="viewport">
 		@if (_loading)
 		{
 			<MudProgressLinear Indeterminate="true" />
 			<MudOverlay />
 		}
 
+		<MudText Typo="Typo.h2">@(Model.Code) - @Model.BudgetData.FrontData.Title</MudText>
+
+		<MudContainer MaxWidth="MaxWidth.False" Class="viewport-header buttons">
+			@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+			{
+				@switch (Model.State)
+				{
+					case BudgetState.OPEN:
+						<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" OnClick="EditBudget">@L["BUDGET:VIEW:ACTIONS:EDIT"]</MudButton>
+						<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.Lock" Class="pl-2" OnClick="Lock">@L["BUDGET:VIEW:ACTIONS:LOCK"]</MudButton>
+						<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.DeleteForever" Class="pl-2" OnClick="Delete">@L["BUDGET:VIEW:ACTIONS:DELETE"]</MudButton>
+						break;
+
+					case BudgetState.LOCKED:
+						<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" OnClick="ManageBudget">@L["BUDGET:VIEW:ACTIONS:MANAGE"]</MudButton>
+						<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Person" Class="pl-2" OnClick="AssignManager">@L["BUDGET:VIEW:ACTIONS:ASSIGN"]</MudButton>
+						<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.LockOpen" Class="pl-2" OnClick="Unlock">@L["BUDGET:VIEW:ACTIONS:UNLOCK"]</MudButton>
+						<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.CloseFullscreen" Class="pl-2" OnClick="Close">@L["BUDGET:VIEW:ACTIONS:CLOSE"]</MudButton>
+						break;
+
+					case BudgetState.CLOSED:
+						<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.OpenInFull" OnClick="Reopen">@L["BUDGET:VIEW:ACTIONS:REOPEN"]</MudButton>
+						break;
+				}
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.FileCopy" Class="pl-2" OnClick="CloneBudget">@L["BUDGET:VIEW:ACTIONS:CLONE"]</MudButton>
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Print" Class="pl-2" OnClick="() => PrintBudget(false)">@L["BUDGET:VIEW:ACTIONS:PRINT"]</MudButton>
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Print" Class="pl-2" OnClick="() => PrintBudget(true)">@L["BUDGET:VIEW:ACTIONS:PRINTENG"]</MudButton>
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.TableRows" Class="pl-2" OnClick="PrintReport">@L["BUDGET:VIEW:ACTIONS:REPORT"]</MudButton>
+			}
+			else
+			{
+				<MudButton Variant="Variant.Outlined" StartIcon="" OnClick="ManageBudget">@L["BUDGET:VIEW:ACTIONS:MANAGE"]</MudButton>
+				<MudButton Variant="Variant.Outlined" StartIcon="" Class="pl-2" OnClick="PrintReport">@L["BUDGET:VIEW:ACTIONS:REPORT"]</MudButton>
+			}
+		</MudContainer>
+
 		<MudGrid Spacing="0" Class="viewport-header">
-			<MudItem xs="12">
-				<MudText Typo="Typo.h2">@(Model.Code) - @Model.BudgetData.FrontData.Title</MudText>
-			</MudItem>
-			<MudItem xs="12" Class="buttons">
-				@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
-				{
-					@switch (Model.State)
-					{
-						case BudgetState.OPEN:
-							<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" OnClick="EditBudget">@L["BUDGET:VIEW:ACTIONS:EDIT"]</MudButton>
-							<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.Lock" Class="pl-2" OnClick="Lock">@L["BUDGET:VIEW:ACTIONS:LOCK"]</MudButton>
-							<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.DeleteForever" Class="pl-2" OnClick="Delete">@L["BUDGET:VIEW:ACTIONS:DELETE"]</MudButton>
-							break;
-
-						case BudgetState.LOCKED:
-							<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" OnClick="ManageBudget">@L["BUDGET:VIEW:ACTIONS:MANAGE"]</MudButton>
-							<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Person" Class="pl-2" OnClick="AssignManager">@L["BUDGET:VIEW:ACTIONS:ASSIGN"]</MudButton>
-							<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.LockOpen" Class="pl-2" OnClick="Unlock">@L["BUDGET:VIEW:ACTIONS:UNLOCK"]</MudButton>
-							<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.CloseFullscreen" Class="pl-2" OnClick="Close">@L["BUDGET:VIEW:ACTIONS:CLOSE"]</MudButton>
-							break;
-
-						case BudgetState.CLOSED:
-							<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.OpenInFull" OnClick="Reopen">@L["BUDGET:VIEW:ACTIONS:REOPEN"]</MudButton>
-							break;
-					}
-					<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.FileCopy" Class="pl-2" OnClick="CloneBudget">@L["BUDGET:VIEW:ACTIONS:CLONE"]</MudButton>
-					<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Print" Class="pl-2" OnClick="() => PrintBudget(false)">@L["BUDGET:VIEW:ACTIONS:PRINT"]</MudButton>
-					<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Print" Class="pl-2" OnClick="() => PrintBudget(true)">@L["BUDGET:VIEW:ACTIONS:PRINTENG"]</MudButton>
-					@if (Model.State == BudgetState.CLOSED)
-					{
-						<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.TableRows" Class="pl-2" OnClick="PrintReport">@L["BUDGET:VIEW:ACTIONS:REPORT"]</MudButton>
-					}
-				}
-				else
-				{
-					<MudButton Variant="Variant.Outlined" StartIcon="" OnClick="ManageBudget">@L["BUDGET:VIEW:ACTIONS:MANAGE"]</MudButton>
-					<MudButton Variant="Variant.Outlined" StartIcon="" Class="pl-2" OnClick="PrintReport">@L["BUDGET:VIEW:ACTIONS:REPORT"]</MudButton>
-				}
-			</MudItem>
 			<MudItem xs="6" Class="flex-column" Style="min-height: 80px">
 				<MudText Typo="Typo.h6">@L["BUDGET:FIELDS:CODE"]</MudText>
 				<MudText Typo="Typo.body2">@Model.Code</MudText>
@@ -95,8 +92,11 @@ else
 				</MudItem>
 			}
 		</MudGrid>
-		<BudgetViewer Model="@Model.BudgetData" />
-	</MudContainer>
+
+		<MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
+			<BudgetViewer Class="viewport-container" Model="@Model.BudgetData" />
+		</MudContainer>
+	</MudStack>
 }
 
 @code {

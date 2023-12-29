@@ -1,35 +1,45 @@
 ﻿@inherits LocalizedComponent<BudgetsRouter>
 
-<MudContainer Class="gap-0">
-    <MudButton Class="soft-border pl-3 pr-4" StartIcon="@Icons.Material.Filled.FilterAlt" OnClick="@ToggleMenu">@L["SEARCHFORM:FILTER"]</MudButton>
-    <MudContainer Class="gap-0 soft-border border-2 ml-2 pl-1 pr-4" Style="background-color: white;">
+<MudPaper Elevation="0">
+    @if (Small)
+    {
+        <MudIconButton Icon="@Icons.Material.Filled.FilterAlt" OnClick="@ToggleMenu" />
+    }
+    else
+    {
+        <MudButton Class="soft-border pl-3 pr-4" StartIcon="@Icons.Material.Filled.FilterAlt" OnClick="@ToggleMenu">
+            @L["SEARCHFORM:FILTER"]
+        </MudButton>
+    }
+    <MudPaper Elevation="0" Class="group-box ml-2 pl-1 pr-4" Style="background-color: white;">
             <MudIconButton Icon="@Icons.Material.Filled.Search" OnClick="@SearchBudgets" />
-            <MudTextField Variant="Variant.Text" Class="ml-2 pt-2 pb-2" @bind-Value="Model.Text" Clearable="true"
-                          OnClearButtonClick="@SearchBudgets" OnKeyUp="@CheckEnterKey"
-                          Placeholder="@L["SEARCHFORM:FREE_TEXT"]" />
-    </MudContainer>
+            <MudTextField Variant="Variant.Text" Class="ml-2" @bind-Value="Model.Text" Clearable="true"
+                            OnClearButtonClick="@SearchBudgets" OnKeyUp="@CheckEnterKey"
+                            Placeholder="@L["SEARCHFORM:FREE_TEXT"]" />
+    </MudPaper>
 
     <MudOverlay Visible="@(isOpen && openCount == 0)" OnClick="@ToggleMenu" LockScroll="true" />
-    <MudPopover @bind-Open="isOpen" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
-        <MudGrid Spacing="0">
+    <MudPopover AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
+                RelativeWidth="true" @bind-Open="isOpen">
+        <MudGrid Spacing="0" Class="ml-2 mr-2 pt-2">
             <MudItem xs="12">
                 <MudDatePicker @bind-Date="@Model.BudgetDateFrom" Label="@L["SEARCHFORM:BUDGETDATE_FROM"]"
-                               Editable="true" Clearable="true" DisableToolbar="true"
-                               AnchorOrigin="Origin.TopLeft" TransformOrigin="Origin.TopRight"
-                               Mask="@(new DateMask("yyyy.MM.dd"))" DateFormat="yyyy.MM.dd"
-                               PickerOpened="@PickerOpened" PickerClosed="@PickerClosed" />
+                                Editable="true" Clearable="true" DisableToolbar="true"
+                                AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft"
+                                Mask="@(new DateMask("yyyy.MM.dd"))" DateFormat="yyyy.MM.dd"
+                                PickerOpened="@PickerOpened" PickerClosed="@PickerClosed" />
             </MudItem>
             <MudItem xs="12">
                 <MudDatePicker @bind-Date="@Model.BudgetDateTo" Label="@L["SEARCHFORM:BUDGETDATE_TO"]"
-                               Editable="true" Clearable="true" DisableToolbar="true"
-                               AnchorOrigin="Origin.TopLeft" TransformOrigin="Origin.TopRight"
-                               Mask="@(new DateMask("yyyy.MM.dd"))" DateFormat="yyyy.MM.dd"
-                               PickerOpened="@PickerOpened" PickerClosed="@PickerClosed" />
+                                Editable="true" Clearable="true" DisableToolbar="true"
+                                AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft"
+                                Mask="@(new DateMask("yyyy.MM.dd"))" DateFormat="yyyy.MM.dd"
+                                PickerOpened="@PickerOpened" PickerClosed="@PickerClosed" />
             </MudItem>
             <MudItem xs="12">
                 <MudSelect @bind-Value="@Model.State" ToStringFunc="@(v => L["ENUMS:BUDGET_STATE:" + v])"
-                           AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft"
-                           Label="@L["SEARCHFORM:STATE"]" OnOpen="@PickerOpened" OnClose="@PickerClosed">
+                            AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft"
+                            Label="@L["SEARCHFORM:STATE"]" OnOpen="@PickerOpened" OnClose="@PickerClosed">
                     @foreach(var state in Enum.GetValues<BudgetState>())
                     {
                         <MudSelectItem Value="state">@L["ENUMS:BUDGET_STATE:" + state.ToString()]</MudSelectItem>
@@ -45,11 +55,14 @@
             </MudItem>
         </MudGrid>
     </MudPopover>
-</MudContainer>
+</MudPaper>
 
-@code {
+    @code {
     private bool isOpen = false;
     private int openCount = 0;
+
+    [Parameter]
+    public bool Small { get; set; } = false;
 
     [Parameter]
     public BudgetsSearchModel Model { get; set; } = BudgetsSearchModel.Empty();

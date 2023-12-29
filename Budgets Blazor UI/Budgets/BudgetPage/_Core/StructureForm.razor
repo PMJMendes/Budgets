@@ -1,129 +1,115 @@
 ﻿@inherits ErrorHandlingForm<BudgetsRouter, List<GroupModel>>
 
 <MudForm @ref="Form" Class="@Class">
-    <MudGrid Spacing="0">
-        <MudItem xs="3">
-            <MudContainer Class="full-viewport">
-                <MudList @bind-SelectedValue="selectedValue" Clickable="true">
-                    @foreach (var group in Model.Groups)
-                    {
-                        <MudListItem Value="@group" ExpandedChanged="@(_ => SelectGroup(group))">
-                            <ChildContent>
-                                <MudContainer Class="flex-row">
-                                    @if (!group.IsValid)
-                                    {
-                                        <MudText Color="Color.Error">*</MudText>
-                                    }
-                                    <MudText>
-                                        @(string.IsNullOrWhiteSpace(group.Description) ?
-                                            L["BUDGET:EDIT:TABS:STRUCTURE:UNDEFINED_GROUP"] :
-                                            group.Description)
-                                    </MudText>
-                                    <MudSpacer />
-                                    <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
-                                                   OnClick="@(_ => OnDeleteGroup(group))" />
-                                </MudContainer>
-                            </ChildContent>
-                            <NestedList>
-                                @foreach (var category in group.Categories)
+    <MudStack Spacing="0" Row="true" Class="viewport">
+        <MudContainer MaxWidth="MaxWidth.False" Class="mud-grid-item-xs-3 flex-column border-r">
+            <MudList Class="viewport-body"
+                     Clickable="true" @bind-SelectedValue="selectedValue">
+                @foreach (var group in Model.Groups)
+                {
+                    <MudListItem Value="@group" ExpandedChanged="@(_ => SelectGroup(group))">
+                        <ChildContent>
+                            <MudContainer Class="flex-row">
+                                @if (!group.IsValid)
                                 {
-                                    <MudListItem Value="@category" OnClick="@(_ => SelectCategory(group, category))">
-                                        <MudContainer Class="flex-row">
-                                            @if (!category.IsValid)
-                                            {
-                                                <MudText Color="Color.Error">*</MudText>
-                                            }
-                                            <MudText>
-                                                @(string.IsNullOrWhiteSpace(category.Description) ?
-                                                    L["BUDGET:EDIT:TABS:STRUCTURE:UNDEFINED_CATEGORY"] :
-                                                    category.Description)
-                                            </MudText>
-                                            <MudSpacer />
-                                            <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
-                                                           OnClick="@(_ => OnDeleteCategory(group, category))" />
-                                        </MudContainer>
-                                    </MudListItem>
+                                    <MudText Color="Color.Error">*</MudText>
                                 }
-                                <MudDivider />
-                                <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@(_ => OnAddCategory(group))"
-                                             Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_CATEGORY"]" />
-                                <MudDivider />
-                            </NestedList>
+                                <MudText>
+                                    @(string.IsNullOrWhiteSpace(group.Description) ?
+                                        L["BUDGET:EDIT:TABS:STRUCTURE:UNDEFINED_GROUP"] :
+                                        group.Description)
+                                </MudText>
+                                <MudSpacer />
+                                <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
+                                               OnClick="@(_ => OnDeleteGroup(group))" />
+                            </MudContainer>
+                        </ChildContent>
+                        <NestedList>
+                            @foreach (var category in group.Categories)
+                            {
+                                <MudListItem Value="@category" OnClick="@(_ => SelectCategory(group, category))">
+                                    <MudContainer Class="flex-row">
+                                        @if (!category.IsValid)
+                                        {
+                                            <MudText Color="Color.Error">*</MudText>
+                                        }
+                                        <MudText>
+                                            @(string.IsNullOrWhiteSpace(category.Description) ?
+                                                L["BUDGET:EDIT:TABS:STRUCTURE:UNDEFINED_CATEGORY"] :
+                                                category.Description)
+                                        </MudText>
+                                        <MudSpacer />
+                                        <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
+                                                       OnClick="@(_ => OnDeleteCategory(group, category))" />
+                                    </MudContainer>
+                                </MudListItem>
+                            }
+                            <MudDivider />
+                            <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@(_ => OnAddCategory(group))"
+                                         Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_CATEGORY"]" />
+                            <MudDivider />
+                        </NestedList>
+                    </MudListItem>
+                }
+            </MudList>
+            <MudList Class="viewport-header" Clickable="true">
+                <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnAddGroup"
+                             Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_GROUP"]" />
+            </MudList>
+        </MudContainer>
+
+        <MudContainer MaxWidth="MaxWidth.False" Class="mud-grid-item-xs-3 flex-column pl-4 border-r">
+            <MudList Class="viewport-body"
+                     Clickable="true" @bind-SelectedValue="selectedSubValue">
+                @if (selectedCat is CategoryModel category)
+                {
+                    @foreach (var def in category.Defs)
+                    {
+                        <MudListItem Value="@def" OnClick="@(_ => SelectDef(def))">
+                            <MudContainer Class="flex-row">
+                                @if (!def.IsValid)
+                                {
+                                    <MudText Color="Color.Error">*</MudText>
+                                }
+                                <MudText>
+                                    @("P" + def.Order) -
+                                    @(string.IsNullOrWhiteSpace(def.Description) ?
+                                        L["BUDGET:EDIT:TABS:STRUCTURE:UNDEFINED_VALUEDEF"] :
+                                        def.Description)
+                                </MudText>
+                                <MudSpacer />
+                                <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
+                                               OnClick="@(_ => OnDeleteDef(def))" />
+                            </MudContainer>
                         </MudListItem>
                     }
-                    @if (Model.Groups.Any())
-                    {
-                        <MudDivider />
-                    }
-                    <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnAddGroup"
-                                 Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_GROUP"]" />
-                </MudList>
-            </MudContainer>
-        </MudItem>
-        <MudItem xs="3">
-            <MudContainer Class="full-viewport">
-                <MudList @bind-SelectedValue="selectedSubValue" Clickable="true">
-                    @if (selectedCat is CategoryModel category)
-                    {
-                        @foreach (var def in category.Defs)
-                        {
-                            <MudListItem Value="@def" OnClick="@(_ => SelectDef(def))">
-                                <MudContainer Class="flex-row">
-                                    @if (!def.IsValid)
-                                    {
-                                        <MudText Color="Color.Error">*</MudText>
-                                    }
-                                    <MudText>@("P" + def.Order) -
-                                        @(string.IsNullOrWhiteSpace(def.Description) ?
-                                            L["BUDGET:EDIT:TABS:STRUCTURE:UNDEFINED_VALUEDEF"] :
-                                            def.Description)
-                                    </MudText>
-                                    <MudSpacer />
-                                    <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
-                                                   OnClick="@(_ => OnDeleteDef(def))" />
-                                </MudContainer>
-                            </MudListItem>
-                        }
-                        @if (category.Defs.Any())
-                        {
-                            <MudDivider />
-                        }
-                        <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnAddDef"
-                                     Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_VALUEDEF"]" />
-                    }
-                    else
-                    {
-                        <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" Disabled="true"
-                                     Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_VALUEDEF"]" />
-                    }
-                </MudList>
-            </MudContainer>
-        </MudItem>
-        <MudItem xs="6">
-            <MudContainer Class="full-viewport">
-                <MudGrid Spacing="0">
-                    <MudItem xs="12">
-                        <MudText Class="pa-2">@L["GROUP:EDIT:TITLE"]</MudText>
-                    </MudItem>
-                    <MudItem xs="12">
-                        <GroupForm @ref="GroupForm" Model="selectedGroup" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudText Class="pa-2">@L["CATEGORY:EDIT:TITLE"]</MudText>
-                    </MudItem>
-                    <MudItem xs="12">
-                        <CategoryForm @ref="CategoryForm" Model="selectedCat" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudText Class="pa-2">@L["VALUEDEF:EDIT:TITLE"]</MudText>
-                    </MudItem>
-                    <MudItem xs="12">
-                        <ValueDefForm @ref="ValueDefForm" Model="selectedDef" />
-                    </MudItem>
-                </MudGrid>
-            </MudContainer>
-        </MudItem>
-    </MudGrid>
+                }
+            </MudList>
+            <MudList Class="viewport-header" Clickable="true">
+                @if (selectedCat is CategoryModel category)
+                {
+                    <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnAddDef"
+                                 Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_VALUEDEF"]" />
+                }
+                else
+                {
+                    <MudListItem Icon="@Icons.Material.Filled.AddCircleOutline" Disabled="true"
+                                 Text="@L["BUDGET:EDIT:TABS:STRUCTURE:NEW_VALUEDEF"]" />
+                }
+            </MudList>
+        </MudContainer>
+
+        <MudStack Spacing="0" Class="viewport-body mud-grid-item-xs-6 pl-4">
+            <MudText Typo="Typo.h4">@L["GROUP:EDIT:TITLE"]</MudText>
+            <GroupForm @ref="GroupForm" Model="selectedGroup" />
+
+            <MudText Typo="Typo.h4" Class="pt-4">@L["CATEGORY:EDIT:TITLE"]</MudText>
+            <CategoryForm @ref="CategoryForm" Model="selectedCat" />
+
+            <MudText Typo="Typo.h4" Class="pt-4">@L["VALUEDEF:EDIT:TITLE"]</MudText>
+            <ValueDefForm @ref="ValueDefForm" Model="selectedDef" />
+        </MudStack>
+    </MudStack>
 </MudForm>
 
 @code {

@@ -11,7 +11,7 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar>
+    <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
                        OnClick="@((e) => drawerOpen = !drawerOpen)" />
         <MudText Typo="Typo.h5" Class="pl-3">@L["TITLE"]</MudText>
@@ -31,10 +31,12 @@
     <MudDrawer Variant="@DrawerVariant.Mini" @bind-Open="drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu Level="@level" />
     </MudDrawer>
-    <MudMainContent Class="full-viewport">
+    <MudMainContent>
         <CascadingValue Value="@((INavigator)State)" IsFixed="true">
             <CascadingValue Value="@level">
-                @Body
+                <MudContainer MaxWidth="MaxWidth.False">
+                    @Body
+                </MudContainer>
             </CascadingValue>
         </CascadingValue>
     </MudMainContent>
@@ -65,11 +67,26 @@
                 FontSize = "1.25rem",
                 FontWeight = 600
             },
+            H3 = new()
+            {
+                FontSize = "1.125rem",
+                FontWeight = 500
+            },
+            H4 = new()
+            {
+                FontSize = "1.125rem",
+                FontWeight = 400
+            },
+            H5 = new()
+            {
+                FontSize = "1rem",
+                FontWeight = 500
+            },
             H6 = new()
             {
               FontSize = "0.875rem",
               FontWeight = 500
-              
+
             },
             Button = new()
             {
@@ -111,9 +128,12 @@
         });
     }
 
-    private void OnBreadcrumbClick(string url)
+    private void OnBreadcrumbClick(string? url)
     {
-        NavManager.NavigateTo(url);
+        if (url is string _url)
+        {
+            NavManager.NavigateTo(_url);
+        }
     }
 
     private class PageState : INavigator

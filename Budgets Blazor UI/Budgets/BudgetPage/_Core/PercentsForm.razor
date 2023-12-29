@@ -5,55 +5,40 @@
 @inherits ErrorHandlingForm<BudgetsRouter, BudgetModel>
 
 <MudForm @ref="Form" Model="@Model" Validation="@Validator.ValidateValue" Class="@Class">
-    <MudGrid Spacing="0">
-        <MudItem xs="5">
-            <MudGrid Spacing="0">
-                <MudItem xs="4" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:BASE"]</MudItem>
-                <MudItem xs="4">
-                    <MudText>@(((IBudget)Model).BaseValue.AsAnyValue())</MudText>
-                </MudItem>
-                <MudItem xs="4">
-                    (<MudText>@(((IBudget)Model).GroupsValue.AsAnyValue())</MudText>)
-                </MudItem>
-                <MudItem xs="4" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:PRODUCER_PERCENT"]</MudItem>
-                <MudItem xs="4">
-                    <MudNumericField Format="N2" @bind-Value="@Model.PercentsData.ProducerPercent" />
-                </MudItem>
-                <MudItem xs="4">
-                    <MudText>@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
-                </MudItem>
-                <MudItem xs="4" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:INTERNAL"]</MudItem>
-                <MudItem xs="4">
-                    <MudText>@(((IBudget)Model).Value.AsAnyValue())</MudText>
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-        <MudItem xs="7" Class="justify-end">
-            <MudGrid Spacing="0">
-                <MudItem xs="2" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:BCA_PERCENT"]</MudItem>
-                <MudItem xs="2">
-                    <MudNumericField Format="N2" @bind-Value="@Model.PercentsData.BCAPercent" />
-                </MudItem>
-                <MudItem xs="2">
-                    <MudText>@(((IBudget)Model).BCAValue.AsAnyValue())</MudText>
-                </MudItem>
-                <MudItem xs="4" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:USED_BCA"]</MudItem>
-                <MudItem xs="2">
-                    <MudText>@(((IBudget)Model).UsedBCA.AsAnyValue())</MudText>
-                </MudItem>
-                <MudItem xs="12" />
-                <MudItem xs="4" Class="justify-end">@L["BUDGET:EDIT:TABS:PERCENTS:CLIENT"]</MudItem>
-                <MudItem xs="4">
-                    <MudText>@(((IBudget)Model).ClientValue.AsAnyValue())</MudText>
-                </MudItem>
-                <MudItem xs="4">
-                    (<MudText>@(((IBudget)Model).TargetValue.AsAnyValue())</MudText>)
-                </MudItem>
-            </MudGrid>
-        </MudItem>
+    <MudStack Spacing="0" Class="viewport">
+        <MudGrid Class="viewport-header">
+            <MudItem xs="2" Class="flex-column" Style="min-height: 80px">
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:PERCENTS:BASE"]</MudText>
+				<MudText Typo="Typo.body2">@(((IBudget)Model).BaseValue.AsAnyValue())</MudText>
+                <MudText Typo="Typo.body2">(@(((IBudget)Model).GroupsValue.AsAnyValue()))</MudText>
+            </MudItem>
+            <MudItem xs="2" Class="flex-column" Style="min-height: 80px">
+                <MudNumericField Format="N2" Label="@L["BUDGET:EDIT:TABS:PERCENTS:PRODUCER_PERCENT"]"
+                                 @bind-Value="@Model.PercentsData.ProducerPercent" />
+                <MudText Typo="Typo.body2">@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
+            </MudItem>
+            <MudItem xs="2" Class="flex-column" Style="min-height: 80px">
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:PERCENTS:INTERNAL"]</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).Value.AsAnyValue())</MudText>
+            </MudItem>
+            <MudItem xs="2" Class="flex-column" Style="min-height: 80px">
+                <MudNumericField Format="N2" Label="@L["BUDGET:EDIT:TABS:PERCENTS:BCA_PERCENT"]"
+                                 @bind-Value="@Model.PercentsData.BCAPercent" />
+                <MudText>@(((IBudget)Model).BCAValue.AsAnyValue())</MudText>
+            </MudItem>
+            <MudItem xs="2" Class="flex-column" Style="min-height: 80px">
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:PERCENTS:USED_BCA"]</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).UsedBCA.AsAnyValue())</MudText>
+            </MudItem>
+            <MudItem xs="2" Class="flex-column" Style="min-height: 80px">
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:PERCENTS:CLIENT"]</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).ClientValue.AsAnyValue())</MudText>
+                <MudText Typo="Typo.body2">(@(((IBudget)Model).TargetValue.AsAnyValue()))</MudText>
+            </MudItem>
+        </MudGrid>
 @*
         <MudItem xs="7" Class="justify-end">
-            <MudDataGrid Items="@percentItems" Elevation="0" ReadOnly="false" EditMode="DataGridEditMode.Cell" Class="page-layout">
+            <MudDataGrid Items="@percentItems" Elevation="0" ReadOnly="false" EditMode="DataGridEditMode.Cell">
                 <Columns>
                     <TemplateColumn T="ItemModel" Field="Description" IsEditable="false"
                                 Title="@L["BUDGET:EDIT:TABS:PERCENTS:PERCENT_TABLE:ITEM"]" />
@@ -76,8 +61,9 @@
             </MudDataGrid>
         </MudItem>
 *@
-        <MudItem xs="12">
-            <MudTable Items="@bcaItems" Elevation="0" GroupBy="@grouping" Class="page-layout">
+        <MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
+            <MudTable Elevation="0" FixedHeader="true" Height="100%"
+                      Items="@bcaItems" GroupBy="@grouping">
                 <HeaderContent>
                     <MudTh>@L["BUDGET:EDIT:TABS:PERCENTS:BCA_TABLE:ITEM"]</MudTh>
                     <MudTh>@L["BUDGET:EDIT:TABS:PERCENTS:BCA_TABLE:VALUE"]</MudTh>
@@ -121,26 +107,31 @@
                     </MudTd>
                 </RowTemplate>
             </MudTable>
-        </MudItem>
-        <MudItem xs="12" Class="justify-center">
-            <MudContainer Class="flex-row">
-                @L["BUDGET:EDIT:TABS:PERCENTS:WEATHERDAY"]
-                <MudCheckBox @bind-Checked:get="@weatherAsPercent"
-                             @bind-Checked:set="@(value => OnToggleWeatherPercent(value))"
+        </MudContainer>
+
+        <MudGrid Spacing="0" Class="viewport-header">
+            <MudItem xs="4" />
+            <MudItem xs="2" Class="flex-column" Style="min-height: 80px">
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:PERCENTS:WEATHERDAY"]</MudText>
+                <MudCheckBox @bind-Value:get="@weatherAsPercent"
+                             @bind-Value:set="@(value => OnToggleWeatherPercent(value))"
                              Label="@L["BUDGET:EDIT:TABS:PERCENTS:WEATHER_PERCENT"]" />
                 @if (weatherAsPercent)
                 {
-                    <MudNumericField Format="N2" @bind-Value:get="@Model.PercentsData.WeatherPercent"
+                    <MudNumericField Format="N2" Style="width: 50%"
+                                     @bind-Value:get="@Model.PercentsData.WeatherPercent"
                                      @bind-Value:set="@(value => OnSetWeatherPercent(value))" />
                 }
-                <MudNumericField Format="N2" @bind-Value="@Model.PercentsData.WeatherTotal" ReadOnly="@weatherAsPercent" />
-                (<MudContainer Class="flex-row">
-                    @L["BUDGET:EDIT:TABS:PERCENTS:WEATHER_BCA"]
-                    <MudText>@(((IBudget)Model).WeatherBCA?.AsAnyValue())</MudText>
-                </MudContainer>)
-            </MudContainer>
-        </MudItem>
-    </MudGrid>
+                <MudNumericField Format="N2" Style="width: 50%" ReadOnly="@weatherAsPercent"
+                                 @bind-Value="@Model.PercentsData.WeatherTotal" />
+            </MudItem>
+            <MudItem xs="2" Class="flex-column" Style="min-height: 80px">
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:PERCENTS:WEATHER_BCA"]</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).WeatherBCA?.AsAnyValue())</MudText>
+            </MudItem>
+            <MudItem xs="4" />
+        </MudGrid>
+    </MudStack>
 </MudForm>
 
 @code {

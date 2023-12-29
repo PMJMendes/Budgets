@@ -2,25 +2,37 @@
 
 @inherits ErrorHandlingForm<BudgetsRouter, BudgetModel>
 
-<MudContainer Class="full-viewport">
-    <MudTabs @bind-ActivePanelIndex="activeTab">
-        <MudTabPanel Text="@L["BUDGET:EDIT:TABS:STRUCTURE:HEADER"]"></MudTabPanel>
-        <MudTabPanel Text="@L["BUDGET:EDIT:TABS:FRONT_DATA:HEADER"]"></MudTabPanel>
-        <MudTabPanel Text="@L["BUDGET:EDIT:TABS:VALUES:HEADER"]"></MudTabPanel>
-        <MudTabPanel Text="@L["BUDGET:EDIT:TABS:PERCENTS:HEADER"]"></MudTabPanel>
-        <MudTabPanel Text="@L["BUDGET:EDIT:TABS:PRODUCTION:HEADER"]"></MudTabPanel>
-    </MudTabs>
+<MudContainer MaxWidth="MaxWidth.False" Class="viewport-container">
+    <MudStack Spacing="0" Class="viewport">
+        <MudTabs Class="viewport-header mb-4" @bind-ActivePanelIndex="activeTab">
+            <MudTabPanel Text="@L["BUDGET:EDIT:TABS:STRUCTURE:HEADER"]"></MudTabPanel>
+            <MudTabPanel Text="@L["BUDGET:EDIT:TABS:FRONT_DATA:HEADER"]"></MudTabPanel>
+            <MudTabPanel Text="@L["BUDGET:EDIT:TABS:VALUES:HEADER"]"></MudTabPanel>
+            <MudTabPanel Text="@L["BUDGET:EDIT:TABS:PERCENTS:HEADER"]"></MudTabPanel>
+            <MudTabPanel Text="@L["BUDGET:EDIT:TABS:PRODUCTION:HEADER"]"></MudTabPanel>
+            @if (ShowCosts)
+            {
+                <MudTabPanel Text="@L["BUDGET:EDIT:TABS:COSTS:HEADER"]"></MudTabPanel>
+            }
+        </MudTabs>
 
-    <MudContainer Class="full-viewport">
-        <StructureForm @ref="StructureForm" Model="@Model" Class="@(activeTab == 0 ? string.Empty : "d-none")" />
-        <FrontDataForm @ref="FrontForm" Model="@Model.FrontData" Class="@(activeTab == 1 ? string.Empty : "d-none")" />
-        <ValuesForm @ref="ValuesForm" Model="@Model" Class="@(activeTab == 2 ? string.Empty : "d-none")" />
-        <PercentsForm @ref="PercentsForm" Model="@Model" Class="@(activeTab == 3 ? string.Empty : "d-none")" />
-        <ProductionForm @ref="ProductionForm" Model="@Model" Class="@(activeTab == 4 ? string.Empty : "d-none")" />
-    </MudContainer>
+        <MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
+            <StructureForm @ref="StructureForm" Model="@Model" Class="@(activeTab == 0 ? _VIEWPORT_STYLE : "d-none")" />
+            <FrontDataForm @ref="FrontForm" Model="@Model.FrontData" Class="@(activeTab == 1 ? _VIEWPORT_STYLE : "d-none")" />
+            <ValuesForm @ref="ValuesForm" Model="@Model" Class="@(activeTab == 2 ? _VIEWPORT_STYLE : "d-none")" />
+            <PercentsForm @ref="PercentsForm" Model="@Model" Class="@(activeTab == 3 ? _VIEWPORT_STYLE : "d-none")" />
+            <ProductionForm @ref="ProductionForm" Model="@Model" Class="@(activeTab == 4 ? _VIEWPORT_STYLE : "d-none")" />
+            @if (ShowCosts)
+            {
+                <CostsForm Model="@Model" Class="@(activeTab == 5 ? _VIEWPORT_STYLE : "d-none")" />
+            }
+        </MudContainer>
+    </MudStack>
 </MudContainer>
 
 @code {
+    private const string _VIEWPORT_STYLE = "viewport-container";
+
     private int activeTab = 1;
     private StructureForm? StructureForm = default!;
     private FrontDataForm? FrontForm = default!;
@@ -30,6 +42,9 @@
 
     [Parameter]
     public BudgetModel Model { get; set; } = BudgetModel.Empty();
+
+    [Parameter]
+    public bool ShowCosts { get; set; } = true;
 
     protected override async Task<bool> InnerValidate()
     {

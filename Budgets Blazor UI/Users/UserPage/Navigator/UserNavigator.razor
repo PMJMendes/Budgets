@@ -2,15 +2,17 @@
 
 @inherits LocalizedComponent<UsersRouter>
 
-<MudContainer Class="full-viewport">
-    <MudText Typo="Typo.h5" Class="pa-2">@L["USER:NAVIGATOR:TITLE"]</MudText>
-
-    <MudContainer Class="justify-end pa-2">
+<MudStack Spacing="0" Class="viewport">
+    <MudContainer MaxWidth="MaxWidth.False" Class="viewport-header">
+        <MudText Typo="Typo.h5" Class="pa-2">@L["USER:NAVIGATOR:TITLE"]</MudText>
+        <MudSpacer />
         <MudIconButton Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnCreateNew" />
     </MudContainer>
 
-    <UserNavigatorList Model="@Model.Users" SelectedID="@Model.SelectedId" UserSelected="@OnUserSelected" />
-</MudContainer>
+    <MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
+        <UserNavigatorList Model="@Model.Users" SelectedID="@Model.SelectedId" UserSelected="@OnUserSelected" />
+    </MudContainer>
+</MudStack>
 
 @code {
     [Parameter]

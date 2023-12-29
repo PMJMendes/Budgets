@@ -1,23 +1,22 @@
 ﻿@typeparam TRow
 
-<MudContainer Class="full-viewport">
-    <MudTable Class="item-list" T="TRow" Elevation="0" Style="@TableStyle()" Items="@DataSource"
-              Hover="@Clickable" Dense="true" Bordered="true" Striped="true"
-              OnRowClick="@RowClickHandler" RowClassFunc="@SelectedRowClassFunc">
-        <HeaderContent>
-            @foreach (var col in Columns.Where(c => c.Visible))
-            {
-                <MudTh>@col.Header</MudTh>
-            }
-        </HeaderContent>
-        <RowTemplate>
-            @foreach (var col in Columns.Where(c => c.Visible))
-            {
-                <MudTd DataLabel="@col.Header">@col.Selector(context)</MudTd>
-            }
-        </RowTemplate>
-    </MudTable>
-</MudContainer>
+<MudTable T="TRow" FixedHeader="true" Height="100%" Class="item-list" Elevation="0"
+          Style="@TableStyle()" Items="@DataSource" Hover="@Clickable"
+          Dense="true" Bordered="true" Striped="true"
+          OnRowClick="@RowClickHandler" RowClassFunc="@SelectedRowClassFunc">
+    <HeaderContent>
+        @foreach (var col in Columns.Where(c => c.Visible))
+        {
+            <MudTh>@col.Header</MudTh>
+        }
+    </HeaderContent>
+    <RowTemplate>
+        @foreach (var col in Columns.Where(c => c.Visible))
+        {
+            <MudTd DataLabel="@col.Header">@col.Selector(context)</MudTd>
+        }
+    </RowTemplate>
+</MudTable>
 
 @code {
     [Parameter]

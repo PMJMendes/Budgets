@@ -10,40 +10,36 @@
 
 @if (Model is null)
 {
-	<MudContainer Class="full-viewport justify-center align-center">
+	<MudContainer MaxWidth="MaxWidth.False" Class="justify-center align-center">
 		<MudProgressCircular Size="Size.Large" Indeterminate="true" />
 	</MudContainer>
 }
 else
 {
-	<MudContainer Class="full-viewport">
-		@if (_loading)
-		{
-			<MudProgressLinear Indeterminate="true" />
-		}
+	<MudStack Spacing="0" Class="viewport">
+		<MudContainer MaxWidth="MaxWidth.False" Class="viewport-header">
+			@if (_loading)
+			{
+				<MudProgressLinear Indeterminate="true" />
+				<MudOverlay />
+			}
 
-		<MudGrid Spacing="0" Class="page-layout">
-			<MudItem xs="12" Class="full-viewport pl-2">
-				<MudGrid Spacing="0">
-					<MudItem xs="12" Class="pa-2">
-						<MudText Typo="Typo.h6">@L["TEMPLATE:EDIT:TITLE"]</MudText>
-					</MudItem>
-					<MudItem xs="12" Class="justify-end pa-2">
-						<MudButton OnClick="@CancelEdit">@L["TEMPLATE:EDIT:CANCEL"]</MudButton>
-						<MudButton Class="pl-2" OnClick="@SaveChanges">@L["TEMPLATE:EDIT:OK"]</MudButton>
-					</MudItem>
-					<MudItem xs="12">
-						<BudgetForm @ref="Form" Model="@Model.BudgetData" />
-					</MudItem>
-				</MudGrid>
-			</MudItem>
-		</MudGrid>
-	</MudContainer>
+			<MudText Typo="Typo.h2">@L["TEMPLATE:EDIT:TITLE"]</MudText>
+		</MudContainer>
+
+		<MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
+			<BudgetForm @ref="Form" Model="@Model.BudgetData" ShowCosts="false" />
+		</MudContainer>
+
+		<MudContainer MaxWidth="MaxWidth.False" Class="viewport-header buttons justify-end pa-2">
+			<MudButton OnClick="@CancelEdit">@L["TEMPLATE:EDIT:CANCEL"]</MudButton>
+			<MudButton Class="pl-2" OnClick="@SaveChanges">@L["TEMPLATE:EDIT:OK"]</MudButton>
+		</MudContainer>
+	</MudStack>
 }
 
 @code {
 	private bool _loading;
-	private bool shouldRender = true;
 
 	private BudgetForm? Form = default!;
 
@@ -52,8 +48,6 @@ else
 
 	[CascadingParameter]
 	public ITemplatePageController Page { get; set; } = default!;
-
-	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
 
 	private void CancelEdit() => Page.OnCancelEdit();
 
@@ -68,7 +62,6 @@ else
 			{
 				await handler.CheckErrorsAsync(results, async r =>
 				{
-					shouldRender = false;
 					await Page.AfterEditAsync(r);
 					Snackbar.Add(L["TEMPLATE:EDIT:SUCCESS"], Severity.Success);
 				});

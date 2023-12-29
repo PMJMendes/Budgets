@@ -12,14 +12,17 @@
 @inject IJSRuntime JSRuntime
 
 <CascadingValue Value="@((IBudgetPageController)this)" IsFixed="true">
-	<MudGrid Spacing="0" Class="page-layout">
-		<MudItem Class="navigator" xs="3">
-			<BudgetNavigator Model="@Model.NavData" />
-		</MudItem>
-		<MudItem Class="page-content" xs="9">
+	<MudStack Spacing="0" Row="true" Class="viewport">
+		@if (Model.CreateData == null && Model.EditData == null && Model.ManageData == null)
+		{
+			<MudContainer MaxWidth="MaxWidth.False" Class="navigator">
+				<BudgetNavigator Model="@Model.NavData" />
+			</MudContainer>
+		}
+		<MudContainer MaxWidth="MaxWidth.False" Class="page-content">
 			@Body
-		</MudItem>
-	</MudGrid>
+		</MudContainer>
+	</MudStack>
 </CascadingValue>
 
 @code {
@@ -45,6 +48,11 @@
 	{
 		var model = Model.WithCreateResults(results);
 		await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
+	}
+
+	void IBudgetPageController.OnCancelCreate()
+	{
+		Navigator.NavigateWithState("/budgets", BudgetsRootModel.Empty());
 	}
 
 	void IBudgetPageController.OnView(Guid id)
@@ -92,8 +100,9 @@
 
 	async Task IBudgetPageController.AfterManageAsync(ProductionDetailsItem? results)
 	{
-		var model = Model.WithManageResults(results);
-		await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
+		var model = Model.WithManageResults(results).ForManage();
+		//await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
+		await Task.CompletedTask;
 	}
 
 	async Task IBudgetPageController.OnStateChangedAsync(BudgetState state)
