@@ -2,7 +2,7 @@
 @using Krypton.Budgets.Blazor.UI.Users._Common;
 @using Krypton.Budgets.Shared
 
-<MudItem xs="5" Class="border-t-2">
+<MudItem xs="5" Class="border-t-2" Style="page-break-inside: avoid;">
     <MudText Typo="Typo.body1" Style="font-weight:bold;">@Model.Description</MudText>
 </MudItem>
 <MudItem xs="1" Class="border-t-2 justify-end">
@@ -29,7 +29,7 @@
 <MudItem xs="1" Class="border-t-2 justify-end">
     <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).ActualMargin.AsAnyValue())</MudText>
 </MudItem>
-@if (Level != SecurityLevel.ADMIN & Level != SecurityLevel.PRODUCER)
+@if (Level != SecurityLevel.ADMIN && Level != SecurityLevel.PRODUCER)
 {
     <MudItem xs="4" Class="border-t-2">
         <MudText Typo="Typo.body1">&nbsp;</MudText>

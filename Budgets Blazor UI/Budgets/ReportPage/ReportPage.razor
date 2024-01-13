@@ -1,31 +1,36 @@
 ﻿@using Krypton.Budgets.Blazor.APIClient._Common
 @using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.BudgetDetails
 @using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.ProductionDetails;
+@using Krypton.Budgets.Blazor.APIClient.Global.Echo
 @using Krypton.Budgets.Blazor.UI._Main
 @using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.View
 @using Krypton.Budgets.Blazor.UI.Users._Common;
 @using SoloX.BlazorJsonLocalization
 
+@inject EchoService EchoService
 @inject BudgetDetailsService DetailsService
 @inject ProductionDetailsService ProdDetailsService
 @inject ISnackbar Snackbar
 @inject IStringLocalizer<MainRouter> ErrorL
 
-<MudThemeProvider />
+<MudThemeProvider Theme="@printTheme" />
 
-<MudGrid Spacing="0" Class="align-baseline">
-    <ReportHeader Model="@model.BudgetData" Code="@model.Code" />
+<CascadingValue Value="@level">
+    <MudGrid Spacing="0" Class="align-baseline">
+        <ReportHeader Model="@model.BudgetData" Code="@model.Code" />
 
-    @foreach (var group in model.BudgetData.Groups)
-    {
-        <ReportGroup Model="@group" />
-    }
+        @foreach (var group in model.BudgetData.Groups)
+        {
+            <ReportGroup Model="@group" />
+        }
 
-    <ReportFooter Model="@model.BudgetData" />
-</MudGrid>
+        <ReportFooter Model="@model.BudgetData" />
+    </MudGrid>
+</CascadingValue>
 
 @code {
     private BudgetViewModel model = BudgetViewModel.Empty();
+    private SecurityLevel level = SecurityLevel._UNKNOWN;
 
     [CascadingParameter(Name = "RouteParameters")]
     IDictionary<string, object> parameters { get; set; } = default!;
@@ -33,9 +38,65 @@
     [CascadingParameter]
     public SecurityLevel Level { get; set; }
 
+    private MudTheme printTheme = new()
+    {
+        Typography = new()
+        {
+            Default = new Default()
+            {
+                FontFamily = new[] { "Helvetica", "Arial", "sans-serif" }
+            },
+            H4 = new()
+            {
+                FontSize = "14px",
+                FontWeight = 700
+            },
+            H5 = new()
+            {
+                FontSize = "12px",
+                FontWeight = 600
+            },
+            H6 = new()
+            {
+                FontSize = "10px",
+                FontWeight = 500
+            },
+            Body1 = new()
+            {
+                FontSize = "9px",
+                FontWeight = 400
+            },
+            Body2 = new()
+            {
+                FontSize = "8px",
+                FontWeight = 400
+            },
+            Caption = new()
+            {
+                FontSize = "9px",
+                FontWeight = 700
+            }
+        }
+    };
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
+        var result = await EchoService.EchoAsync();
+
+        if (result.IsErrors)
+        {
+            await ErrorL.LoadAsync();
+            ShowSnackbar(result.Errors);
+        }
+        else
+        {
+            if (result.Result.FirstOrDefault() is EchoItem echo)
+            {
+                level = Enum.TryParse(echo.Level, true, out SecurityLevel lv) ? lv : SecurityLevel._UNKNOWN;
+            }
+        };
 
         if (parameters.TryGetValue("id", out object? maybeId) && maybeId is Guid id)
         {

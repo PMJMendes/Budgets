@@ -56,7 +56,7 @@
 <MudItem xs="1" Class="justify-center">
     <MudText Typo="Typo.body1" Style="font-weight:bold;">Resultados</MudText>
 </MudItem>
-@if (Level != SecurityLevel.ADMIN & Level != SecurityLevel.PRODUCER)
+@if (Level != SecurityLevel.ADMIN && Level != SecurityLevel.PRODUCER)
 {
     <MudItem xs="4" />
 }
@@ -88,7 +88,7 @@
 <MudItem xs="1" Class="border-t-2 justify-end">
     <MudText Typo="Typo.h6">@(((IBudget)Model).BaseMargin.AsAnyValue())</MudText>
 </MudItem>
-@if (Level != SecurityLevel.ADMIN & Level != SecurityLevel.PRODUCER)
+@if (Level != SecurityLevel.ADMIN && Level != SecurityLevel.PRODUCER)
 {
     <MudItem xs="4" Class="border-t-2">
         <MudText Typo="Typo.h6">&nbsp;</MudText>

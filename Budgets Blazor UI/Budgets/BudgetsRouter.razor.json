@@ -258,6 +258,11 @@
         "COSTS": {
           "HEADER": "Custos Antecipados",
           "NEW_COST": "Adicionar custo",
+          "FIELDS": {
+            "SUPPLIER": "Fornecedor",
+            "VALUE": "Valor",
+            "TEXT": "Notas"
+          },
           "COSTS_TABLE": {
             "ITEM": "Item",
             "BUDGET": "Orçamento",
@@ -309,22 +314,7 @@
           }
         },
         "COSTS": {
-          "HEADER": "Custos",
-          "NEW_COST": "Adicionar custo",
-          "COSTS_TABLE": {
-            "ITEM": "Item",
-            "BUDGET": "Orçamento",
-            "COSTS": "Custos",
-            "AVAILABLE": "Disponível",
-            "TEXT": "Notas"
-          },
-          "TOTALS": {
-            "TOTALS": "Totais",
-            "BUDGET": "Orçamento",
-            "COSTS": "Custos",
-            "AVAILABLE": "Disponível",
-            "TOTAL": "Total"
-          }
+          "HEADER": "Custos"
         },
         "INVOICING": {
           "HEADER": "Facturas",

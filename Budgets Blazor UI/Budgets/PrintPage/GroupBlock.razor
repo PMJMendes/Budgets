@@ -3,7 +3,7 @@
 
 @inherits LocalizedComponent<BudgetsRouter>
 
-<MudItem xs="1" Class="border-r border-b">
+<MudItem xs="1" Class="border-b">
     <MudText Typo="Typo.h5">@Number</MudText>
 </MudItem>
 <MudItem xs="11" Class="border-b">
@@ -21,7 +21,7 @@
     <CategoryBlock Model="@cat" Lang="@Lang" />
 }
 
-<MudItem xs="11" Class="border-t border-r">
+<MudItem xs="11" Class="border-r">
     <MudText Typo="Typo.h5">
         @L["BUDGET:PRINT:" + Lang + ":TOTAL"] @(Lang switch
         {
@@ -30,7 +30,7 @@
         })
     </MudText>
 </MudItem>
-<MudItem xs="1" Class="justify-end border-t">
+<MudItem xs="1" Class="justify-end">
     <MudText Typo="Typo.h5">@(((IGroup)Model).ClientValue.AsAnyValue())</MudText>
 </MudItem>
 

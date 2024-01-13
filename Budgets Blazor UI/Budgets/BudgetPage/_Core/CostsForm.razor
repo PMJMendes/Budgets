@@ -11,11 +11,11 @@
             <MudTable Elevation="0" FixedHeader="true" Height="100%"
                       Items="@costItems" GroupBy="@grouping">
                 <HeaderContent>
-                    <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:ITEM"]</MudTh>
-                    <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:BUDGET"]</MudTh>
-                    <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:COSTS"]</MudTh>
-                    <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:AVAILABLE"]</MudTh>
-                    <MudTh>@L["BUDGET:MANAGE:TABS:COSTS:COSTS_TABLE:TEXT"]</MudTh>
+                    <MudTh>@L["BUDGET:EDIT:TABS:COSTS:COSTS_TABLE:ITEM"]</MudTh>
+                    <MudTh>@L["BUDGET:EDIT:TABS:COSTS:COSTS_TABLE:BUDGET"]</MudTh>
+                    <MudTh>@L["BUDGET:EDIT:TABS:COSTS:COSTS_TABLE:COSTS"]</MudTh>
+                    <MudTh>@L["BUDGET:EDIT:TABS:COSTS:COSTS_TABLE:AVAILABLE"]</MudTh>
+                    <MudTh>@L["BUDGET:EDIT:TABS:COSTS:COSTS_TABLE:TEXT"]</MudTh>
                     <MudTh />
                 </HeaderContent>
                 <GroupHeaderTemplate>
@@ -59,22 +59,25 @@
                         <MudTd />
                         <MudTd>
                             <MudButton StartIcon="@Icons.Material.Filled.AddCircleOutline" OnClick="@(_ => OnAddCost(context.Item))">
-                                @L["BUDGET:MANAGE:TABS:COSTS:NEW_COST"]
+                                @L["BUDGET:EDIT:TABS:COSTS:NEW_COST"]
                             </MudButton>
                         </MudTd>
                     }
                     else
                     {
                         <MudTd>
-                            <MudTextField @bind-Value="@context.Cost.Supplier" />
+                            <MudTextField @bind-Value="@context.Cost.Supplier"
+                                          Label="@L["BUDGET:EDIT:TABS:COSTS:FIELDS:SUPPLIER"]" />
                         </MudTd>
                         <MudTd />
                         <MudTd>
-                            <MudNumericField Format="N2" @bind-Value="context.Cost.CostValue" />
+                            <MudNumericField Format="N2" @bind-Value="context.Cost.CostValue"
+                                             Label="@L["BUDGET:EDIT:TABS:COSTS:FIELDS:VALUE"]" />
                         </MudTd>
                         <MudTd />
                         <MudTd>
-                            <MudTextField @bind-Value="@context.Cost.Text" />
+                            <MudTextField @bind-Value="@context.Cost.Text"
+                                          Label="@L["BUDGET:EDIT:TABS:COSTS:FIELDS:TEXT"]" />
                         </MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
@@ -88,21 +91,21 @@
         <MudGrid Spacing="0" Class="viewport-header">
             <MudItem xs="4" />
             <MudItem xs="1">
-                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:TOTALS"]</MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:COSTS:TOTALS:TOTALS"]</MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:BUDGET"]</MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:COSTS:TOTALS:BUDGET"]</MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:COSTS"]</MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:COSTS:TOTALS:COSTS"]</MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:AVAILABLE"]</MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:COSTS:TOTALS:AVAILABLE"]</MudText>
             </MudItem>
             <MudItem xs="4" />
             <MudItem xs="4" />
             <MudItem xs="1">
-                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:COSTS:TOTALS:TOTAL"]</MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:EDIT:TABS:COSTS:TOTALS:TOTAL"]</MudText>
             </MudItem>
             <MudItem xs="1">
                 <MudText Typo="Typo.body2">@(((IBudget)Model).ProdValue.AsAnyValue())</MudText>

@@ -3,8 +3,8 @@
 
 @inherits LocalizedComponent<BudgetsRouter>
 
-<MudItem xs="1" Class="border-dashed border-r border-b" />
-<MudItem xs="2" Class="border-dashed border-r border-b" Style="border-right-style:dotted!important">
+<MudItem xs="1" Class="border-b" />
+<MudItem xs="@(10 - Model.Defs.Count)" Class="border-r border-b">
     <MudText Typo="Typo.h6">
         @(Lang switch
         {
@@ -15,7 +15,7 @@
 </MudItem>
 @foreach (var def in Model.Defs)
 {
-    <MudItem xs="1" Class="justify-center border-dashed border-r border-b" Style="border-right-style:dotted!important">
+    <MudItem xs="1" Class="justify-center border-r border-b">
         <MudText Typo="Typo.h6">
             @(Lang switch
             {
@@ -25,11 +25,7 @@
         </MudText>
     </MudItem>
 }
-@if (Model.Defs.Count < 8)
-{
-    <MudItem xs="@(8 - Model.Defs.Count)" Class="border-dashed border-r border-b" Style="border-right-style:dotted!important" />
-}
-<MudItem xs="1" Class="justify-center border-dashed border-b">
+<MudItem xs="1" Class="justify-center border-b">
     <MudText Typo="Typo.h6">@L["BUDGET:PRINT:" + Lang + ":ESTIMATED"]</MudText>
 </MudItem>
 
@@ -38,8 +34,8 @@
     <ItemBlock Model="@item" Lang="@Lang" />
 }
 
-<MudItem xs="1" Class="border-dashed border-r" />
-<MudItem xs="10" Class="border-dotted border-r">
+<MudItem xs="1" Class="border-b" />
+<MudItem xs="10" Class="justify-end border-r border-b">
     <MudText Typo="Typo.h6">
         @L["BUDGET:PRINT:" + Lang + ":SUBTOTAL"] @(Lang switch
         {
@@ -48,7 +44,7 @@
         })
     </MudText>
 </MudItem>
-<MudItem xs="1" Class="justify-end">
+<MudItem xs="1" Class="justify-end border-b">
     <MudText Typo="Typo.h6">@(((ICategory)Model).ClientValue.AsAnyValue())</MudText>
 </MudItem>
 

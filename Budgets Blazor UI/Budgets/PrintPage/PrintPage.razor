@@ -11,15 +11,18 @@
 <MudThemeProvider Theme="@printTheme" />
 
 <MudGrid Spacing="0">
-    <MudGrid Spacing="0" Style="page-break-after:always">
+    <MudGrid Spacing="0" Style="page-break-after: always;">
         <FrontPage Model="@model.BudgetData" Code="@model.Code" Lang="@lang" />
     </MudGrid>
 
     @foreach (var (group, index) in model.BudgetData.Groups.Select((g, i) => (g, i)))
     {
-        <MudGrid Spacing="0" Class="border" Style="page-break-inside:avoid">
+        <MudGrid Spacing="0" Class="border" Style="page-break-inside: avoid;">
             <GroupBlock Model="@group" Number="@(index + 1)" Lang="@lang" />
         </MudGrid>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body1">&nbsp;</MudText>
+        </MudItem>
     }
 </MudGrid>
 
@@ -48,11 +51,16 @@
             H6 = new()
             {
                 FontSize = "10px",
-                FontWeight = 500
+                FontWeight = 600
             },
             Body1 = new()
             {
                 FontSize = "9px",
+                FontWeight = 400
+            },
+            Body2 = new()
+            {
+                FontSize = "8px",
                 FontWeight = 400
             },
             Caption = new()

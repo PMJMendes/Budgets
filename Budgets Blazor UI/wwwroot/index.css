@@ -1,4 +1,11 @@
-﻿.mud-layout {
+﻿@media print {
+    .mud-typography {
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+}
+
+.mud-layout {
     display: flex;
 }
 

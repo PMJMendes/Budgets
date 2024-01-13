@@ -12,7 +12,7 @@
         @if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
         {
             <MudSpacer />
-            <MudContainer MaxWidth="MaxWidth.False" Class="flex-1 pa-2">
+            <MudContainer MaxWidth="MaxWidth.False" Class="justify-end flex-1 pa-2">
                 <BudgetsSearchForm Small="true" Model="@Model.SearchArgs"
                                    ModelChanged="@OnSearchModelChanged" OnSearch="@OnSearch" />
                 <MudIconButton Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="@OnCreateNew" Class="pl-2" />
