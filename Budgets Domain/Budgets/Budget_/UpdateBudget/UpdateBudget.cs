@@ -29,7 +29,7 @@ internal class UpdateBudget : BaseOperation<UpdateBudget, IUpdateBudgetArgs, IOp
             budget.UpdateFrontData(frontData);
             budget.UpdateFinalData(finalData);
             await budget.UpdateDefinitionAsync(defData);
-            budget.UpdateData(budgetData);
+            await budget.UpdateDataAsync(budgetData);
         }
         catch (ConsistencyException e) when (e.Errors.FirstOrDefault() is (Enum, PropertyInfo) err)
         {

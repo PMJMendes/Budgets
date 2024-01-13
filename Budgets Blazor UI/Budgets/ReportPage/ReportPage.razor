@@ -35,9 +35,6 @@
     [CascadingParameter(Name = "RouteParameters")]
     IDictionary<string, object> parameters { get; set; } = default!;
 
-    [CascadingParameter]
-    public SecurityLevel Level { get; set; }
-
     private MudTheme printTheme = new()
     {
         Typography = new()
@@ -100,7 +97,7 @@
 
         if (parameters.TryGetValue("id", out object? maybeId) && maybeId is Guid id)
         {
-            if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+            if (level != SecurityLevel.ASSISTANT)
             {
                 await LoadBudget(id);
             }

@@ -24,11 +24,10 @@ internal class ValueDef : BaseEntity, IValueDef
     }
 
     [Required]
-    [Unique(Combinations = "businessKey, byItem")]
+    [Unique(Combinations = "byItem")]
     public virtual Category Owner { get; protected set; } = default!;
 
     [Required]
-    [Unique(Combinations = "businessKey")]
     public virtual int Order { get; protected set; } = 0;
 
     [Required]

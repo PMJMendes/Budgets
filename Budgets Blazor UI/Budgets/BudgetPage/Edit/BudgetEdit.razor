@@ -17,14 +17,16 @@ else
 {
 	<MudStack Spacing="0" Class="viewport">
 		<MudContainer MaxWidth="MaxWidth.False" Class="viewport-header">
-			@if (_loading)
-			{
-				<MudProgressLinear Indeterminate="true" />
-				<MudOverlay />
-			}
-
 			<MudText Typo="Typo.h2">@(Model.Code) - @Model.BudgetData.FrontData.Title</MudText>
 		</MudContainer>
+
+		@if (_loading)
+		{
+			<MudContainer MaxWidth="MaxWidth.False" Class="viewport-header">
+				<MudProgressLinear Indeterminate="true" />
+				<MudOverlay />
+			</MudContainer>
+		}
 
 		<MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
 			<BudgetForm @ref="Form" Model="@Model.BudgetData" />

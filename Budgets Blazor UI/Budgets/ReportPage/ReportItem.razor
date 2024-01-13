@@ -2,7 +2,7 @@
 @using Krypton.Budgets.Blazor.UI.Users._Common;
 @using Krypton.Budgets.Shared
 
-<MudItem xs="5" Style="page-break-inside: avoid;">
+<MudItem xs="2" Style="page-break-inside: avoid;">
     <MudText Typo="Typo.body2">&nbsp; &nbsp; @Model.Description</MudText>
 </MudItem>
 <MudItem xs="1" Class="justify-end">
@@ -23,15 +23,34 @@
         <MudText Typo="Typo.body2">@(((IItem)Model).BaseValue.AsAnyValue())</MudText>
     </MudItem>
 }
+@if (Level != SecurityLevel.ASSISTANT)
+{
+    <MudItem xs="1" Class="justify-end">
+        <MudText Typo="Typo.body2">@(((IItem)Model).ProdValue.AsAnyValue())</MudText>
+    </MudItem>
+}
 <MudItem xs="1" Class="justify-end">
-    <MudText Typo="Typo.body2">@(((IItem)Model).InvoicedValue.AsAnyValue())</MudText>
+    <MudText Typo="Typo.body2">@(((IItem)Model).CostValue.AsAnyValue())</MudText>
 </MudItem>
 <MudItem xs="1" Class="justify-end">
-    <MudText Typo="Typo.body2">@(((IItem)Model).ActualMargin.AsAnyValue())</MudText>
+    <MudText Typo="Typo.body2">@(((IItem)Model).Available.AsAnyValue())</MudText>
 </MudItem>
-@if (Level != SecurityLevel.ADMIN && Level != SecurityLevel.PRODUCER)
+@if (Level != SecurityLevel.ASSISTANT)
+{
+    <MudItem xs="1" Class="justify-end">
+        <MudText Typo="Typo.body2">@(((IItem)Model).InvoicedValue.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="justify-end">
+        <MudText Typo="Typo.body2">@(((IItem)Model).ActualMargin.AsAnyValue())</MudText>
+    </MudItem>
+}
+@if (Level == SecurityLevel.ACCOUNTING)
 {
     <MudItem xs="4" />
+}
+@if (Level == SecurityLevel.ASSISTANT)
+{
+    <MudItem xs="7" />
 }
 
 @foreach (var cost in Model.Costs)
@@ -39,7 +58,7 @@
     <ReportCost Model="cost" />
 }
 
-@if (Level != SecurityLevel.ACCOUNTING)
+@if (Level != SecurityLevel.ASSISTANT)
 {
     @foreach (var invoice in Model.Invoices)
     {

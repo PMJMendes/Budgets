@@ -120,22 +120,23 @@
             <MudDataGrid Elevation="0" FixedHeader="true" Height="100%" Class="viewport-body item-list"
                          Items="@invoices" ReadOnly="false" EditMode="DataGridEditMode.Cell" SortMode="SortMode.None">
                 <Columns>
-                    <TemplateColumn T="InvoiceModel" Field="Supplier" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:SUPPLIER"]">
+                    <TemplateColumn T="InvoiceModel" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:SUPPLIER"]">
                         <EditTemplate>
                             <MudTextField @bind-Value="@context.Item.Supplier" />
                         </EditTemplate>
                     </TemplateColumn>
-                    <TemplateColumn T="InvoiceModel" Field="Text" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:TEXT"]">
+@*                  <TemplateColumn T="InvoiceModel" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:TEXT"]">
                         <EditTemplate>
                             <MudTextField @bind-Value="@context.Item.Text" />
                         </EditTemplate>
                     </TemplateColumn>
-                    <TemplateColumn T="InvoiceModel" Field="Text" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:NUMBER"]">
+*@
+                    <TemplateColumn T="InvoiceModel" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:NUMBER"]">
                         <EditTemplate>
                             <MudTextField @bind-Value="@context.Item.InvoiceNumber" />
                         </EditTemplate>
                     </TemplateColumn>
-                    <TemplateColumn T="InvoiceModel" Field="InvoicedValue" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:VALUE"]">
+                    <TemplateColumn T="InvoiceModel" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:VALUE"]">
                         <EditTemplate>
                             <MudNumericField Format="N2" @bind-Value="@context.Item.InvoicedValue" />
                         </EditTemplate>
@@ -155,9 +156,11 @@
             <MudDataGrid Elevation="0" FixedHeader="true" Height="100%" Class="viewport-body item-list"
                          Items="@invoices">
                 <Columns>
-                    <TemplateColumn T="InvoiceModel" Field="Supplier" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:SUPPLIER"]" />
-                    <TemplateColumn T="InvoiceModel" Field="InvoicedValue" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:VALUE"]" />
-                    <TemplateColumn T="InvoiceModel" Field="Text" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:TEXT"]" />
+                    <TemplateColumn T="InvoiceModel" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:SUPPLIER"]" />
+@*                  <TemplateColumn T="InvoiceModel" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:TEXT"]" />
+*@
+                    <TemplateColumn T="InvoiceModel" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:NUMBER"]" />
+                    <TemplateColumn T="InvoiceModel" Title="@L["BUDGET:MANAGE:TABS:INVOICING:FIELDS:VALUE"]" />
                 </Columns>
             </MudDataGrid>
         }

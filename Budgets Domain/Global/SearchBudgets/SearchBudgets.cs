@@ -19,7 +19,14 @@ internal class SearchBudgets : BaseQuery<SearchBudgets, ISearchBudgetsArgs, ISea
 
         if (!context.Security.HasSecurityLevel(SecurityLevel.Producer))
         {
-            query = query.Where(b => b.State == BudgetState.LOCKED && b.Manager == context.CurrentUser);
+            if (context.Security.HasSecurityLevel(SecurityLevel.Accounting))
+            {
+                query = query.Where(b => b.State == BudgetState.LOCKED || b.State == BudgetState.CLOSED);
+            }
+            else
+            {
+                query = query.Where(b => b.State == BudgetState.LOCKED && b.Manager == context.CurrentUser);
+            }
         }
 
         if (args?.FreeText?.ToLower() is string text)

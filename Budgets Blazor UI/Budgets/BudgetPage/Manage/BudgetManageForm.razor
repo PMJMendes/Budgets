@@ -7,34 +7,48 @@
 <MudContainer MaxWidth="MaxWidth.False" Class="viewport-container">
     <MudStack Spacing="0" Class="viewport">
         <MudTabs Class="viewport-header mb-4" @bind-ActivePanelIndex="activeTab">
-            <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:BUDGET:HEADER"]"></MudTabPanel>
-            <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:COSTS:HEADER"]"></MudTabPanel>
-            <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:INVOICING:HEADER"]"></MudTabPanel>
-            @if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+            @switch (Level)
             {
-                <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:SOURCE:HEADER"]"></MudTabPanel>
+                case SecurityLevel.ASSISTANT:
+                    <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:BUDGET:HEADER"]"></MudTabPanel>
+                    <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:COSTS:HEADER"]"></MudTabPanel>
+                    break;
+                case SecurityLevel.ACCOUNTING:
+                    <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:BUDGET:HEADER"]"></MudTabPanel>
+                    <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:INVOICING:HEADER"]"></MudTabPanel>
+                    break;
+                default:
+                    <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:BUDGET:HEADER"]"></MudTabPanel>
+                    <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:COSTS:HEADER"]"></MudTabPanel>
+                    <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:INVOICING:HEADER"]"></MudTabPanel>
+                    <MudTabPanel Text="@L["BUDGET:MANAGE:TABS:SOURCE:HEADER"]"></MudTabPanel>
+                    break;
             }
         </MudTabs>
 
         <MudContainer MaxWidth="MaxWidth.False" Class="viewport-body">
-            @if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+            @switch (Level)
             {
-                <BudgetProdViewer Model="@Model" Class="@(activeTab == 0 ? _VIEWPORT_STYLE : "d-none")" />
-                <BudgetViewer Model="@Model" Class="@(activeTab == 3 ? _VIEWPORT_STYLE : "d-none")" />
+                case SecurityLevel.ASSISTANT:
+                    <BudgetViewer Model="@Model" Class="@ClassForTab(0)" />
+                    <CostsForm Model="@Model" Class="@ClassForTab(1)" />
+                    break;
+                case SecurityLevel.ACCOUNTING:
+                    <BudgetViewer Model="@Model" Class="@ClassForTab(0)" />
+                    <InvoicesForm Model="@Model" Class="@ClassForTab(1)" />
+                    break;
+                default:
+                    <BudgetProdViewer Model="@Model" Class="@ClassForTab(0)" />
+                    <CostsForm Model="@Model" Class="@ClassForTab(1)" />
+                    <InvoicesForm Model="@Model" Class="@ClassForTab(2)" />
+                    <BudgetViewer Model="@Model" Class="@ClassForTab(3)" />
+                    break;
             }
-            else
-            {
-                <BudgetViewer Model="@Model" Class="@(activeTab == 0 ? _VIEWPORT_STYLE : "d-none")" />
-            }
-            <CostsForm Model="@Model" Class="@(activeTab == 1 ? _VIEWPORT_STYLE : "d-none")" />
-            <InvoicesForm Model="@Model" Class="@(activeTab == 2 ? _VIEWPORT_STYLE : "d-none")" />
         </MudContainer>
     </MudStack>
 </MudContainer>
 
 @code {
-    private const string _VIEWPORT_STYLE = "viewport-container";
-
     private int activeTab = 1;
 
     [Parameter]
@@ -42,4 +56,6 @@
 
     [CascadingParameter]
     public SecurityLevel Level { get; set; }
+
+    private string ClassForTab(int targetTab) => activeTab == targetTab ? "viewport-container" : "d-none";
 }

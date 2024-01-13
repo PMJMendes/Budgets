@@ -22,9 +22,9 @@ internal class ManageBudget : BaseOperation<ManageBudget, IManageBudgetArgs, IOp
 
         var budget = await GetTarget<Budget>(args);
 
-        if (budget.State != BudgetState.LOCKED || budget.Manager != context.CurrentUser)
+        if (budget.Manager != context.CurrentUser)
         {
-            AssertIsProducer();
+            AssertIsAccounting();
         }
 
         try

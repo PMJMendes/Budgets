@@ -48,6 +48,7 @@
                             <MudText Typo="Typo.body2">@context.Item.Description</MudText>
                         </CellTemplate>
                     </TemplateColumn>
+
                     @foreach (var def in selectedCat.Defs)
                     {
                         <TemplateColumn T="ItemModel" Title="@( def.Description + (def.Type == ValueType.TEXT ? "/" + L["BUDGET:VIEW:FIELDS:ENGLISH"] : ""))">
@@ -79,13 +80,13 @@
                         <TemplateColumn T="ItemModel" Title="@L["BUDGET:VIEW:FIELDS:INTERNAL"]">
                             <CellTemplate>
                                 <MudText Typo="Typo.body2">@context.Item.Value.AsAnyValue()</MudText>
-                                </CellTemplate>
-                            </TemplateColumn>
+                            </CellTemplate>
+                        </TemplateColumn>
                         <TemplateColumn T="ItemModel" Title="@L["BUDGET:VIEW:FIELDS:CLIENT"]">
                             <CellTemplate>
                                 <MudText Typo="Typo.body2">@context.Item.ClientValue.AsAnyValue()</MudText>
-                                </CellTemplate>
-                            </TemplateColumn>
+                            </CellTemplate>
+                        </TemplateColumn>
                     }
                     else
                     {

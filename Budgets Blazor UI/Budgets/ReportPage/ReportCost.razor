@@ -1,35 +1,44 @@
 ﻿@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
 @using Krypton.Budgets.Blazor.UI.Users._Common;
 
-<MudItem xs="2" Style="page-break-inside: avoid;" />
 @if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
 {
-    <MudItem xs="1">
+    <MudItem xs="4" Style="page-break-inside: avoid;">
+        <MudText Typo="Typo.body1">&nbsp;</MudText>
+    </MudItem>
+    <MudItem xs="2">
         <MudText Typo="Typo.body1">@Model.Supplier</MudText>
     </MudItem>
-    <MudItem xs="1">
+    <MudItem xs="2">
         <MudText Typo="Typo.body1" Style="">@Model.Text</MudText>
     </MudItem>
-    <MudItem xs="6" />
 }
 else
 {
-    <MudItem xs="4" />
+    <MudItem xs="3" Style="page-break-inside: avoid;">
+        <MudText Typo="Typo.body1">&nbsp;</MudText>
+    </MudItem>
+    @if (Level != SecurityLevel.ASSISTANT)
+    {
+        <MudItem xs="1" />
+    }
 }
 <MudItem xs="1" Class="justify-end">
     <MudText Typo="Typo.body1">@Model.CostValue?.AsAnyValue()</MudText>
 </MudItem>
 <MudItem xs="1" />
+@if (Level != SecurityLevel.ASSISTANT)
+{
+    <MudItem xs="2" />
+}
 @if (Level != SecurityLevel.ADMIN && Level != SecurityLevel.PRODUCER)
 {
-    <MudItem xs="1" />
-    <MudItem xs="1">
-        <MudText Typo="Typo.body1" Style="">@Model.Supplier</MudText>
+    <MudItem xs="2">
+        <MudText Typo="Typo.body1">@Model.Supplier</MudText>
     </MudItem>
-    <MudItem xs="1">
-        <MudText Typo="Typo.body1" Style="">@Model.Text</MudText>
+    <MudItem xs="@LastColWidth">
+        <MudText Typo="Typo.body1">@Model.Text</MudText>
     </MudItem>
-    <MudItem xs="1" />
 }
 
 @code {
@@ -38,4 +47,11 @@ else
 
     [CascadingParameter]
     public SecurityLevel Level { get; set; }
+
+    private int LastColWidth => Level switch
+    {
+        SecurityLevel.ASSISTANT => 5,
+        SecurityLevel.ACCOUNTING => 2,
+        _ => 0
+    };
 }

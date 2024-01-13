@@ -43,7 +43,11 @@
             <MudDataGrid Elevation="0" FixedHeader="true" Height="100%" Class="viewport-body item-list"
                          Items="@items" SortMode="SortMode.None">
                 <Columns>
-                    <TemplateColumn T="ItemModel" Field="Description" Title="@L["BUDGET:MANAGE:TABS:BUDGET:FIELDS:DESCRIPTION"]" />
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:MANAGE:TABS:BUDGET:FIELDS:DESCRIPTION"]">
+                        <CellTemplate>
+                            <MudText Typo="Typo.body2">@context.Item.Description</MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
 
                     @foreach (var def in selectedCat.Defs.Where(d => d.Type == ValueType.NUMBER))
                     {
@@ -53,26 +57,26 @@
                                 {
                                     @if (context.Item[def.Description] is ValueModel model)
                                     {
-                                        <MudText>@model.ProdValue?.AsAnyValue()</MudText>
+                                        <MudText Typo="Typo.body2">@model.ProdValue?.AsAnyValue()</MudText>
                                     }
                                 }
                             </CellTemplate>
                         </TemplateColumn>
                     }
 
-                    <TemplateColumn T="ItemModel" Field="Value" Title="@L["BUDGET:MANAGE:TABS:BUDGET:FIELDS:TOTAL"]">
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:MANAGE:TABS:BUDGET:FIELDS:TOTAL"]">
                         <CellTemplate>
-                            <MudText>@context.Item.ProdValue.AsAnyValue()</MudText>
+                            <MudText Typo="Typo.body2">@context.Item.ProdValue.AsAnyValue()</MudText>
                         </CellTemplate>
                     </TemplateColumn>
-                    <TemplateColumn T="ItemModel" Field="Value" Title="@L["BUDGET:MANAGE:TABS:BUDGET:FIELDS:INTERNAL"]">
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:MANAGE:TABS:BUDGET:FIELDS:INTERNAL"]">
                         <CellTemplate>
-                            <MudText>@context.Item.Value.AsAnyValue()</MudText>
+                            <MudText Typo="Typo.body2">@context.Item.Value.AsAnyValue()</MudText>
                         </CellTemplate>
                     </TemplateColumn>
-                    <TemplateColumn T="ItemModel" Field="Value" Title="@L["BUDGET:MANAGE:TABS:BUDGET:FIELDS:PROVISIONAL"]">
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:MANAGE:TABS:BUDGET:FIELDS:PROVISIONAL"]">
                         <CellTemplate>
-                            <MudText>@(((IItem)context.Item).Provisional.AsAnyValue())</MudText>
+                            <MudText Typo="Typo.body2">@(((IItem)context.Item).Provisional.AsAnyValue())</MudText>
                         </CellTemplate>
                     </TemplateColumn>
                 </Columns>
@@ -94,44 +98,44 @@
         <MudGrid Spacing="0" Class="viewport-header">
             <MudItem xs="3" />
             <MudItem xs="1">
-                <MudText>@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:TOTALS"]: </MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:TOTALS"]: </MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:TOTAL"]: </MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:TOTAL"]: </MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:INTERNAL"]: </MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:INTERNAL"]: </MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:PROVISIONAL"]: </MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:PROVISIONAL"]: </MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:COSTS"]: </MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:COSTS"]: </MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:MARGIN"]: </MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:MARGIN"]: </MudText>
             </MudItem>
             <MudItem xs="3" />
             <MudItem xs="3" />
             <MudItem xs="1">
-                <MudText>@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:CATEGORY"]: </MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:CATEGORY"]: </MudText>
             </MudItem>
             @if (selectedCat is ICategory cat)
             {
                 <MudItem xs="1">
-                    <MudText>@cat.ProdValue.AsAnyValue()</MudText>
+                    <MudText Typo="Typo.body2">@cat.ProdValue.AsAnyValue()</MudText>
                 </MudItem>
                 <MudItem xs="1">
-                    <MudText>@cat.Value.AsAnyValue()</MudText>
+                    <MudText Typo="Typo.body2">@cat.Value.AsAnyValue()</MudText>
                 </MudItem>
                 <MudItem xs="1">
-                    <MudText>@cat.Provisional.AsAnyValue()</MudText>
+                    <MudText Typo="Typo.body2">@cat.Provisional.AsAnyValue()</MudText>
                 </MudItem>
                 <MudItem xs="1">
-                    <MudText>@cat.CostValue.AsAnyValue()</MudText>
+                    <MudText Typo="Typo.body2">@cat.CostValue.AsAnyValue()</MudText>
                 </MudItem>
                 <MudItem xs="1">
-                    <MudText>@cat.Margin.AsAnyValue()</MudText>
+                    <MudText Typo="Typo.body2">@cat.Margin.AsAnyValue()</MudText>
                 </MudItem>
             }
             else
@@ -141,24 +145,24 @@
             <MudItem xs="3" />
             <MudItem xs="3" />
             <MudItem xs="1">
-                <MudText>@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:GROUP"]: </MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:GROUP"]: </MudText>
             </MudItem>
             @if (selectedGroup is IGroup group)
             {
                 <MudItem xs="1">
-                    <MudText>@group.ProdValue.AsAnyValue()</MudText>
+                    <MudText Typo="Typo.body2">@group.ProdValue.AsAnyValue()</MudText>
                 </MudItem>
                 <MudItem xs="1">
-                    <MudText>@group.Value.AsAnyValue()</MudText>
+                    <MudText Typo="Typo.body2">@group.Value.AsAnyValue()</MudText>
                 </MudItem>
                 <MudItem xs="1">
-                    <MudText>@group.Provisional.AsAnyValue()</MudText>
+                    <MudText Typo="Typo.body2">@group.Provisional.AsAnyValue()</MudText>
                 </MudItem>
                 <MudItem xs="1">
-                    <MudText>@group.CostValue.AsAnyValue()</MudText>
+                    <MudText Typo="Typo.body2">@group.CostValue.AsAnyValue()</MudText>
                 </MudItem>
                 <MudItem xs="1">
-                    <MudText>@group.Margin.AsAnyValue()</MudText>
+                    <MudText Typo="Typo.body2">@group.Margin.AsAnyValue()</MudText>
                 </MudItem>
             }
             else
@@ -168,38 +172,38 @@
             <MudItem xs="3" />
             <MudItem xs="3" />
             <MudItem xs="1">
-                <MudText>@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:HPROD"]:</MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:HPROD"]:</MudText>
             </MudItem>
             <MudItem xs="1" />
             <MudItem xs="1">
-                <MudText>@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
             </MudItem>
             <MudItem xs="1" />
             <MudItem xs="1">
-                <MudText>@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
             </MudItem>
             <MudItem xs="3" />
             <MudItem xs="3" />
             <MudItem xs="1">
-                <MudText>@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:TOTAL"]:</MudText>
+                <MudText Typo="Typo.h6">@L["BUDGET:MANAGE:TABS:BUDGET:TOTALS:TOTAL"]:</MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@(((IBudget)Model).ProdValue.AsAnyValue())</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).ProdValue.AsAnyValue())</MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@(((IBudget)Model).Value.AsAnyValue())</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).Value.AsAnyValue())</MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@(((IBudget)Model).Provisional.AsAnyValue())</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).Provisional.AsAnyValue())</MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@(((IBudget)Model).CostValue.AsAnyValue())</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).CostValue.AsAnyValue())</MudText>
             </MudItem>
             <MudItem xs="1">
-                <MudText>@(((IBudget)Model).Margin.AsAnyValue())</MudText>
+                <MudText Typo="Typo.body2">@(((IBudget)Model).Margin.AsAnyValue())</MudText>
             </MudItem>
             <MudItem xs="3" />
         </MudGrid>

@@ -206,7 +206,7 @@ internal class Budget : BaseEntity, IBudget
         await UpdateGroupDefsAsync(def.GroupDefData);
     }
 
-    public virtual void UpdateData(BudgetData data)
+    public virtual async Task UpdateDataAsync(BudgetData data)
     {
         if (State != BudgetState.OPEN)
         {
@@ -223,7 +223,7 @@ internal class Budget : BaseEntity, IBudget
         var groupBuffer = groups.ToDictionary(v => v.Order);
         foreach (var kv in data.GroupData.Select((v, i) => (i, v)))
         {
-            groupBuffer[kv.i + 1].UpdateData(kv.v);
+            await groupBuffer[kv.i + 1].UpdateDataAsync(kv.v);
         }
     }
 
@@ -299,28 +299,20 @@ internal class Budget : BaseEntity, IBudget
         var groupIds = groupDefData.Select(g => g.Id).ToHashSet();
         var toDelete = groups.Where(i => !groupIds.Contains(i.Id)).ToList();
         await Task.WhenAll(toDelete.Select(i => i.DeleteAsync()));
-        await context.Persistence.FlushChangesAsync();
 
         var groupBuffer = groups.ToDictionary(v => v.Id);
         foreach (var kv in groupDefData.Select((v, i) => (i, v)))
         {
             if (groupBuffer.TryGetValue(kv.v.Id, out var group))
             {
-                group.ReRank(-kv.i - 1);
+                group.ReRank(kv.i + 1);
                 await group.UpdateDefinitionAsync(kv.v);
             }
             else
             {
-                CreateGroup(kv.v).ReRank(-kv.i - 1);
+                CreateGroup(kv.v).ReRank(kv.i + 1);
             }
         }
-        await context.Persistence.FlushChangesAsync();
-
-        foreach (var g in groups)
-        {
-            g.ReRank(-g.Order);
-        }
-        await context.Persistence.FlushChangesAsync();
     }
 
     private Group CreateGroup(GroupDefData def)

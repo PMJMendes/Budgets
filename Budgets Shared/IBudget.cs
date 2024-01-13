@@ -52,7 +52,7 @@ public interface IBudget
 
     decimal BaseMargin => GroupsValue - CostValue;
 
-    decimal BaseMarginPercent => CostValue != 0m ? BaseMargin * 100m / CostValue : 0m;
+    decimal BaseMarginPercent => Value != 0m ? BaseMargin * 100m / Value : 0m;
 
     decimal InvoicedValue => Groups.Sum(g => g.InvoicedValue);
 

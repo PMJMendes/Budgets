@@ -143,7 +143,7 @@
         if (Model.ViewData?.Id is not Guid viewId || viewId != id)
         {
             update = true;
-            if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+            if (Level != SecurityLevel.ASSISTANT)
             {
                 viewTask = ResolveViewData(id);
             }

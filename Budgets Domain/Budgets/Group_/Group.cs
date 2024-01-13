@@ -32,18 +32,17 @@ internal class Group : BaseEntity, IGroup
 
         if (data is GroupData _data)
         {
-            UpdateData(_data);
+            UpdateDataAsync(_data).GetAwaiter().GetResult();
         }
 
         context.Persistence.PersistAsync(this).GetAwaiter().GetResult();
     }
 
     [Required]
-    [Unique(Combinations = "businessKey, byBudget")]
+    [Unique(Combinations = "byBudget")]
     public virtual Budget Owner { get; protected set; } = default!;
 
     [Required]
-    [Unique(Combinations = "businessKey")]
     public virtual int Order { get; protected set; } = 0;
 
     [Required]
@@ -84,7 +83,7 @@ internal class Group : BaseEntity, IGroup
         await UpdateCategoryDefsAsync(def.CategoryDefData);
     }
 
-    public virtual void UpdateData(GroupData data)
+    public virtual async Task UpdateDataAsync(GroupData data)
     {
         if (data.CategoryData.Count() != categories.Count)
         {
@@ -95,7 +94,7 @@ internal class Group : BaseEntity, IGroup
         var categoryBuffer = categories.ToDictionary(v => v.Order);
         foreach (var kv in data.CategoryData.Select((v, i) => (i, v)))
         {
-            categoryBuffer[kv.i + 1].UpdateData(kv.v);
+            await categoryBuffer[kv.i + 1].UpdateDataAsync(kv.v);
         }
     }
 
@@ -136,28 +135,20 @@ internal class Group : BaseEntity, IGroup
         var categoryIds = categoryDefData.Select(c => c.Id).ToHashSet();
         var toDelete = categories.Where(i => !categoryIds.Contains(i.Id)).ToList();
         await Task.WhenAll(toDelete.Select(i => i.DeleteAsync()));
-        await context.Persistence.FlushChangesAsync();
 
         var categoryBuffer = categories.ToDictionary(v => v.Id);
         foreach (var kv in categoryDefData.Select((v, i) => (i, v)))
         {
             if (categoryBuffer.TryGetValue(kv.v.Id, out var category))
             {
-                category.ReRank(-kv.i - 1);
+                category.ReRank(kv.i + 1);
                 await category.UpdateDefinitionAsync(kv.v);
             }
             else
             {
-                CreateCategory(kv.v).ReRank(-kv.i - 1);
+                CreateCategory(kv.v).ReRank(kv.i + 1);
             }
         }
-        await context.Persistence.FlushChangesAsync();
-
-        foreach (var c in categories)
-        {
-            c.ReRank(-c.Order);
-        }
-        await context.Persistence.FlushChangesAsync();
     }
 
     private Category CreateCategory(CategoryDefData def)

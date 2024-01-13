@@ -24,9 +24,9 @@ internal class ProductionDetails : BaseQuery<ProductionDetails, ITargetArgs, IPr
     {
         var budget = await GetTarget<Budget>(args);
 
-        if (budget.State != BudgetState.LOCKED || budget.Manager != context.CurrentUser)
+        if (budget.Manager != context.CurrentUser)
         {
-            AssertIsProducer();
+            AssertIsAccounting();
         }
 
         var creator = context.Persistence.Query<User>().

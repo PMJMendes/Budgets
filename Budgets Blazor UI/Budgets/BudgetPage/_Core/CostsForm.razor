@@ -25,23 +25,23 @@
                     <MudTd>
                         <MudText>
                             @(context.Items.
-                                Where(r => r.Cost != null).
-                                Sum(r => r.Item.Value).AsAnyValue()
+                                Where(r => r.Cost == null).
+                                Sum(r => r.Item.ProdValue).AsAnyValue()
                             )
                         </MudText>
                     </MudTd>
                     <MudTd>
                         <MudText>
                             @(context.Items.
-                                Where(r => r.Cost != null).
-                                Sum(r => ((ICost)r.Cost!).CostValue).AsAnyValue()
+                                Where(r => r.Cost == null).
+                                Sum(r => ((IItem)r.Item).CostValue).AsAnyValue()
                             )
                         </MudText>
                     </MudTd>
                     <MudTd>
                         <MudText>
                             @(context.Items.
-                                Where(r => r.Cost != null).
+                                Where(r => r.Cost == null).
                                 Sum(r => ((IItem)r.Item).Available).AsAnyValue()
                             )
                         </MudText>

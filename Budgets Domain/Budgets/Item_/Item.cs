@@ -42,7 +42,7 @@ internal class Item : BaseEntity, IItem
 
         if (data is ItemData _data)
         {
-            UpdateData(_data);
+            UpdateDataAsync(_data).GetAwaiter().GetResult();
         }
 
         Value = 0m;
@@ -53,13 +53,12 @@ internal class Item : BaseEntity, IItem
     }
 
     [Required]
-    [Unique(Combinations = "businessKey, byCategory")]
+    [Unique(Combinations = "byCategory")]
     public virtual Category Owner { get; protected set; } = default!;
     [External]
     ICategory IItem.Owner => Owner;
 
     [Required]
-    [Unique(Combinations = "businessKey")]
     public virtual int Order { get; protected set; } = 0;
 
     [Required]
@@ -164,7 +163,7 @@ internal class Item : BaseEntity, IItem
         DescEnglish = data.DescEnglish;
     }
 
-    public virtual void UpdateData(ItemData data)
+    public virtual async Task UpdateDataAsync(ItemData data)
     {
         if (data.ValueData.Count() != values.Count)
         {
@@ -180,14 +179,14 @@ internal class Item : BaseEntity, IItem
         {
             valueBuffer[kv.i + 1].UpdateData(kv.v);
         }
+
+        await UpdateCostsAsync(data.CostData);
     }
 
     public virtual async Task UpdateManagementAsync(ItemData data)
     {
-        await Task.WhenAll(
-            UpdateCostsAsync(data.CostData),
-            UpdateInvoicesAsync(data.InvoiceData)
-        );
+        await UpdateCostsAsync(data.CostData);
+        await UpdateInvoicesAsync(data.InvoiceData);
     }
 
     public virtual Value CreateValue(ValueDef def, ValueData data)
@@ -259,28 +258,20 @@ internal class Item : BaseEntity, IItem
         var costIds = costData.Select(c => c.Id).ToHashSet();
         var toDelete = costs.Where(c => !costIds.Contains(c.Id)).ToList();
         await Task.WhenAll(toDelete.Select(c => c.DeleteAsync()));
-        await context.Persistence.FlushChangesAsync();
 
         var costBuffer = costs.ToDictionary(c => c.Id);
         foreach (var kv in costData.Select((v, i) => (i, v)))
         {
             if (costBuffer.TryGetValue(kv.v.Id, out var cost))
             {
-                cost.ReRank(-kv.i - 1);
+                cost.ReRank(kv.i + 1);
                 cost.UpdateData(kv.v);
             }
             else
             {
-                CreateCost(kv.v).ReRank(-kv.i - 1);
+                CreateCost(kv.v).ReRank(kv.i + 1);
             }
         }
-        await context.Persistence.FlushChangesAsync();
-
-        foreach (var c in costs)
-        {
-            c.ReRank(-c.Order);
-        }
-        await context.Persistence.FlushChangesAsync();
     }
 
     private async Task UpdateInvoicesAsync(IEnumerable<InvoiceData> invoiceData)
@@ -288,27 +279,19 @@ internal class Item : BaseEntity, IItem
         var invoiceIds = invoiceData.Select(i => i.Id).ToHashSet();
         var toDelete = invoices.Where(i => !invoiceIds.Contains(i.Id)).ToList();
         await Task.WhenAll(toDelete.Select(i => i.DeleteAsync()));
-        await context.Persistence.FlushChangesAsync();
 
         var invoiceBuffer = invoices.ToDictionary(c => c.Id);
         foreach (var kv in invoiceData.Select((v, i) => (i, v)))
         {
             if (invoiceBuffer.TryGetValue(kv.v.Id, out var cost))
             {
-                cost.ReRank(-kv.i - 1);
+                cost.ReRank(kv.i + 1);
                 cost.UpdateData(kv.v);
             }
             else
             {
-                CreateInvoice(kv.v).ReRank(-kv.i - 1);
+                CreateInvoice(kv.v).ReRank(kv.i + 1);
             }
         }
-        await context.Persistence.FlushChangesAsync();
-
-        foreach (var i in invoices)
-        {
-            i.ReRank(-i.Order);
-        }
-        await context.Persistence.FlushChangesAsync();
     }
 }

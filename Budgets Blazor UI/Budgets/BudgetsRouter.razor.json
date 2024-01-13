@@ -15,7 +15,8 @@
   "BREADCRUMBS": {
     "BUDGETS": "Orçamentos",
     "NEW": "Novo",
-    "EDIT": "Editar"
+    "EDIT": "Editar",
+    "MANAGE":  "Gerir Projecto"
   },
   "SEARCHFORM": {
     "FILTER": "Filtros",

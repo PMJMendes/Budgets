@@ -8,11 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Migrations\V0_1_1_0__drop_order_constraints.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Migrations\V0_0_0_1__Init_database.sql" />
     <EmbeddedResource Include="Migrations\V0_0_0_2__Init_budgets.sql" />
 	<EmbeddedResource Include="Migrations\V0_0_0_3__budget_owners.sql" />
 	<EmbeddedResource Include="Migrations\V0_0_0_4__budget_costs.sql" />
 	<EmbeddedResource Include="Migrations\V0_1_0_0__budget_formats.sql" />
+	<EmbeddedResource Include="Migrations\V0_1_1_0__drop_order_constraints.sql" />
   </ItemGroup>
 
   <ItemGroup>

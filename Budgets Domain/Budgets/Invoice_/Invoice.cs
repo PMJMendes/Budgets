@@ -23,11 +23,9 @@ internal class Invoice : BaseEntity, IInvoice
     }
 
     [Required]
-    [Unique(Combinations = "businessKey")]
     public virtual Item Owner { get; protected set; } = default!;
 
     [Required]
-    [Unique(Combinations = "businessKey")]
     public virtual int Order { get; protected set; } = 0;
 
     [Required]

@@ -18,7 +18,7 @@ internal class BudgetDetails : BaseQuery<BudgetDetails, ITargetArgs, IBudgetDeta
 {
     public BudgetDetails(IContext context, ILogger<BudgetDetails> logger) : base(context, logger) { }
 
-    protected override void AssertPermissions() => AssertIsProducer();
+    protected override void AssertPermissions() => AssertIsAccounting();
 
     protected override async IAsyncEnumerable<V> InnerFetch<V>(ITargetArgs? args, Func<IBudgetDetailsItem, V> itemFactory)
     {
