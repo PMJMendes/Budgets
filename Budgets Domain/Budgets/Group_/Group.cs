@@ -136,20 +136,28 @@ internal class Group : BaseEntity, IGroup
         var categoryIds = categoryDefData.Select(c => c.Id).ToHashSet();
         var toDelete = categories.Where(i => !categoryIds.Contains(i.Id)).ToList();
         await Task.WhenAll(toDelete.Select(i => i.DeleteAsync()));
+        await context.Persistence.FlushChangesAsync();
 
         var categoryBuffer = categories.ToDictionary(v => v.Id);
         foreach (var kv in categoryDefData.Select((v, i) => (i, v)))
         {
             if (categoryBuffer.TryGetValue(kv.v.Id, out var category))
             {
-                category.ReRank(kv.i + 1);
+                category.ReRank(-kv.i - 1);
                 await category.UpdateDefinitionAsync(kv.v);
             }
             else
             {
-                CreateCategory(kv.v).ReRank(kv.i + 1);
+                CreateCategory(kv.v).ReRank(-kv.i - 1);
             }
         }
+        await context.Persistence.FlushChangesAsync();
+
+        foreach (var c in categories)
+        {
+            c.ReRank(-c.Order);
+        }
+        await context.Persistence.FlushChangesAsync();
     }
 
     private Category CreateCategory(CategoryDefData def)

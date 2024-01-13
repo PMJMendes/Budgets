@@ -299,20 +299,28 @@ internal class Budget : BaseEntity, IBudget
         var groupIds = groupDefData.Select(g => g.Id).ToHashSet();
         var toDelete = groups.Where(i => !groupIds.Contains(i.Id)).ToList();
         await Task.WhenAll(toDelete.Select(i => i.DeleteAsync()));
+        await context.Persistence.FlushChangesAsync();
 
         var groupBuffer = groups.ToDictionary(v => v.Id);
         foreach (var kv in groupDefData.Select((v, i) => (i, v)))
         {
             if (groupBuffer.TryGetValue(kv.v.Id, out var group))
             {
-                group.ReRank(kv.i + 1);
+                group.ReRank(-kv.i - 1);
                 await group.UpdateDefinitionAsync(kv.v);
             }
             else
             {
-                CreateGroup(kv.v).ReRank(kv.i + 1);
+                CreateGroup(kv.v).ReRank(-kv.i - 1);
             }
         }
+        await context.Persistence.FlushChangesAsync();
+
+        foreach (var g in groups)
+        {
+            g.ReRank(-g.Order);
+        }
+        await context.Persistence.FlushChangesAsync();
     }
 
     private Group CreateGroup(GroupDefData def)

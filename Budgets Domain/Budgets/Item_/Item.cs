@@ -259,20 +259,28 @@ internal class Item : BaseEntity, IItem
         var costIds = costData.Select(c => c.Id).ToHashSet();
         var toDelete = costs.Where(c => !costIds.Contains(c.Id)).ToList();
         await Task.WhenAll(toDelete.Select(c => c.DeleteAsync()));
+        await context.Persistence.FlushChangesAsync();
 
         var costBuffer = costs.ToDictionary(c => c.Id);
         foreach (var kv in costData.Select((v, i) => (i, v)))
         {
             if (costBuffer.TryGetValue(kv.v.Id, out var cost))
             {
-                cost.ReRank(kv.i + 1);
+                cost.ReRank(-kv.i - 1);
                 cost.UpdateData(kv.v);
             }
             else
             {
-                CreateCost(kv.v).ReRank(kv.i + 1);
+                CreateCost(kv.v).ReRank(-kv.i - 1);
             }
         }
+        await context.Persistence.FlushChangesAsync();
+
+        foreach (var c in costs)
+        {
+            c.ReRank(-c.Order);
+        }
+        await context.Persistence.FlushChangesAsync();
     }
 
     private async Task UpdateInvoicesAsync(IEnumerable<InvoiceData> invoiceData)
@@ -280,19 +288,27 @@ internal class Item : BaseEntity, IItem
         var invoiceIds = invoiceData.Select(i => i.Id).ToHashSet();
         var toDelete = invoices.Where(i => !invoiceIds.Contains(i.Id)).ToList();
         await Task.WhenAll(toDelete.Select(i => i.DeleteAsync()));
+        await context.Persistence.FlushChangesAsync();
 
         var invoiceBuffer = invoices.ToDictionary(c => c.Id);
         foreach (var kv in invoiceData.Select((v, i) => (i, v)))
         {
             if (invoiceBuffer.TryGetValue(kv.v.Id, out var cost))
             {
-                cost.ReRank(kv.i + 1);
+                cost.ReRank(-kv.i - 1);
                 cost.UpdateData(kv.v);
             }
             else
             {
-                CreateInvoice(kv.v).ReRank(kv.i + 1);
+                CreateInvoice(kv.v).ReRank(-kv.i - 1);
             }
         }
+        await context.Persistence.FlushChangesAsync();
+
+        foreach (var i in invoices)
+        {
+            i.ReRank(-i.Order);
+        }
+        await context.Persistence.FlushChangesAsync();
     }
 }

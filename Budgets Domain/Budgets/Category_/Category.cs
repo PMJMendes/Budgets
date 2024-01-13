@@ -162,20 +162,28 @@ internal class Category : BaseEntity, ICategory
         var newDefs = valueDefData.Select(v => v.Id).ToHashSet();
         var toDelete = defs.Where(v => !newDefs.Contains(v.Id)).ToList();
         await Task.WhenAll(toDelete.Select(v => v.DeleteAsync()));
+        await context.Persistence.FlushChangesAsync();
 
         var defBuffer = defs.ToDictionary(v => v.Id);
         foreach (var kv in valueDefData.Select((v, i) => (i, v)))
         {
             if (defBuffer.TryGetValue(kv.v.Id, out var value))
             {
-                value.ReRank(kv.i + 1);
+                value.ReRank(-kv.i - 1);
                 value.UpdateDefinition(kv.v);
             }
             else
             {
-                CreateValueDef(kv.v).ReRank(kv.i + 1);
+                CreateValueDef(kv.v).ReRank(-kv.i - 1);
             }
         }
+        await context.Persistence.FlushChangesAsync();
+
+        foreach (var d in defs)
+        {
+            d.ReRank(-d.Order);
+        }
+        await context.Persistence.FlushChangesAsync();
     }
 
     private async Task UpdateItemDefsAsync(IEnumerable<ItemDefData> itemDefData)
@@ -183,20 +191,28 @@ internal class Category : BaseEntity, ICategory
         var newItems = itemDefData.Select(i => i.Id).ToHashSet();
         var toDelete = items.Where(i => !newItems.Contains(i.Id)).ToList();
         await Task.WhenAll(toDelete.Select(i => i.DeleteAsync()));
+        await context.Persistence.FlushChangesAsync();
 
         var itemBuffer = items.ToDictionary(v => v.Id);
         foreach (var kv in itemDefData.Select((v, i) => (i, v)))
         {
             if (itemBuffer.TryGetValue(kv.v.Id, out var item))
             {
-                item.ReRank(kv.i + 1);
+                item.ReRank(-kv.i - 1);
                 item.UpdateDefinition(kv.v);
             }
             else
             {
-                CreateItem(kv.v).ReRank(kv.i + 1);
+                CreateItem(kv.v).ReRank(-kv.i - 1);
             }
         }
+        await context.Persistence.FlushChangesAsync();
+
+        foreach (var i in items)
+        {
+            i.ReRank(-i.Order);
+        }
+        await context.Persistence.FlushChangesAsync();
     }
 
     private ValueDef CreateValueDef(ValueDefData vDef)
