@@ -8,7 +8,7 @@
 <MudItem xs="1" Class="border-t-2 justify-end">
     <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).Value.AsAnyValue())</MudText>
 </MudItem>
-@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+@if (Level != SecurityLevel.ASSISTANT)
 {
     <MudItem xs="1" Class="border-t-2 justify-end">
         <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).UsedBCA.AsAnyValue())%</MudText>
@@ -22,9 +22,6 @@
     <MudItem xs="1" Class="border-t-2 justify-end">
         <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).BaseValue.AsAnyValue())</MudText>
     </MudItem>
-}
-@if (Level != SecurityLevel.ASSISTANT)
-{
     <MudItem xs="1" Class="border-t-2 justify-end">
         <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).ProdValue.AsAnyValue())</MudText>
     </MudItem>
@@ -42,12 +39,6 @@
     </MudItem>
     <MudItem xs="1" Class="border-t-2 justify-end">
         <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IGroup)Model).ActualMargin.AsAnyValue())</MudText>
-    </MudItem>
-}
-@if (Level == SecurityLevel.ACCOUNTING)
-{
-    <MudItem xs="4" Class="border-t-2">
-        <MudText Typo="Typo.body1">&nbsp;</MudText>
     </MudItem>
 }
 @if (Level == SecurityLevel.ASSISTANT)

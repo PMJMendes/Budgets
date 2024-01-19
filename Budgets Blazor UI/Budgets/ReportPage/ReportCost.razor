@@ -1,16 +1,16 @@
 ﻿@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
 @using Krypton.Budgets.Blazor.UI.Users._Common;
 
-@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+@if (Level != SecurityLevel.ASSISTANT)
 {
     <MudItem xs="4" Style="page-break-inside: avoid;">
         <MudText Typo="Typo.body1">&nbsp;</MudText>
     </MudItem>
     <MudItem xs="2">
-        <MudText Typo="Typo.body1">@Model.Supplier</MudText>
+        <MudText Typo="Typo.body1" Style="@($"color:{Colors.Blue.Darken4};")">@Model.Supplier</MudText>
     </MudItem>
     <MudItem xs="2">
-        <MudText Typo="Typo.body1" Style="">@Model.Text</MudText>
+        <MudText Typo="Typo.body1" Style="@($"color:{Colors.Blue.Darken4};")">@Model.Text</MudText>
     </MudItem>
 }
 else
@@ -18,26 +18,23 @@ else
     <MudItem xs="3" Style="page-break-inside: avoid;">
         <MudText Typo="Typo.body1">&nbsp;</MudText>
     </MudItem>
-    @if (Level != SecurityLevel.ASSISTANT)
-    {
-        <MudItem xs="1" />
-    }
 }
 <MudItem xs="1" Class="justify-end">
-    <MudText Typo="Typo.body1">@Model.CostValue?.AsAnyValue()</MudText>
+    <MudText Typo="Typo.body1" Style="@($"color:{Colors.Blue.Darken4};")">@Model.CostValue?.AsAnyValue()</MudText>
 </MudItem>
 <MudItem xs="1" />
 @if (Level != SecurityLevel.ASSISTANT)
 {
     <MudItem xs="2" />
 }
-@if (Level != SecurityLevel.ADMIN && Level != SecurityLevel.PRODUCER)
+@if (Level == SecurityLevel.ASSISTANT)
 {
+    <MudItem xs="1" />
     <MudItem xs="2">
-        <MudText Typo="Typo.body1">@Model.Supplier</MudText>
+        <MudText Typo="Typo.body1" Style="@($"color:{Colors.Blue.Darken4};")">@Model.Supplier</MudText>
     </MudItem>
-    <MudItem xs="@LastColWidth">
-        <MudText Typo="Typo.body1">@Model.Text</MudText>
+    <MudItem xs="4">
+        <MudText Typo="Typo.body1" Style="@($"color:{Colors.Blue.Darken4};")">@Model.Text</MudText>
     </MudItem>
 }
 
@@ -47,11 +44,4 @@ else
 
     [CascadingParameter]
     public SecurityLevel Level { get; set; }
-
-    private int LastColWidth => Level switch
-    {
-        SecurityLevel.ASSISTANT => 5,
-        SecurityLevel.ACCOUNTING => 2,
-        _ => 0
-    };
 }

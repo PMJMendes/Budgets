@@ -17,6 +17,8 @@ public class BudgetEditModel
 	public string Code { get; private init; }
 	public BudgetModel BudgetData { get; private init; }
 
+	public void FixWeatherTotal() => BudgetData.FixWeatherTotal();
+
 	public UpdateBudgetArgs AsArgs() => new(
 		Id,
 		Code,

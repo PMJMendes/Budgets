@@ -42,24 +42,33 @@
             <MudDataGrid Elevation="0" FixedHeader="true" Height="100%" Class="viewport-body item-list"
                          Items="@items" ReadOnly="false" EditMode="DataGridEditMode.Cell" SortMode="SortMode.None">
                 <Columns>
-                    <TemplateColumn T="ItemModel" Field="Description" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCRIPTION"]">
+                    <TemplateColumn T="ItemModel" IsEditable="false">
+                        <CellTemplate>
+                            <MudIconButton Icon="@Icons.Material.Outlined.ArrowDropUp"
+                                           OnClick="@(_ => OnItemUp(context.Item))" />
+                            <MudIconButton Icon="@Icons.Material.Outlined.ArrowDropDown"
+                                           OnClick="@(_ => OnItemDown(context.Item))" />
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCRIPTION"]">
                         <EditTemplate>
                             <MudTextField @bind-Value="@context.Item.Description" Required="true"
                                           RequiredError="@ErrorL["ERRORS:FORM:VALUE_REQUIRED"]" />
                         </EditTemplate>
                     </TemplateColumn>
-                    <TemplateColumn T="ItemModel" Field="DescEnglish" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCENGLISH"]">
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCENGLISH"]">
                         <EditTemplate>
                             <MudTextField @bind-Value="@context.Item.DescEnglish" />
                         </EditTemplate>
                     </TemplateColumn>
 @*
-                    <TemplateColumn T="ItemModel" Field="ExcludeFromBase" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:EXCLUDEFROMBASE"]">
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:EXCLUDEFROMBASE"]">
                         <EditTemplate>
                             <MudSwitch @bind-Value="@context.Item.ExcludeFromBase" />
                         </EditTemplate>
                     </TemplateColumn>
-                    <TemplateColumn T="ItemModel" Field="CanBePercent" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:CANBEPERCENT"]">
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:CANBEPERCENT"]">
                         <EditTemplate>
                             <MudSwitch @bind-Value="@context.Item.CanBePercent" />
                         </EditTemplate>
@@ -102,29 +111,29 @@
                         </TemplateColumn>
                     }
 
-                    <TemplateColumn T="ItemModel" Field="Value" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:TOTAL"]">
+                    <TemplateColumn T="ItemModel" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:TOTAL"]">
                         <CellTemplate>
                             <MudText>@context.Item.Value.AsAnyValue()</MudText>
-                            </CellTemplate>
-                        </TemplateColumn>
+                        </CellTemplate>
+                    </TemplateColumn>
 
-                        <TemplateColumn T="ItemModel" IsEditable="false">
-                            <CellTemplate>
-                                <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
-                                               OnClick="@(_ => OnDeleteItem(context.Item))" />
-                            </CellTemplate>
-                        </TemplateColumn>
-                    </Columns>
-                </MudDataGrid>
+                    <TemplateColumn T="ItemModel" IsEditable="false">
+                        <CellTemplate>
+                            <MudIconButton Icon="@Icons.Material.Outlined.DeleteForever"
+                                            OnClick="@(_ => OnDeleteItem(context.Item))" />
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
         }
         else
         {
             <MudDataGrid Elevation="0" FixedHeader="true" Height="100%" Class="viewport-body item-list"
                          Items="@items">
                 <Columns>
-                    <TemplateColumn T="ItemModel" Field="Description" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCRIPTION"]" />
-                    <TemplateColumn T="ItemModel" Field="DescEnglish" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCENGLISH"]" />
-                    <TemplateColumn T="ItemModel" Field="Value" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:TOTAL"]" />
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCRIPTION"]" />
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:DESCENGLISH"]" />
+                    <TemplateColumn T="ItemModel" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:VALUES:FIELDS:TOTAL"]" />
                 </Columns>
             </MudDataGrid>
         }
@@ -209,7 +218,7 @@
     </MudStack>
 </MudForm>
 
-@code {
+    @code {
     private GroupModel? selectedGroup = null;
     private CategoryModel? selectedCat = null;
     private IEnumerable<ItemModel>? items => selectedCat?.Items;
@@ -244,6 +253,16 @@
     private void OnDeleteItem(ItemModel item)
     {
         selectedCat!.RemoveItem(item);
+    }
+
+    private void OnItemUp(ItemModel item)
+    {
+        selectedCat!.ItemUp(item);
+    }
+
+    private void OnItemDown(ItemModel item)
+    {
+        selectedCat!.ItemDown(item);
     }
 
     private void OnSetValue(ItemModel item, ValueModel model, decimal? value)

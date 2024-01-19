@@ -21,7 +21,7 @@ internal class SearchBudgets : BaseQuery<SearchBudgets, ISearchBudgetsArgs, ISea
         {
             if (context.Security.HasSecurityLevel(SecurityLevel.Accounting))
             {
-                query = query.Where(b => b.State == BudgetState.LOCKED || b.State == BudgetState.CLOSED);
+                query = query.Where(b => b.State != BudgetState.OPEN);
             }
             else
             {

@@ -42,7 +42,7 @@
             <MudDataGrid Elevation="0" FixedHeader="true" Height="100%" Class="viewport-body item-list"
                          Items="@items" ReadOnly="false" EditMode="DataGridEditMode.Cell" SortMode="SortMode.None">
                 <Columns>
-                    <TemplateColumn T="ItemModel" Field="Description" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:DESCRIPTION"]">
+                    <TemplateColumn T="ItemModel" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:DESCRIPTION"]">
                         <CellTemplate>
                             <MudText>@context.Item.Description</MudText>
                         </CellTemplate>
@@ -75,17 +75,17 @@
                         </TemplateColumn>
                     }
 
-                    <TemplateColumn T="ItemModel" Field="Value" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:TOTAL"]">
+                    <TemplateColumn T="ItemModel" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:TOTAL"]">
                         <CellTemplate>
                             <MudText>@context.Item.Value.AsAnyValue()</MudText>
                         </CellTemplate>
                     </TemplateColumn>
-                    <TemplateColumn T="ItemModel" Field="ProdValue" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:PRODUCTION"]">
+                    <TemplateColumn T="ItemModel" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:PRODUCTION"]">
                         <CellTemplate>
                             <MudText>@context.Item.ProdValue.AsAnyValue()</MudText>
                         </CellTemplate>
                     </TemplateColumn>
-                    <TemplateColumn T="ItemModel" Field="ProdValue" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:DELTA"]">
+                    <TemplateColumn T="ItemModel" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:DELTA"]">
                         <CellTemplate>
                             <MudText>@(((IItem)context.Item).ProdDelta.AsAnyValue())</MudText>
                         </CellTemplate>
@@ -98,10 +98,10 @@
             <MudDataGrid Elevation="0" FixedHeader="true" Height="100%" Class="viewport-body item-list"
                          Items="@items">
                 <Columns>
-                    <TemplateColumn T="ItemModel" Field="Description" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:DESCRIPTION"]" />
-                    <TemplateColumn T="ItemModel" Field="Value" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:TOTAL"]" />
-                    <TemplateColumn T="ItemModel" Field="ProdValue" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:TOTAL"]" />
-                    <TemplateColumn T="ItemModel" Field="Value" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:TOTAL"]" />
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:DESCRIPTION"]" />
+                    <TemplateColumn T="ItemModel" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:TOTAL"]" />
+                    <TemplateColumn T="ItemModel" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:TOTAL"]" />
+                    <TemplateColumn T="ItemModel" IsEditable="false" Title="@L["BUDGET:EDIT:TABS:PRODUCTION:FIELDS:TOTAL"]" />
                 </Columns>
             </MudDataGrid>
         }

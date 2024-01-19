@@ -40,7 +40,7 @@
 			},
 			new ItemList<BudgetsRootListItemModel>.Colspec
 			{
-				Visible = Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER,
+				Visible = Level != SecurityLevel.ASSISTANT,
 				Header = L["ROOT:LIST:STATE"],
 				Selector = item => __builder => { @L["ENUMS:BUDGET_STATE:" + item.State.ToString()] }
 			},

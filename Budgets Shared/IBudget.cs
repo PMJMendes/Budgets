@@ -48,11 +48,11 @@ public interface IBudget
 
     decimal Margin => Value - CostValue;
 
-    decimal MarginPercent => CostValue != 0m ? Margin * 100m / CostValue : 0m;
+    decimal MarginPercent => Value != 0m ? Margin * 100m / Value : 0m;
 
-    decimal BaseMargin => GroupsValue - CostValue;
+    decimal BaseMargin => GroupsValue - InvoicedValue;
 
-    decimal BaseMarginPercent => Value != 0m ? BaseMargin * 100m / Value : 0m;
+    decimal BaseMarginPercent => GroupsValue != 0m ? BaseMargin * 100m / GroupsValue : 0m;
 
     decimal InvoicedValue => Groups.Sum(g => g.InvoicedValue);
 
@@ -62,13 +62,17 @@ public interface IBudget
 
     decimal ActualMarginPercent => CostValue != 0m ? ActualMargin * 100m / CostValue : 0m;
 
-    decimal WeatherInvoiced => (WeatherTotal ?? 0m) * (NWeatherDays ?? 0);
+    decimal WeatherValue => (WeatherTotal ?? 0m) * (NWeatherDays ?? 0);
 
-    decimal TotalWithWeather => Value + WeatherInvoiced;
+    decimal WeatherInvoiced => (WeatherBCA ?? 0m) * (NWeatherDays ?? 0);
 
-    decimal TotalMargin => ActualMargin + WeatherInvoiced;
+    decimal TotalWithWeather => Value + WeatherValue;
 
-    decimal TotalMarginPercent => CostValue != 0m ? TotalMargin * 100m / CostValue : 0m;
+    decimal TotalInvoiced => Value + WeatherInvoiced;
+
+    decimal TotalMargin => ActualMargin + WeatherValue;
+
+    decimal TotalMarginPercent => TotalWithWeather != 0m ? TotalMargin * 100m / TotalWithWeather : 0m;
 
     int TotalDays =>
         (int.TryParse(StudioDays, out int sd) ? sd : 0) +

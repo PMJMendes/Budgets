@@ -38,7 +38,7 @@
 			},
 			new ItemList<BudgetNavigatorListItemModel>.Colspec
 			{
-				Visible = Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER,
+				Visible = Level != SecurityLevel.ASSISTANT,
 				Header = L["BUDGET:NAVIGATOR:LIST:STATE"],
 				Selector = item => __builder => { @L["ENUMS:BUDGET_STATE:" + item.State.ToString()] }
 			}

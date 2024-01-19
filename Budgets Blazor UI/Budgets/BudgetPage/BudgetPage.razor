@@ -81,7 +81,7 @@
 
 	async Task IBudgetPageController.AfterEditAsync(BudgetDetailsItem? results)
 	{
-		var model = Model.WithEditResults(results).ForEdit();
+		Model = Model.WithEditResults(results).ForEdit();
 		//await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
 		await Task.CompletedTask;
 	}
@@ -100,7 +100,7 @@
 
 	async Task IBudgetPageController.AfterManageAsync(ProductionDetailsItem? results)
 	{
-		var model = Model.WithManageResults(results).ForManage();
+		Model = Model.WithManageResults(results).ForManage();
 		//await Navigator.NavigateWithStateAsync("/budgets/" + model.ViewData!.Id.ToString(), model);
 		await Task.CompletedTask;
 	}

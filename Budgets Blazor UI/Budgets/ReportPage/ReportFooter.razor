@@ -10,10 +10,19 @@
 <MudItem xs="1" Class="border-t-2 justify-end">
     <MudText Typo="Typo.h6">@(((IBudget)Model).Value.AsAnyValue())</MudText>
 </MudItem>
-@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+@if (Level != SecurityLevel.ASSISTANT)
 {
-    <MudItem xs="5" Class="border-t-2">
+    <MudItem xs="2" Class="border-t-2">
         <MudText Typo="Typo.h6">(Margem: @(((IBudget)Model).BaseMarginPercent.AsAnyValue())%)</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6">@(((IBudget)Model).ClientValue.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6">@(((IBudget)Model).GroupsValue.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6">@(((IBudget)Model).ProdValue.AsAnyValue())</MudText>
     </MudItem>
 }
 <MudItem xs="1" Class="border-t-2 justify-end">
@@ -31,12 +40,6 @@
         <MudText Typo="Typo.h6">@(((IBudget)Model).BaseMargin.AsAnyValue())</MudText>
     </MudItem>
 }
-@if (Level == SecurityLevel.ACCOUNTING)
-{
-    <MudItem xs="5" Class="border-t-2">
-        <MudText Typo="Typo.h6">&nbsp;</MudText>
-    </MudItem>
-}
 @if (Level == SecurityLevel.ASSISTANT)
 {
     <MudItem xs="7" Class="border-t-2">
@@ -44,45 +47,66 @@
     </MudItem>
 }
 
-@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+@if (Level != SecurityLevel.ASSISTANT)
 {
-    <MudItem xs="5" Class="border-t-2">
-        <MudText Typo="Typo.body1" Style="font-weight:bold;">Honorários da Produtora</MudText>
+    <MudItem xs="2" Class="border-t-2">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">Honorários da Produtora</MudText>
     </MudItem>
-    <MudItem xs="4" Class="border-t-2">
-        <MudText Typo="Typo.body1" Style="font-weight:bold;">@(Model.PercentsData.ProducerPercent?.AsAnyValue() + '%' ?? "-")</MudText>
-    </MudItem>
-    <MudItem xs="1" Class="border-t-2 justify-end">
-        <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
+    <MudItem xs="1" Class="border-t-2">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">&nbsp;</MudText>
     </MudItem>
     <MudItem xs="2" Class="border-t-2">
-        <MudText Typo="Typo.body1" Style="font-weight:bold;">&nbsp;</MudText>
-    </MudItem>
-
-    <MudItem xs="5" Class="border-t-2">
-        <MudText Typo="Typo.body1" Style="font-weight:bold;">Weather Days Facturados</MudText>
-    </MudItem>
-    <MudItem xs="4" Class="border-t-2">
-        <MudText Typo="Typo.body1" Style="font-weight:bold;">(@Model.PercentsData.NWeatherDays x @((Model.PercentsData.WeatherTotal ?? 0m).AsAnyValue()))</MudText>
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">@(Model.PercentsData.ProducerPercent?.AsAnyValue() + '%' ?? "-")</MudText>
     </MudItem>
     <MudItem xs="1" Class="border-t-2 justify-end">
-        <MudText Typo="Typo.body1" Style="font-weight:bold;">@(((IBudget)Model).WeatherInvoiced.AsAnyValue())</MudText>
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">(@(((IBudget)Model).BCAProducerValue.AsAnyValue()))</MudText>
     </MudItem>
-    <MudItem xs="2" Class="border-t-2">
-        <MudText Typo="Typo.body1" Style="font-weight:bold;">&nbsp;</MudText>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">@(((IBudget)Model).ProducerValue.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="5" Class="border-t-2">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">&nbsp;</MudText>
     </MudItem>
 
+    <MudItem xs="2" Class="border-t-2">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">Weather Days Facturados</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-t-2">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">&nbsp;</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-t-2">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">(@Model.PercentsData.NWeatherDays x @((Model.PercentsData.WeatherTotal ?? 0m).AsAnyValue()))</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">@(((IBudget)Model).WeatherInvoiced.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">@(((IBudget)Model).WeatherValue.AsAnyValue())</MudText>
+    </MudItem>
     <MudItem xs="5" Class="border-t-2">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">&nbsp;</MudText>
+    </MudItem>
+
+    <MudItem xs="2" Class="border-t-2">
         <MudText Typo="Typo.h6">Totais</MudText>
     </MudItem>
-    <MudItem xs="4" Class="border-t-2">
+    <MudItem xs="1" Class="border-t-2">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">&nbsp;</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-t-2">
         <MudText Typo="Typo.h6">(Margem: @(((IBudget)Model).TotalMarginPercent.AsAnyValue())%)</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-t-2 justify-end">
+        <MudText Typo="Typo.h6">@(((IBudget)Model).TotalInvoiced.AsAnyValue())</MudText>
     </MudItem>
     <MudItem xs="1" Class="border-t-2 justify-end">
         <MudText Typo="Typo.h6">@(((IBudget)Model).TotalWithWeather.AsAnyValue())</MudText>
     </MudItem>
+    <MudItem xs="3" Class="border-t-2">
+        <MudText Typo="Typo.h6" Style="font-weight:bold;">&nbsp;</MudText>
+    </MudItem>
     <MudItem xs="1" Class="border-t-2 justify-end">
-        <MudText Typo="Typo.h6">@(((IBudget)Model).CostValue.AsAnyValue())</MudText>
+        <MudText Typo="Typo.h6">@(((IBudget)Model).InvoicedValue.AsAnyValue())</MudText>
     </MudItem>
     <MudItem xs="1" Class="border-t-2 justify-end">
         <MudText Typo="Typo.h6">@(((IBudget)Model).TotalMargin.AsAnyValue())</MudText>

@@ -40,9 +40,9 @@
         <MudItem xs="7" Class="justify-end">
             <MudDataGrid Items="@percentItems" Elevation="0" ReadOnly="false" EditMode="DataGridEditMode.Cell">
                 <Columns>
-                    <TemplateColumn T="ItemModel" Field="Description" IsEditable="false"
+                    <TemplateColumn T="ItemModel" IsEditable="false"
                                 Title="@L["BUDGET:EDIT:TABS:PERCENTS:PERCENT_TABLE:ITEM"]" />
-                    <TemplateColumn T="ItemModel" Field="Percent" Title="@L["BUDGET:EDIT:TABS:PERCENTS:PERCENT_TABLE:PERCENT"]">
+                    <TemplateColumn T="ItemModel" Title="@L["BUDGET:EDIT:TABS:PERCENTS:PERCENT_TABLE:PERCENT"]">
                         <CellTemplate>
                             <MudText>@context.Item.Percent?.AsAnyValue()</MudText>
                         </CellTemplate>
@@ -51,7 +51,7 @@
                                             @bind-Value:set="@(value => OnSetPercent(context.Item, value))" />
                         </EditTemplate>
                     </TemplateColumn>
-                    <TemplateColumn T="ItemModel" Field="Value" IsEditable="false"
+                    <TemplateColumn T="ItemModel" IsEditable="false"
                                 Title="@L["BUDGET:EDIT:TABS:PERCENTS:PERCENT_TABLE:TOTAL"]">
                         <CellTemplate>
                             <MudText>@context.Item.Value.AsAnyValue()</MudText>

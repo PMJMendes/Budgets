@@ -57,6 +57,8 @@ else
 		if (Form is BudgetForm form && await form.PreValidate())
 		{
 			_loading = true;
+
+			Model.FixWeatherTotal();
 			var results = await Service.UpdateBudgetAsync(Model.AsArgs());
 
 			if (Form is IErrorHandler handler)

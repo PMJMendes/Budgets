@@ -1,37 +1,19 @@
 ﻿@using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core
 @using Krypton.Budgets.Blazor.UI.Users._Common;
 
-@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
-{
-    <MudItem xs="6" Style="page-break-inside: avoid;">
-        <MudText Typo="Typo.body1">&nbsp;</MudText>
-    </MudItem>
-    <MudItem xs="2" Style="page-break-inside: avoid;">
-        <MudText Typo="Typo.body1" Style="">Factura n. @Model.InvoiceNumber</MudText>
-    </MudItem>
-    <MudItem xs="2">
-        <MudText Typo="Typo.body1">(@Model.Supplier)</MudText>
-    </MudItem>
-}
-else
-{
-    <MudItem xs="6" Style="page-break-inside: avoid;">
-        <MudText Typo="Typo.body1">&nbsp;</MudText>
-    </MudItem>
-}
+<MudItem xs="6" Style="page-break-inside: avoid;">
+    <MudText Typo="Typo.body1">&nbsp;</MudText>
+</MudItem>
+<MudItem xs="2" Style="page-break-inside: avoid;">
+    <MudText Typo="Typo.body1" Style="@($"color:{Colors.Red.Darken4};")">Factura n. @Model.InvoiceNumber</MudText>
+</MudItem>
+<MudItem xs="2">
+    <MudText Typo="Typo.body1" Style="@($"color:{Colors.Red.Darken4};")">(@Model.Supplier)</MudText>
+</MudItem>
 <MudItem xs="1" Class="justify-end">
-    <MudText Typo="Typo.body1">@Model.InvoicedValue?.AsAnyValue()</MudText>
+    <MudText Typo="Typo.body1" Style="@($"color:{Colors.Red.Darken4};")">@Model.InvoicedValue?.AsAnyValue()</MudText>
 </MudItem>
 <MudItem xs="1" />
-@if (Level != SecurityLevel.ADMIN && Level != SecurityLevel.PRODUCER)
-{
-    <MudItem xs="2" Style="page-break-inside: avoid;">
-        <MudText Typo="Typo.body1" Style="">Factura n. @Model.InvoiceNumber</MudText>
-    </MudItem>
-    <MudItem xs="2">
-        <MudText Typo="Typo.body1">@Model.Supplier</MudText>
-    </MudItem>
-}
 
 @code {
     [Parameter]
