@@ -35,7 +35,7 @@
 <MudItem xs="1" Class="justify-center">
     <MudText Typo="Typo.body1" Style="font-weight:bold;">Orçamento</MudText>
 </MudItem>
-@if (Level == SecurityLevel.ADMIN || Level == SecurityLevel.PRODUCER)
+    @if (Level != SecurityLevel.ASSISTANT)
 {
     <MudItem xs="1" Class="justify-center">
         <MudText Typo="Typo.body1" Style="font-weight:bold;">% BCA</MudText>
@@ -49,9 +49,6 @@
     <MudItem xs="1" Class="justify-center">
         <MudText Typo="Typo.body1" Style="font-weight:bold;">Rúbricas</MudText>
     </MudItem>
-}
-@if (Level != SecurityLevel.ASSISTANT)
-{
     <MudItem xs="1" Class="justify-center">
         <MudText Typo="Typo.body1" Style="font-weight:bold;">Orc. Prod.</MudText>
     </MudItem>
@@ -70,10 +67,6 @@
     <MudItem xs="1" Class="justify-center">
         <MudText Typo="Typo.body1" Style="font-weight:bold;">Resultados</MudText>
     </MudItem>
-}
-@if (Level == SecurityLevel.ACCOUNTING)
-{
-    <MudItem xs="4" />
 }
 @if (Level == SecurityLevel.ASSISTANT)
 {
