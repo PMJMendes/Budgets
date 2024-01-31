@@ -5,10 +5,10 @@
 @inherits LocalizedComponent<BudgetsRouter>
 
 <MudItem xs="6" Class="justify-center align-center">
-    <MudImage Class="object-scale-down" Style="width: 4.5cm;" Src="images/imgAPPFP.jpg" />
+    <MudImage Class="object-scale-down" Style="width: 4cm;" Src="images/imgAPPFP.jpg" />
 </MudItem>
 <MudItem xs="6" Class="justify-center align-center">
-    <MudImage Class="object-scale-down" Style="width: 4.5cm;" Src="images/imgKrypton.png" />
+    <MudImage Class="object-scale-down" Style="width: 4cm;" Src="images/imgKrypton.png" />
 </MudItem>
 
 <MudItem xs="12">
@@ -17,170 +17,166 @@
 
 <MudItem xs="12" Class="justify-center border">
     <MudText Typo="Typo.h4">@L["BUDGET:PRINT:" + Lang + ":HEADER"]</MudText>
-</MudItem>
+    </MudItem>
 
-<MudItem xs="12">
-    <MudText Typo="Typo.body1">&nbsp;</MudText>
-</MudItem>
+    <MudItem xs="12">
+        <MudText Typo="Typo.body1">&nbsp;</MudText>
+    </MudItem>
 
-<MudItem xs="2" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":TITLE"]</MudText>
-</MudItem>
-<MudItem xs="4" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.Title</MudText>
-</MudItem>
-<MudItem xs="1" />
-<MudItem xs="2" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":CODE"]</MudText>
-</MudItem>
-<MudItem xs="3" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Code</MudText>
-</MudItem>
-<MudItem xs="2" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":PRODUCT"]</MudText>
-</MudItem>
-<MudItem xs="4" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.Product</MudText>
-</MudItem>
-<MudItem xs="1" />
-<MudItem xs="2" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":BUDGET_DATE"]</MudText>
-</MudItem>
-<MudItem xs="3" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.BudgetDate</MudText>
-</MudItem>
-<MudItem xs="2" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":CLIENT"]</MudText>
-</MudItem>
-<MudItem xs="4" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.FinalClient</MudText>
-</MudItem>
-<MudItem xs="1" />
-<MudItem xs="2" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":SHOOTING_DATE"]</MudText>
-</MudItem>
-<MudItem xs="3" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.FilmDate</MudText>
-</MudItem>
-<MudItem xs="2" Class="border-l border-t border-b">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":AGENCY"]</MudText>
-</MudItem>
-<MudItem xs="4" Class="border-l border-t border-r border-b">
-    <MudText Typo="Typo.body1">@Model.FrontData.Agency</MudText>
-</MudItem>
-<MudItem xs="1" />
-<MudItem xs="2" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":DIRECTOR"]</MudText>
-</MudItem>
-<MudItem xs="3" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.Director</MudText>
-</MudItem>
-<MudItem xs="7" />
-<MudItem xs="2" Class="border-l border-t border-b">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":PRODUCER"]</MudText>
-</MudItem>
-<MudItem xs="3" Class="border-l border-t border-r border-b">
-    <MudText Typo="Typo.body1">@Model.FrontData.Producer</MudText>
-</MudItem>
-<MudItem xs="4" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":STUDIO_DAYS"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.StudioDays</MudText>
-</MudItem>
-<MudItem xs="6" />
-<MudItem xs="4" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":LOCATION_DAYS"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.LocationDays</MudText>
-</MudItem>
-<MudItem xs="1" />
-<MudItem xs="2" Class="border-l border-t border-b">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":TV_AGENCY"]</MudText>
-</MudItem>
-<MudItem xs="3" Class="border-l border-t border-r border-b">
-    <MudText Typo="Typo.body1">@Model.FrontData.TVAgency</MudText>
-</MudItem>
-<MudItem xs="4" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":EXTERIOR_DAYS"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.OutsideDays</MudText>
-</MudItem>
-<MudItem xs="6" />
-<MudItem xs="4" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":WEEKEND_DAYS"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.WeekendHolidays</MudText>
-</MudItem>
-<MudItem xs="1" />
-<MudItem xs="5" Class="justify-center">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST"]</MudText>
-</MudItem>
-<MudItem xs="4" Class="border-l border-t border-b">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":TOTAL_DAYS"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="border-l border-t border-r border-b">
-    <MudText Typo="Typo.body1">@Model.FrontData.TotalDays</MudText>
-</MudItem>
-<MudItem xs="1" />
-<MudItem xs="2" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST_DURATION"]</MudText>
-</MudItem>
-<MudItem xs="3" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.PostProdDuration</MudText>
-</MudItem>
-<MudItem xs="7" />
-<MudItem xs="2" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST_VERSIONS"]</MudText>
-</MudItem>
-<MudItem xs="3" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.PostProdVersions</MudText>
-</MudItem>
-<MudItem xs="4" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":RIGHTS"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.Rights</MudText>
-</MudItem>
-<MudItem xs="1" />
-<MudItem xs="2" Class="border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST_SOUND"]</MudText>
-</MudItem>
-<MudItem xs="3" Class="border-l border-t border-r">
-    <MudText Typo="Typo.body1">@Model.FrontData.PostProdSound</MudText>
-</MudItem>
-<MudItem xs="4" Class="border-l border-t border-b">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":FORMATS"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="border-l border-t border-r border-b">
-    <MudText Typo="Typo.body1">@Model.FrontData.Formats</MudText>
-</MudItem>
-<MudItem xs="1" />
-<MudItem xs="2" Class="border-l border-t border-b">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST_NVOICES"]</MudText>
-</MudItem>
-<MudItem xs="3" Class="border-l border-t border-r border-b">
-    <MudText Typo="Typo.body1">@Model.FrontData.PostProdNVoices</MudText>
-</MudItem>
+    <MudItem xs="2" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":TITLE"]</MudText>
+    </MudItem>
+    <MudItem xs="4" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.Title</MudText>
+    </MudItem>
+    <MudItem xs="1" />
+    <MudItem xs="2" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":CODE"]</MudText>
+    </MudItem>
+    <MudItem xs="3" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Code</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":PRODUCT"]</MudText>
+    </MudItem>
+    <MudItem xs="4" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.Product</MudText>
+    </MudItem>
+    <MudItem xs="1" />
+    <MudItem xs="2" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":BUDGET_DATE"]</MudText>
+    </MudItem>
+    <MudItem xs="3" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.BudgetDate</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":CLIENT"]</MudText>
+    </MudItem>
+    <MudItem xs="4" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.FinalClient</MudText>
+    </MudItem>
+    <MudItem xs="1" />
+    <MudItem xs="2" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":SHOOTING_DATE"]</MudText>
+    </MudItem>
+    <MudItem xs="3" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.FilmDate</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-l border-t border-b">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":AGENCY"]</MudText>
+    </MudItem>
+    <MudItem xs="4" Class="border-l border-t border-r border-b">
+        <MudText Typo="Typo.body1">@Model.FrontData.Agency</MudText>
+    </MudItem>
+    <MudItem xs="1" />
+    <MudItem xs="2" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":DIRECTOR"]</MudText>
+    </MudItem>
+    <MudItem xs="3" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.Director</MudText>
+    </MudItem>
+    <MudItem xs="7" />
+    <MudItem xs="2" Class="border-l border-t border-b">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":PRODUCER"]</MudText>
+    </MudItem>
+    <MudItem xs="3" Class="border-l border-t border-r border-b">
+        <MudText Typo="Typo.body1">@Model.FrontData.Producer</MudText>
+    </MudItem>
+    <MudItem xs="4" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":STUDIO_DAYS"]</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.StudioDays</MudText>
+    </MudItem>
+    <MudItem xs="6" />
+    <MudItem xs="4" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":LOCATION_DAYS"]</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.LocationDays</MudText>
+    </MudItem>
+    <MudItem xs="1" />
+    <MudItem xs="2" Class="border-l border-t border-b">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":TV_AGENCY"]</MudText>
+    </MudItem>
+    <MudItem xs="3" Class="border-l border-t border-r border-b">
+        <MudText Typo="Typo.body1">@Model.FrontData.TVAgency</MudText>
+    </MudItem>
+    <MudItem xs="4" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":EXTERIOR_DAYS"]</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.OutsideDays</MudText>
+    </MudItem>
+    <MudItem xs="6" />
+    <MudItem xs="4" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":WEEKEND_DAYS"]</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.WeekendHolidays</MudText>
+    </MudItem>
+    <MudItem xs="1" />
+    <MudItem xs="5" Class="justify-center">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST"]</MudText>
+    </MudItem>
+    <MudItem xs="4" Class="border-l border-t border-b">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":TOTAL_DAYS"]</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-l border-t border-r border-b">
+        <MudText Typo="Typo.body1">@Model.FrontData.TotalDays</MudText>
+    </MudItem>
+    <MudItem xs="1" />
+    <MudItem xs="2" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST_DURATION"]</MudText>
+    </MudItem>
+    <MudItem xs="3" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.PostProdDuration</MudText>
+    </MudItem>
+    <MudItem xs="7" />
+    <MudItem xs="2" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST_VERSIONS"]</MudText>
+    </MudItem>
+    <MudItem xs="3" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.PostProdVersions</MudText>
+    </MudItem>
+    <MudItem xs="4" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":RIGHTS"]</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.Rights</MudText>
+    </MudItem>
+    <MudItem xs="1" />
+    <MudItem xs="2" Class="border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST_SOUND"]</MudText>
+    </MudItem>
+    <MudItem xs="3" Class="border-l border-t border-r">
+        <MudText Typo="Typo.body1">@Model.FrontData.PostProdSound</MudText>
+    </MudItem>
+    <MudItem xs="4" Class="border-l border-t border-b">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":FORMATS"]</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="border-l border-t border-r border-b">
+        <MudText Typo="Typo.body1">@Model.FrontData.Formats</MudText>
+    </MudItem>
+    <MudItem xs="1" />
+    <MudItem xs="2" Class="border-l border-t border-b">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":POST_NVOICES"]</MudText>
+    </MudItem>
+    <MudItem xs="3" Class="border-l border-t border-r border-b">
+        <MudText Typo="Typo.body1">@Model.FrontData.PostProdNVoices</MudText>
+    </MudItem>
 
-<MudItem xs="12">
-    <MudText Typo="Typo.body1">&nbsp;</MudText>
-</MudItem>
+    <MudItem xs="12">
+        <MudText Typo="Typo.body1">&nbsp;</MudText>
+    </MudItem>
 
-<MudItem xs="12" Class="justify-center border">
-    <MudText Typo="Typo.h4">@L["BUDGET:PRINT:" + Lang + ":SUMMARY"]</MudText>
-</MudItem>
+    <MudItem xs="12" Class="justify-center border-l-2 border-t-2 border-r-2">
+        <MudText Typo="Typo.h4">@L["BUDGET:PRINT:" + Lang + ":SUMMARY"]</MudText>
+    </MudItem>
 
-<MudItem xs="12" Class="border-b">
-    <MudText Typo="Typo.body1">&nbsp;</MudText>
-</MudItem>
-
-@foreach (var (group, index) in Model.Groups.Select((g, i) => (g, i)))
+    @foreach (var (group, index) in Model.Groups.Select((g, i) => (g, i)))
 {
-    <MudItem xs="1" Class="justify-end border-dotted border-l" Style="@GetTopBorderStyle("border-left-style:solid!important;", index)">
+    <MudItem xs="1" Class="justify-end border-dotted border-l" Style="@GetTopBorderStyle("border-left:solid 2px!important;", index)">
         <MudText Typo="Typo.caption">@(index + 1)</MudText>
     </MudItem>
     <MudItem xs="9" Class="border-dotted border-l" Style="@GetTopBorderStyle("", index)">
@@ -192,54 +188,50 @@
             })
         </MudText>
     </MudItem>
-    <MudItem xs="2" Class="justify-end border-dotted border-l border-r" Style="@GetTopBorderStyle("border-right-style:solid!important;", index)">
+    <MudItem xs="2" Class="justify-end border-dotted border-l border-r" Style="@GetTopBorderStyle("border-right:solid 2px!important;", index)">
         <MudText Typo="Typo.body1">@(((IGroup)group).ClientValue.AsAnyValue())</MudText>
     </MudItem>
 }
-<MudItem xs="1" Class="border-dotted border-l border-t" Style="border-left-style:solid!important" />
+<MudItem xs="1" Class="border-dotted border-l border-t" Style="border-left:solid 2px!important;" />
 <MudItem xs="9" Class="border-dotted border-l border-t">
     <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":SUBTOTAL_FP"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="justify-end border-l border-t border-r" Style="border-right-style:solid!important">
-    <MudText Typo="Typo.caption">@(((IBudget)Model).SubTotal.AsAnyValue())</MudText>
-</MudItem>
-<MudItem xs="1" Class="border-dotted border-l border-t" Style="border-left-style:solid!important" />
-<MudItem xs="9" Class="border-dotted border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":HOUSE_FEES"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="justify-end border-l border-t border-r">
-    <MudText Typo="Typo.caption">@(((IBudget)Model).BCAProducerValue.AsAnyValue())</MudText>
-</MudItem>
-<MudItem xs="1" Class="border-dotted border-l border-t" Style="border-left-style:solid!important" />
-<MudItem xs="9" Class="border-dotted border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":TOTAL_FP"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="justify-end border-2">
-    <MudText Typo="Typo.caption">@(((IBudget)Model).ClientValue.AsAnyValue())</MudText>
-</MudItem>
-<MudItem xs="1" Class="border-l border-t" Style="border-top-style:dotted!important" />
-<MudItem xs="9" Class="border-dotted border-l border-t">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":WEATHER_DAY"]</MudText>
-</MudItem>
-<MudItem xs="2" Class="justify-end border-l border-r">
-    <MudText Typo="Typo.body1">@(((IBudget)Model).WeatherBCA?.AsAnyValue())</MudText>
-</MudItem>
+    </MudItem>
+    <MudItem xs="2" Class="justify-end border-l border-t border-r" Style="border-right:solid 2px!important;">
+        <MudText Typo="Typo.caption">@(((IBudget)Model).SubTotal.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-dotted border-l border-t" Style="border-left:solid 2px!important;" />
+    <MudItem xs="9" Class="border-dotted border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":HOUSE_FEES"]</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="justify-end border-l border-t border-r-2">
+        <MudText Typo="Typo.caption">@(((IBudget)Model).BCAProducerValue.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-dotted border-l border-t" Style="border-left:solid 2px!important;" />
+    <MudItem xs="9" Class="border-dotted border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":TOTAL_FP"]</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="justify-end border-2">
+        <MudText Typo="Typo.caption">@(((IBudget)Model).ClientValue.AsAnyValue())</MudText>
+    </MudItem>
+    <MudItem xs="1" Class="border-l-2 border-t" Style="border-top-style:dotted!important" />
+    <MudItem xs="9" Class="border-dotted border-l border-t">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":WEATHER_DAY"]</MudText>
+    </MudItem>
+    <MudItem xs="2" Class="justify-end border-l border-r-2">
+        <MudText Typo="Typo.body1">@(((IBudget)Model).WeatherBCA?.AsAnyValue())</MudText>
+    </MudItem>
 
-<MudItem xs="12" Class="border-t">
-    <MudText Typo="Typo.body1">&nbsp;</MudText>
-</MudItem>
+    <MudItem xs="12" Class="border-t-2">
+        <MudText Typo="Typo.body1">&nbsp;</MudText>
+    </MudItem>
 
-<MudItem xs="12" Class="justify-center border">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":TERMS"]</MudText>
-</MudItem>
+    <MudItem xs="12" Class="justify-center border-l-2 border-t-2 border-r-2">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":TERMS"]</MudText>
+    </MudItem>
 
-<MudItem xs="12">
-    <MudText Typo="Typo.body1">&nbsp;</MudText>
-</MudItem>
-
-<MudItem xs="12" Class="border" Style="min-height: 260px;">
-    <MudText Typo="Typo.body2">
-        @(Lang switch
+    <MudItem xs="12" Class="border-l-2 border-t border-r-2 border-b-2" Style="min-height: 250px;">
+        <MudText Typo="Typo.body2">
+            @(Lang switch
         {
             "ENG" => PreserveLineBreaks(Model.FrontData.CommentsEnglish),
             _ => PreserveLineBreaks(Model.FrontData.Comments)
@@ -254,29 +246,29 @@
 <MudItem xs="1" />
 <MudItem xs="4" Class="justify-center">
     <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":PRODUCER"]</MudText>
-</MudItem>
-<MudItem xs="2" />
-<MudItem xs="4" Class="justify-center">
-    <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":CLIENT"]</MudText>
-</MudItem>
-<MudItem xs="1" />
-<MudItem xs="1" />
-<MudItem xs="2">
-    <MudImage Class="object-scale-down" Style="height: 1.1cm;" Src="images/imgSigJoao.jpg" />
-</MudItem>
-<MudItem xs="2">
-    <MudImage Class="object-scale-down" Style="height: 1.1cm;" Src="images/imgSigRicardo.jpg" />
-</MudItem>
-<MudItem xs="7" />
-<MudItem xs="1" />
-<MudItem xs="4" Class="justify-center">
-    <MudText Typo="Typo.body1">João Vilela / Ricardo Estevão</MudText>
-</MudItem>
-<MudItem xs="2" />
-<MudItem xs="4" Class="justify-center">
-    <MudText Typo="Typo.body1">@L["BUDGET:PRINT:" + Lang + ":SIGNATURE"]</MudText>
-</MudItem>
-<MudItem xs="1" />
+    </MudItem>
+    <MudItem xs="2" />
+    <MudItem xs="4" Class="justify-center">
+        <MudText Typo="Typo.caption">@L["BUDGET:PRINT:" + Lang + ":CLIENT"]</MudText>
+    </MudItem>
+    <MudItem xs="1" />
+    <MudItem xs="1" />
+    <MudItem xs="2">
+        <MudImage Class="object-scale-down" Style="height: 1.1cm;" Src="images/imgSigJoao.jpg" />
+    </MudItem>
+    <MudItem xs="2">
+        <MudImage Class="object-scale-down" Style="height: 1.1cm;" Src="images/imgSigRicardo.jpg" />
+    </MudItem>
+    <MudItem xs="7" />
+    <MudItem xs="1" />
+    <MudItem xs="4" Class="justify-center">
+        <MudText Typo="Typo.body1">João Vilela / Ricardo Estevão</MudText>
+    </MudItem>
+    <MudItem xs="2" />
+    <MudItem xs="4" Class="justify-center">
+        <MudText Typo="Typo.body1">@L["BUDGET:PRINT:" + Lang + ":SIGNATURE"]</MudText>
+    </MudItem>
+    <MudItem xs="1" />
 
     @code {
     [Parameter]
@@ -288,7 +280,7 @@
     [Parameter]
     public string Lang { get; set; } = default!;
 
-    private string GetTopBorderStyle(string other, int index) => other + (index == 0 ? "" : "border-top-width:1px!important");
+    private string GetTopBorderStyle(string other, int index) => other + (index == 0 ? "border-top:solid 1px!important;" : "border-top-width:1px!important;");
 
     private MarkupString PreserveLineBreaks(string? str) => (MarkupString)HttpUtility.HtmlEncode(str ?? "").ReplaceLineEndings("<br />");
 }

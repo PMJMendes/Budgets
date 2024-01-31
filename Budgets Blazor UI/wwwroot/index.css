@@ -215,6 +215,34 @@
     padding: 15px 8px 15px 12px !important;
 }
 
+.item-list.mud-table-dense th {
+    padding: 6px 12px 6px 12px !important;
+}
+
+.item-list.mud-table-dense th:first-child {
+    padding: 6px 12px 6px 8px !important;
+}
+
+.item-list.mud-table-dense th:last-child {
+    padding: 6px 8px 6px 12px !important;
+}
+
+.item-list.mud-table-dense td {
+    padding: 6px 12px !important;
+}
+
+.item-list.mud-table-dense td:first-child {
+    padding: 6px 12px 6px 8px !important;
+}
+
+.item-list.mud-table-dense td:last-child {
+    padding: 6px 8px 6px 12px !important;
+}
+
+.mud-table-dense * .mud-table-row .mud-table-cell {
+    border-bottom: 1px solid var(--mud-palette-black) !important;
+}
+
 .navigator {
     padding: 16px;
     border-right: 1px solid;

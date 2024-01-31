@@ -39,7 +39,7 @@
 
         @if (selectedCat is not null)
         {
-            <MudDataGrid Elevation="0" FixedHeader="true" Height="100%" Class="viewport-body item-list"
+            <MudDataGrid Elevation="0" FixedHeader="true" Height="100%" Dense="true" Class="viewport-body item-list"
                          Items="@items" ReadOnly="false" EditMode="DataGridEditMode.Cell" SortMode="SortMode.None">
                 <Columns>
                     <TemplateColumn T="ItemModel" IsEditable="false">
