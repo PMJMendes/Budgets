@@ -4,6 +4,7 @@ using Krypton.Budgets.Blazor.APIClient.Budgets.Budget.ProductionDetails;
 using Krypton.Budgets.Blazor.UI._Shared;
 using Krypton.Budgets.Blazor.UI.Budgets._Common;
 using Krypton.Budgets.Blazor.UI.Budgets.BudgetPage._Core;
+using System.Text;
 
 namespace Krypton.Budgets.Blazor.UI.Budgets.BudgetPage.View;
 
@@ -26,6 +27,21 @@ public class BudgetViewModel
 	public RefModel? Manager { get; private init; }
 	public BudgetModel BudgetData { get; private init; }
 	public BudgetState State { get; private init; }
+
+	public Stream GetCSVStream()
+	{
+		MemoryStream responseDataStream = new MemoryStream();
+
+		using (StreamWriter sw = new StreamWriter(responseDataStream, Encoding.UTF8, -1, true))
+		{
+			BudgetData.WriteToCSVStream(sw);
+			sw.Flush();
+			sw.Close();
+		}
+
+		responseDataStream.Position = 0;
+		return responseDataStream;
+	}
 
 	public BudgetViewModel WithState(BudgetState state) => new(
 		Id,

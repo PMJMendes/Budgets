@@ -216,10 +216,12 @@
 }
 
 .item-list.mud-table-dense th {
+    border-top: 1px solid var(--mud-palette-black) !important;
     padding: 6px 12px 6px 12px !important;
 }
 
 .item-list.mud-table-dense th:first-child {
+    border-left: 1px solid var(--mud-palette-black) !important;
     padding: 6px 12px 6px 8px !important;
 }
 
@@ -232,6 +234,7 @@
 }
 
 .item-list.mud-table-dense td:first-child {
+    border-left: 1px solid var(--mud-palette-black) !important;
     padding: 6px 12px 6px 8px !important;
 }
 
@@ -241,6 +244,7 @@
 
 .mud-table-dense * .mud-table-row .mud-table-cell {
     border-bottom: 1px solid var(--mud-palette-black) !important;
+    border-right: 1px solid var(--mud-palette-black) !important;
 }
 
 .navigator {

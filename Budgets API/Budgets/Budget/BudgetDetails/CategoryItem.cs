@@ -17,7 +17,7 @@ internal readonly struct CategoryItem : ICategoryItem
 
     public Guid Id { get; private init; }
     public string Formula { get; private init; }
-    public string Description { get; private init; }
+    public string? Description { get; private init; }
     public string? DescEnglish { get; private init; }
     public IEnumerable<ValueDefItem> Defs { get; private init; }
     public IEnumerable<ItemItem> Items { get; private init; }

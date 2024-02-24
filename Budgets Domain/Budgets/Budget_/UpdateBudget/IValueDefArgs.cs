@@ -10,7 +10,6 @@ public interface IValueDefArgs
 
     [Required]
     ValueType? Type { get; }
-    [Required]
     string? Description { get; }
     string? DescEnglish { get; }
     string? BCAFormula { get; }

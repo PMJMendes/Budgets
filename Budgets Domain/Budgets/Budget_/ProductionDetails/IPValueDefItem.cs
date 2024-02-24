@@ -7,6 +7,6 @@ public interface IPValueDefItem
     Guid Id { get; }
 
     ValueType Type { get; }
-    string Description { get; }
+    string? Description { get; }
     string? DescEnglish { get; }
 }

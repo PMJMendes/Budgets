@@ -39,15 +39,12 @@ internal class Group : BaseEntity, IGroup
     }
 
     [Required]
-    [Unique(Combinations = "byBudget")]
     public virtual Budget Owner { get; protected set; } = default!;
 
     [Required]
     public virtual int Order { get; protected set; } = 0;
 
-    [Required]
-    [Unique(Combinations = "byBudget")]
-    public virtual string Description { get; protected set; } = "";
+    public virtual string? Description { get; protected set; }
 
     public virtual string? DescEnglish { get; protected set; }
 

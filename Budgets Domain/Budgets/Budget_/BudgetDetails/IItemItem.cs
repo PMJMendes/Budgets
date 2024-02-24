@@ -6,7 +6,7 @@ public interface IItemItem
 
     bool ExcludeFromBase { get; }
     bool CanBePercent { get; }
-    string Description { get; }
+    string? Description { get; }
     string? DescEnglish { get; }
     decimal? Percent { get; }
     decimal? BCAPercent { get; }

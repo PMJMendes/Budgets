@@ -53,7 +53,6 @@ internal class Item : BaseEntity, IItem
     }
 
     [Required]
-    [Unique(Combinations = "byCategory")]
     public virtual Category Owner { get; protected set; } = default!;
     [External]
     ICategory IItem.Owner => Owner;
@@ -67,9 +66,7 @@ internal class Item : BaseEntity, IItem
     [Required]
     public virtual bool CanBePercent { get; protected set; } = false;
 
-    [Required]
-    [Unique(Combinations = "byCategory")]
-    public virtual string Description { get; protected set; } = "";
+    public virtual string? Description { get; protected set; } = "";
 
     public virtual string? DescEnglish { get; protected set; }
 

@@ -120,7 +120,8 @@
         "CLONE": "Duplicar Orçamento",
         "PRINT": "Imprimir Orçamento",
         "PRINTENG": "Imprimir Orçamento (inglês)",
-        "REPORT": "Imprimir Relatório"
+        "REPORT": "Imprimir Relatório",
+        "DOWNLOAD": "Exportar CSV"
       },
       "FIELDS": {
         "GROUP": "Grupo",

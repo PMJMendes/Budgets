@@ -22,7 +22,7 @@ internal readonly struct ItemItem : IItemItem
     public Guid Id { get; private init; }
     public bool ExcludeFromBase { get; private init; }
     public bool CanBePercent { get; private init; }
-    public string Description { get; private init; }
+    public string? Description { get; private init; }
     public string? DescEnglish { get; private init; }
     public decimal? Percent { get; private init; }
     public decimal? BCAPercent { get; private init; }

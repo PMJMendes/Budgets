@@ -107,25 +107,25 @@ internal class BudgetDetails : BaseQuery<BudgetDetails, ITargetArgs, IBudgetDeta
 
     private record struct GroupItem(
         Guid Id,
-        string Description, string? DescEnglish,
+        string? Description, string? DescEnglish,
         IEnumerable<ICategoryItem> Categories
     ) : IGroupItem;
 
     private record struct CategoryItem(
         Guid Id,
-        string Formula, string Description, string? DescEnglish,
+        string Formula, string? Description, string? DescEnglish,
         IEnumerable<IValueDefItem> Defs,
         IEnumerable<IItemItem> Items
     ) : ICategoryItem;
 
     private record struct ValueDefItem(
         Guid Id,
-        ValueType Type, string Description, string? DescEnglish, string? BCAFormula
+        ValueType Type, string? Description, string? DescEnglish, string? BCAFormula
     ) : IValueDefItem;
 
     private record struct ItemItem(
         Guid Id,
-        bool ExcludeFromBase, bool CanBePercent, string Description, string? DescEnglish,
+        bool ExcludeFromBase, bool CanBePercent, string? Description, string? DescEnglish,
         decimal? Percent, decimal? BCAPercent,
         IEnumerable<IValueItem> Values,
         IEnumerable<ICostItem> Costs,
@@ -149,6 +149,6 @@ internal class BudgetDetails : BaseQuery<BudgetDetails, ITargetArgs, IBudgetDeta
 
     private record struct RefItem(
         Guid Id,
-        string Description
+        string? Description
     ) : IRefItem;
 }

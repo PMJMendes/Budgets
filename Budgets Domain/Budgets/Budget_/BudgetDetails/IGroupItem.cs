@@ -4,7 +4,7 @@ public interface IGroupItem
 {
     Guid Id { get; }
 
-    string Description { get; }
+    string? Description { get; }
     string? DescEnglish { get; }
 
     IEnumerable<ICategoryItem> Categories { get; }

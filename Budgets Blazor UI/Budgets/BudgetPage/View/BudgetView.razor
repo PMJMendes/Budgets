@@ -11,7 +11,9 @@
 @using Krypton.Budgets.Blazor.UI.Users._Common
 
 @inherits LocalizedComponent<BudgetsRouter>
+@implements IAsyncDisposable
 
+@inject IJSRuntime JS
 @inject IDialogService DialogService
 @inject LockBudgetService LockService
 @inject UnlockBudgetService UnlockService
@@ -63,6 +65,7 @@ else
 				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Print" Class="pl-2" OnClick="() => PrintBudget(false)">@L["BUDGET:VIEW:ACTIONS:PRINT"]</MudButton>
 				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Print" Class="pl-2" OnClick="() => PrintBudget(true)">@L["BUDGET:VIEW:ACTIONS:PRINTENG"]</MudButton>
 				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.TableRows" Class="pl-2" OnClick="PrintReport">@L["BUDGET:VIEW:ACTIONS:REPORT"]</MudButton>
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Download" Class="pl-2" OnClick="DownloadFileFromStream">@L["BUDGET:VIEW:ACTIONS:DOWNLOAD"]</MudButton>
 			}
 			else
 			{
@@ -71,6 +74,7 @@ else
 					<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" OnClick="ManageBudget">@L["BUDGET:VIEW:ACTIONS:MANAGE"]</MudButton>
 				}
 				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.TableRows" Class="pl-2" OnClick="PrintReport">@L["BUDGET:VIEW:ACTIONS:REPORT"]</MudButton>
+				<MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Download" Class="pl-2" OnClick="DownloadFileFromStream">@L["BUDGET:VIEW:ACTIONS:DOWNLOAD"]</MudButton>
 			}
 		</MudContainer>
 
@@ -105,6 +109,7 @@ else
 @code {
 	private bool _loading = false;
 	private bool shouldRender = true;
+	private IJSObjectReference? module;
 
 	[Parameter]
 	public BudgetViewModel Model { get; set; } = BudgetViewModel.Empty();
@@ -120,7 +125,22 @@ else
 
 	protected override bool ShouldRender() => shouldRender && base.ShouldRender();
 
-	protected override void OnParametersSet() => base.OnParametersSet();
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			module = await JS.InvokeAsync<IJSObjectReference>("import",
+				"./Budgets/BudgetPage/View/BudgetView.razor.js");
+		}
+	}
+
+	async ValueTask IAsyncDisposable.DisposeAsync()
+	{
+		if (module is IJSObjectReference _module)
+		{
+			await _module.DisposeAsync();
+		}
+	}
 
 	private void EditBudget() => Page.OnEdit();
 
@@ -191,5 +211,18 @@ else
 			cancelText: @L["BUDGET:ACTIONS:CANCEL"]);
 
 		return result ?? false;
+	}
+
+	private async Task DownloadFileFromStream()
+	{
+		var fileStream = Model.GetCSVStream();
+		var fileName = Model.Code + ".csv";
+
+		using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+		if (module is IJSObjectReference _module)
+		{
+			await _module.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+		}
 	}
 }

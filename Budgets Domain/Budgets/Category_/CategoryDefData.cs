@@ -6,7 +6,7 @@ namespace Krypton.Budgets.Domain.Budgets.Category_;
 internal record struct CategoryDefData(
     Guid Id,
     string Formula,
-    string Description,
+    string? Description,
     string? DescEnglish,
     IEnumerable<ValueDefData> ValueDefData,
     IEnumerable<ItemDefData> ItemDefData

@@ -24,7 +24,6 @@ internal class ValueDef : BaseEntity, IValueDef
     }
 
     [Required]
-    [Unique(Combinations = "byItem")]
     public virtual Category Owner { get; protected set; } = default!;
 
     [Required]
@@ -33,9 +32,7 @@ internal class ValueDef : BaseEntity, IValueDef
     [Required]
     public virtual ValueType Type { get; protected set; }
 
-    [Required]
-    [Unique(Combinations = "byItem")]
-    public virtual string Description { get; protected set; } = "";
+    public virtual string? Description { get; protected set; } = "";
 
     public virtual string? DescEnglish { get; protected set; }
 

@@ -4,7 +4,7 @@ public interface IPGroupItem
 {
     Guid Id { get; }
 
-    string Description { get; }
+    string? Description { get; }
     string? DescEnglish { get; }
 
     IEnumerable<IPCategoryItem> Categories { get; }

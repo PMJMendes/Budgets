@@ -4,6 +4,6 @@ internal record struct ItemDefData(
     Guid Id,
     bool ExcludeFromBase,
     bool CanBePercent,
-    string Description,
+    string? Description,
     string? DescEnglish
 );

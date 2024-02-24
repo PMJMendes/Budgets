@@ -7,7 +7,7 @@ public interface IValueDefItem
     Guid Id { get; }
 
     ValueType Type { get; }
-    string Description { get; }
+    string? Description { get; }
     string? DescEnglish { get; }
     string? BCAFormula { get; }
 }

@@ -15,6 +15,6 @@ internal readonly struct PValueDefItem : IPValueDefItem
 
     public Guid Id { get; private init; }
     public ValueType Type { get; private init; }
-    public string Description { get; private init; }
+    public string? Description { get; private init; }
     public string? DescEnglish { get; private init; }
 }

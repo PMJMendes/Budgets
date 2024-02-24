@@ -3,5 +3,5 @@
 public interface IRefItem : IQueryResultItem
 {
     public Guid Id { get; }
-    public string Description { get; }
+    public string? Description { get; }
 }

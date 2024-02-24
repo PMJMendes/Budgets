@@ -14,7 +14,7 @@ internal readonly struct GroupItem : IGroupItem
     }
 
     public Guid Id { get; private init; }
-    public string Description { get; private init; }
+    public string? Description { get; private init; }
     public string? DescEnglish { get; private init; }
     public IEnumerable<CategoryItem> Categories { get; private init; }
 

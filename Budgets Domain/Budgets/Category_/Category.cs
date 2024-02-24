@@ -42,7 +42,6 @@ internal class Category : BaseEntity, ICategory
     }
 
     [Required]
-    [Unique(Combinations = "byGroup")]
     public virtual Group Owner { get; protected set; } = default!;
 
     [Required]
@@ -51,9 +50,7 @@ internal class Category : BaseEntity, ICategory
     [Required]
     public virtual string Formula { get; protected set; } = "";
 
-    [Required]
-    [Unique(Combinations = "byGroup")]
-    public virtual string Description { get; protected set; } = "";
+    public virtual string? Description { get; protected set; } = "";
 
     public virtual string? DescEnglish { get; protected set; }
 

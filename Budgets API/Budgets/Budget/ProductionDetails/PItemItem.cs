@@ -17,7 +17,7 @@ internal readonly struct PItemItem : IPItemItem
     }
 
     public Guid Id { get; private init; }
-    public string Description { get; private init; }
+    public string? Description { get; private init; }
     public string? DescEnglish { get; private init; }
     public decimal? Percent { get; private init; }
     public IEnumerable<PValueItem> Values { get; private init; }

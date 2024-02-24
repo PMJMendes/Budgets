@@ -7,7 +7,6 @@ public interface IGroupArgs
 {
     Guid? Id { get; }
 
-    [Required]
     string? Description { get; }
     string? DescEnglish { get; }
 

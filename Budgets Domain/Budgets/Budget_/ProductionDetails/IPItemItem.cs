@@ -4,7 +4,7 @@ public interface IPItemItem
 {
     Guid Id { get; }
 
-    string Description { get; }
+    string? Description { get; }
     string? DescEnglish { get; }
     decimal? Percent { get; }
 

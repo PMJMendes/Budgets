@@ -5,7 +5,7 @@ namespace Krypton.Budgets.Domain.Budgets.ValueDef_;
 internal record struct ValueDefData(
     Guid Id,
     ValueType Type,
-    string Description,
+    string? Description,
     string? DescEnglish,
     string? BCAFormula
 );

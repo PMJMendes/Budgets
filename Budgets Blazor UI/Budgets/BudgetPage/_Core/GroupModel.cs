@@ -27,6 +27,13 @@ public class GroupModel : IGroup
 
 	IEnumerable<ICategory> IGroup.Categories => Categories;
 
+	public void WriteToCSVStream(StreamWriter sw, int index)
+	{
+		sw.WriteLine("" + index + ";\"" + Description + "\";;;;;;;;;;;");
+
+		Categories.ForEach(c => c.WriteToCSVStream(sw));
+	}
+
 	public bool IsValid => !string.IsNullOrWhiteSpace(Description);
 
 	public GroupArgs AsUpdateArgs() => new(

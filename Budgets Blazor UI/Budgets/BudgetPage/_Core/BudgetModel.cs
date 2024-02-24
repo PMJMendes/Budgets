@@ -31,6 +31,14 @@ public class BudgetModel : IBudget
 
 	IEnumerable<IGroup> IBudget.Groups => Groups;
 
+	public void WriteToCSVStream(StreamWriter sw)
+	{
+		foreach (var g in Groups.Select((g, i) => new { g, i }))
+		{
+			g.g.WriteToCSVStream(sw, g.i + 1);
+		}
+	}
+
 	public void FixWeatherTotal() => PercentsData.FixWeatherTotal(((IBudget)this).Value);
 
 	public GroupModel AddGroup(GroupModel group)

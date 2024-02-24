@@ -17,7 +17,7 @@ internal readonly struct PCategoryItem : IPCategoryItem
 
     public Guid Id { get; private init; }
     public string Formula { get; private init; }
-    public string Description { get; private init; }
+    public string? Description { get; private init; }
     public string? DescEnglish { get; private init; }
     public IEnumerable<PValueDefItem> Defs { get; private init; }
     public IEnumerable<PItemItem> Items { get; private init; }

@@ -138,10 +138,13 @@
             </MudDataGrid>
         }
 
-        <MudButton Class="viewport-header justify-start pl-4" StartIcon="@Icons.Material.Filled.AddCircleOutline"
-                   OnClick="@(_ => OnAddItem())" Disabled="@(selectedCat is null)">
-            @L["BUDGET:EDIT:TABS:VALUES:NEW_ITEM"]
-        </MudButton>
+        <MudContainer MaxWidth="MaxWidth.False" Class="viewport-header pb-4">
+            <MudSpacer />
+            <MudButton Class="viewport-header justify-start pl-4" StartIcon="@Icons.Material.Filled.AddCircleOutline"
+                       OnClick="@(_ => OnAddItem())" Disabled="@(selectedCat is null)">
+                @L["BUDGET:EDIT:TABS:VALUES:NEW_ITEM"]
+            </MudButton>
+        </MudContainer>
 
         <MudGrid Spacing="0" Class="viewport-header">
             <MudItem xs="4" />

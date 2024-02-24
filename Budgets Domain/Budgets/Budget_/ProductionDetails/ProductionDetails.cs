@@ -111,25 +111,25 @@ internal class ProductionDetails : BaseQuery<ProductionDetails, ITargetArgs, IPr
 
     private record struct GroupItem(
         Guid Id,
-        string Description, string? DescEnglish,
+        string? Description, string? DescEnglish,
         IEnumerable<IPCategoryItem> Categories
     ) : IPGroupItem;
 
     private record struct CategoryItem(
         Guid Id,
-        string Formula, string Description, string? DescEnglish,
+        string Formula, string? Description, string? DescEnglish,
         IEnumerable<IPValueDefItem> Defs,
         IEnumerable<IPItemItem> Items
     ) : IPCategoryItem;
 
     private record struct ValueDefItem(
         Guid Id,
-        ValueType Type, string Description, string? DescEnglish
+        ValueType Type, string? Description, string? DescEnglish
     ) : IPValueDefItem;
 
     private record struct ItemItem(
         Guid Id,
-        string Description, string? DescEnglish, decimal? Percent,
+        string? Description, string? DescEnglish, decimal? Percent,
         IEnumerable<IPValueItem> Values,
         IEnumerable<IPCostItem> Costs, IEnumerable<IPInvoiceItem> Invoices
     ) : IPItemItem;
@@ -151,6 +151,6 @@ internal class ProductionDetails : BaseQuery<ProductionDetails, ITargetArgs, IPr
 
     private record struct RefItem(
         Guid Id,
-        string Description
+        string? Description
     ) : IRefItem;
 }

@@ -9,7 +9,6 @@ public interface ICategoryArgs
 
     [Required]
     string? Formula { get; }
-    [Required]
     string? Description { get; }
     string? DescEnglish { get; }
 

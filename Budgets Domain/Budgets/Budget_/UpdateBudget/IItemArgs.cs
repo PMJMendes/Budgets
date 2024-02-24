@@ -1,5 +1,4 @@
 ﻿using Krypton.Budgets.Domain._Impl.Attributes;
-using Krypton.Budgets.Domain.Budgets.Cost_;
 using Krypton.Budgets.Domain.Budgets.Invoice_;
 using Krypton.Budgets.Domain.Budgets.Item_;
 
@@ -13,7 +12,6 @@ public interface IItemArgs
     bool? ExcludeFromBase { get; }
     [Required]
     bool? CanBePercent { get; }
-    [Required]
     string? Description { get; }
     string? DescEnglish { get; }
 
@@ -22,6 +20,9 @@ public interface IItemArgs
 
     [Required]
     IEnumerable<IValueArgs>? ValueArgs { get; }
+
+    [Required]
+    IEnumerable<ICostArgs>? CostArgs { get; }
 
     internal sealed ItemDefData ToItemDef(Exception ex) => new(
         Id ?? Guid.Empty,
@@ -35,7 +36,7 @@ public interface IItemArgs
         Percent,
         BCAPercent,
         ValueArgs?.Select(v => v.ToValueData()) ?? throw ex,
-        Array.Empty<CostData>(),
+        CostArgs?.Select(c => c.ToCostData()) ?? throw ex,
         Array.Empty<InvoiceData>()
     );
 }

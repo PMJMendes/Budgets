@@ -5,7 +5,7 @@ public interface ICategoryItem
     Guid Id { get; }
 
     string Formula { get; }
-    string Description { get; }
+    string? Description { get; }
     string? DescEnglish { get; }
 
     IEnumerable<IValueDefItem> Defs { get; }
