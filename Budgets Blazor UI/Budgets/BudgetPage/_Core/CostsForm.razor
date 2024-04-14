@@ -138,19 +138,19 @@
 
     private TableGroupDefinition<Row> grouping = new()
     {
-        Selector = r => r.Group.Description,
+        Selector = r => r.Group.Description + (((IGroup)r.Group).Value != 0 ? " *" : ""),
         Indentation = true,
         Expandable = true,
         IsInitiallyExpanded = false,
         InnerGroup = new()
         {
-            Selector = r => r.Category.Description,
+            Selector = r => r.Category.Description + (((ICategory)r.Category).Value != 0 ? " *" : ""),
             Expandable = true,
             IsInitiallyExpanded = false,
             InnerGroup = new()
             {
                 GroupName = "1",
-                Selector = r => r.Item.Description,
+                Selector = r => r.Item.Description + (((IItem)r.Item).Value != 0 ? " *" : ""),
                 Expandable = true,
                 IsInitiallyExpanded = false
             }

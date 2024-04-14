@@ -1,4 +1,4 @@
-@using FluentValidation
+﻿@using FluentValidation
 @using Krypton.Budgets.Shared
 @using ValueType = Krypton.Budgets.Shared.ValueType
 
@@ -15,7 +15,7 @@
                     {
                         @foreach (var group in Model.Groups)
                         {
-                            <MudSelectItem Value="group">@group.Description</MudSelectItem>
+                            <MudSelectItem Value="group">@group.Description @(((IGroup)group).Value != 0 ? "*" : "")</MudSelectItem>
                         }
                     }
                 </MudSelect>
@@ -28,7 +28,7 @@
                     {
                         @foreach (var category in selectedGroup.Categories)
                         {
-                            <MudSelectItem Value="category">@category.Description</MudSelectItem>
+                            <MudSelectItem Value="category">@category.Description @(((ICategory)category).Value != 0 ? "*" : "")</MudSelectItem>
                         }
                     }
                 </MudSelect>
